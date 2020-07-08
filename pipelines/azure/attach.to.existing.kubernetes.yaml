@@ -25,30 +25,10 @@ jobs:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
-    - task: Kubernetes@1
-      displayName: Create $(service) services - deploy
-      inputs:
-        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-        action: create
-        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+    - bash: |
+        kubectl create  -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+        kubectl create  -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
+        kubectl create  -f kubernetes/config/deployments/jmeter_master_configmap.yaml
+        kubectl create  -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
 
-    - task: Kubernetes@1
-      displayName: Create $(service) services - svc
-      inputs:
-        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-        action: create
-        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
-
-    - task: Kubernetes@1
-      displayName: Create $(service-master) services - configmap
-      inputs:
-        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-        action: create
-        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
-
-    - task: Kubernetes@1
-      displayName: Create $(service-master) services - deploy
-      inputs:
-        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-        action: create
-        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
+      displayName: Deploy services to cluster
