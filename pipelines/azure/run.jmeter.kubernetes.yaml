@@ -14,8 +14,9 @@ variables:
   service-master: jmeter-master
   scenario: "jmx/test.jmx"
   data_file: "test_data/sample_data.csv"
-  threads: 4 #browsers per pod (=node=VM)
-  jmeter_args: "-Gthreads=$(threads)"
+  threads: 1 #browsers per pod (=node=VM)
+  loops: 20
+  jmeter_args: "-Gthreads=$(threads) -Gloops=$(loops)"
   report_dir: kubernetes/tmp/report
   results: kubernetes/tmp/results.csv
   log: kubernetes/tmp/jmeter.log
