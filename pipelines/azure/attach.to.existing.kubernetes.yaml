@@ -30,7 +30,7 @@ jobs:
       inputs:
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
         action: create
-        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy.yaml
+        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
 
     - task: Kubernetes@1
       displayName: Create $(service) services - svc
@@ -51,4 +51,4 @@ jobs:
       inputs:
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
         action: create
-        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy.yaml
+        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
