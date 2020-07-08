@@ -31,7 +31,7 @@ jobs:
     - task: ShellScript@2
       displayName: Stop JMeter tests
       inputs:
-        scriptPath: kubernetes/bin/jmeter_stop.sh
+        scriptPath: kubernetes/bin/jmeter_stop.sh $(cluster_namespace)
 
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_down_replicas)
