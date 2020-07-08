@@ -25,8 +25,29 @@ jobs:
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
     - task: Kubernetes@1
-      displayName: Create $(service) services
+      displayName: Create $(service) services - deploy
       inputs:
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
         action: create
         arguments: -f kubernetes/config/deployments/jmeter_slaves_deploy.yaml
+
+    - task: Kubernetes@1
+      displayName: Create $(service) services - svc
+      inputs:
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+        action: create
+        arguments: -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
+
+    - task: Kubernetes@1
+      displayName: Create $(service-master) services - configmap
+      inputs:
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+        action: create
+        arguments: -f kubernetes/config/deployments/jmeter_master_configmap.yaml
+
+    - task: Kubernetes@1
+      displayName: Create $(service-master) services - deploy
+      inputs:
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+        action: create
+        arguments: -f kubernetes/config/deployments/jmeter_master_deploy.yaml
