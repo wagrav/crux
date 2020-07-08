@@ -98,3 +98,23 @@ jobs:
       inputs:
         path: $(log)
         artifact: jmeter.log
+
+    - task: KubernetesManifest@0
+      displayName: Scale slaves to $(scale_down_replicas)
+      inputs:
+        kubernetesServiceConnection: $(kubernetesServiceConnection)
+        action: scale
+        kind: deployment
+        name: $(service)
+        replicas: $(scale_down_replicas)
+        namespace: $(cluster_namespace)
+
+    - task: KubernetesManifest@0
+      displayName: Scale master to $(scale_down_replicas)
+      inputs:
+        kubernetesServiceConnection: $(kubernetesServiceConnection)
+        action: scale
+        kind: deployment
+        name: $(service-master)
+        replicas: $(scale_down_replicas)
+        namespace: $(cluster_namespace)

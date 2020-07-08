@@ -10,7 +10,7 @@ setVARS() {
   location=uksouth #use location close to your app
   cluster_name=k8
   cluster_namespace=jmeter
-  kubernetes_version=1.15.12
+  kubernetes_version=1.16.10
   node_size=Standard_D3_v2 #Standard_D2_v2
   node_count=5 #for real test use 5
 
