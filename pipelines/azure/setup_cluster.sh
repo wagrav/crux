@@ -12,7 +12,7 @@ setVARS() {
   cluster_namespace=jmeter
   kubernetes_version=1.16.10
   node_size=Standard_D3_v2 #Standard_D2_v2
-  node_count=5 #for real test use 5
+  node_count=4 #for real test use 5
 
   #JMeter test params
   test_jmx="jmx/test.jmx"
@@ -110,11 +110,13 @@ deployServicesToAKS(){
   printf "6 Deploy services to AKS\n"
 
   local version=$1
+  local attach_to_existing_cluster=$2
+
   echo $version | egrep "^1.15."
   if [ "$?" != "1" ]; then #v1.15
-      cd $HOME/${git_path}/kubernetes/bin && chmod +x *.sh && ./jmeter_cluster_create.sh "$cluster_namespace"
+      cd $HOME/${git_path}/kubernetes/bin && chmod +x *.sh && ./jmeter_cluster_create.sh "$cluster_namespace" "$attach_to_existing_cluster"
   else #v > 1.15
-      cd $HOME/${git_path}/kubernetes/bin && chmod +x *.sh && ./jmeter_cluster_create_v17.sh "$cluster_namespace"
+      cd $HOME/${git_path}/kubernetes/bin && chmod +x *.sh && ./jmeter_cluster_create_v17.sh "$cluster_namespace" "$attach_to_existing_cluster"
   fi
 
   OK
@@ -161,7 +163,7 @@ run_main(){
   else
     echo "Attaching to an existing cluster"
   fi
-  deployServicesToAKS $kubernetes_version
+  deployServicesToAKS $kubernetes_version $attach_to_existing_cluster
   runVerifcationTest
   displayInfo "$attach_to_existing_cluster"
 

@@ -1,0 +1,32 @@
+# This pipeline requires azure service connection of type "kubernetes service"
+# Remember to have 1-1 jmeter service to k8 node (VM)/pod ratio - otherwsie some slaves can crash due to lack of resources
+
+name: $(BuildID)
+trigger: none
+#config
+variables:
+  kubernetesServiceConnection: k8con
+  service: jmeter-slaves
+  service-master: jmeter-master
+
+jobs:
+  - job: JMeter_Tests
+    displayName: Attach to existing cluster
+    pool:
+      vmImage: 'ubuntu-latest'
+    timeoutInMinutes: 5
+    steps:
+
+    - task: Kubernetes@1
+      displayName: Login to cluster
+      inputs:
+        command: login
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+
+    - task: Kubernetes@1
+      displayName: Create $(service) services
+      inputs:
+        kubernetesServiceConnection: $(kubernetesServiceConnection)
+        action: create
+        arguments: -f kubernetes/config/deployments/jmeter_slaves_deploy.yaml
