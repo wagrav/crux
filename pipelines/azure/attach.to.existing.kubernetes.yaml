@@ -5,7 +5,7 @@ name: $(BuildID)
 trigger: none
 #config
 variables:
-  kubernetesServiceConnection: k8con3
+  kubernetesServiceConnection: k8con2 #
   service: jmeter-slaves
   service-master: jmeter-master
   namespace: default
