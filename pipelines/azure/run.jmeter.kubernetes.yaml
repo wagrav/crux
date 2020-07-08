@@ -99,3 +99,8 @@ jobs:
       inputs:
         path: $(log)
         artifact: jmeter.log
+
+    - task: PublishTestResults@2
+      inputs:
+      testResultsFiles: 'extras/junit/TEST-*.xml'
+      failTaskOnFailedTests: true
