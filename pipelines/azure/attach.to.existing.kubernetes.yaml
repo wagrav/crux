@@ -5,10 +5,10 @@ name: $(BuildID)
 trigger: none
 #config
 variables:
-  kubernetesServiceConnection: k8con2 #
+  kubernetesServiceConnection: k8con2 #edit
+  namespace: default #edit
   service: jmeter-slaves
   service-master: jmeter-master
-  namespace: default
 
 jobs:
   - job: JMeter_Tests
