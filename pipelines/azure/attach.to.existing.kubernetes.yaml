@@ -27,6 +27,6 @@ jobs:
     - task: Kubernetes@1
       displayName: Create $(service) services
       inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
         action: create
         arguments: -f kubernetes/config/deployments/jmeter_slaves_deploy.yaml
