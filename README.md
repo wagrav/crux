@@ -1,1 +1,0 @@
-# jmeter_azure_k8_boilerplate
