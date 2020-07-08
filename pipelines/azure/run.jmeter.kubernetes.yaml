@@ -102,5 +102,5 @@ jobs:
 
     - task: PublishTestResults@2
       inputs:
-        testResultsFiles: 'extras/junit/TEST*.xml'
+        testResultsFiles: '**/*_results.xml'
         failTaskOnFailedTests: true

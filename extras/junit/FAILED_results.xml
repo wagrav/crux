@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="JMeterTests" errors="0" skipped="0" tests="1" failures="1">
+        <properties>
+            <property name="args">jmeter args</property>
+        </properties>
+        <testcase classname="JMeterTests" name="Should end without errors" time="0" >
+            <failure message="Performance tests failed">Assertion failed</failure>
+        </testcase>
+    </testsuite>
+</testsuites>
