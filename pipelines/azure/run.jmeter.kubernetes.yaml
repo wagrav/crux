@@ -6,7 +6,7 @@ trigger: none
 #config
 variables:
   cluster_namespace: jmeter
-  kubernetesServiceConnection: k8c
+  kubernetesServiceConnection: k8con
   scale_down_replicas: 0
   scale_up_replicas: 3 #not more than k8 nodes number otherwise we have two slaves at 1 VM and likely crash, deployment should be uniform for predictability
   scale_up_replicas_master: 1

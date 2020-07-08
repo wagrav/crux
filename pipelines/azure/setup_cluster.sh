@@ -15,7 +15,7 @@ setVARS() {
   node_count=5 #for real test use 5
 
   #JMeter test params
-  test_jmx="test/test.jmx"
+  test_jmx="jmx/test.jmx"
   data_file_to_copy=test_data/sample_data.csv #copy to /test on master
   jmeter_user_params="-Gthreads=2"
 

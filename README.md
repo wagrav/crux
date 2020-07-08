@@ -20,7 +20,7 @@ The commands in here should be executed from Azure CLI
 
 4.Change 'jmeter_azure_k8_boilerplate' and 'jmeter-group' parameters to your own and execute the command
 
-`repo=jmeter_azure_k8_boilerplate && cd ~ && rm -Rf $repo- && git clone  https://github.com/ObjectivityLtd/$repo  && cd $repo/pipelines/azure && bash setup_cluster.sh jmeter-group`
+`repo=jmeter_azure_k8_boilerplate && cd ~ && rm -Rf $repo && git clone  https://github.com/ObjectivityLtd/$repo  && cd $repo/pipelines/azure && bash setup_cluster.sh jmeter-group`
 
 ### Attaching to an existing cluster
 
@@ -35,4 +35,4 @@ The commands in here should be executed from Azure CLI
 
 2.Change 'jmeter_azure_k8_boilerplate' and 'jmeter-group' parameters to your own and execute the command
 
-`repo=jmeter_azure_k8_boilerplate && cd ~ && rm -Rf $repo- && git clone  https://github.com/ObjectivityLtd/$repo  && cd $repo/pipelines/azure && bash setup_cluster.sh jmeter-group attach_to_existing`
+`repo=jmeter_azure_k8_boilerplate && cd ~ && rm -Rf $repo && git clone  https://github.com/ObjectivityLtd/$repo  && cd $repo/pipelines/azure && bash setup_cluster.sh jmeter-group attach_to_existing`
