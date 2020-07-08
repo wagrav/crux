@@ -26,8 +26,8 @@ jobs:
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
     - bash: |
-        kubectl delete -n $(namespace) pod, service  jmeter-slaves jmeter-slaves-svc jmeter-load-test jmeter-master
-
+        kubectl delete -n $(namespace) pods, services -l jmeter_mode=slave
+        kubectl delete -n $(namespace) pods, services -l jmeter_mode=master
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
