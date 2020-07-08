@@ -9,7 +9,7 @@ if [ -z "$namespace" ]; then
   #Get namesapce variable
   tenant=`awk '{print $NF}' $working_dir/../tmp/tenant_export`
 else
-  tenant=namespace
+  tenant=$namespace
 fi
 master_pod=`kubectl get po -n $tenant | grep jmeter-master | awk '{print $1}'`
 
