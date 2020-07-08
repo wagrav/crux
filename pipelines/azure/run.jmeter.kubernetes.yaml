@@ -1,0 +1,100 @@
+# This pipeline requires azure service connection of type "kubernetes service"
+# Remember to have 1-1 jmeter service to k8 node (VM)/pod ratio - otherwsie some slaves can crash due to lack of resources
+
+name: $(BuildID)
+trigger: none
+#config
+variables:
+  cluster_namespace: jmeter
+  kubernetesServiceConnection: k8c
+  scale_down_replicas: 0
+  scale_up_replicas: 3 #not more than k8 nodes number otherwise we have two slaves at 1 VM and likely crash, deployment should be uniform for predictability
+  scale_up_replicas_master: 1
+  service: jmeter-slaves
+  service-master: jmeter-master
+  scenario: "jmx/test.jmx"
+  data_file: "test_data/sample_data.csv"
+  threads: 4 #browsers per pod (=node=VM)
+  jmeter_args: "-Gthreads=$(threads)"
+  report_dir: kubernetes/tmp/report
+  results: kubernetes/tmp/results.csv
+  log: kubernetes/tmp/jmeter.log
+
+
+jobs:
+  - job: JMeter_Tests
+    displayName: JMeter Tests Regression Pipeline
+    pool:
+      vmImage: 'ubuntu-latest'
+    timeoutInMinutes: 5
+    steps:
+    - task: KubernetesManifest@0
+      displayName: Scale slaves to $(scale_down_replicas)
+      inputs:
+        kubernetesServiceConnection: $(kubernetesServiceConnection)
+        action: scale
+        kind: deployment
+        name: $(service)
+        replicas: $(scale_down_replicas)
+        namespace: $(cluster_namespace)
+
+    - task: KubernetesManifest@0
+      displayName: Scale master to $(scale_down_replicas)
+      inputs:
+        kubernetesServiceConnection: $(kubernetesServiceConnection)
+        action: scale
+        kind: deployment
+        name: $(service-master)
+        replicas: $(scale_down_replicas)
+        namespace: $(cluster_namespace)
+
+    - task: KubernetesManifest@0
+      displayName: Scale master to $(scale_up_replicas_master)
+      inputs:
+        kubernetesServiceConnection: $(kubernetesServiceConnection)
+        action: scale
+        kind: deployment
+        name: $(service-master)
+        replicas: $(scale_up_replicas_master)
+        namespace: $(cluster_namespace)
+
+    - task: KubernetesManifest@0
+      displayName: Scale slaves to $(scale_up_replicas)
+      inputs:
+        kubernetesServiceConnection: $(kubernetesServiceConnection)
+        action: scale
+        kind: deployment
+        name: $(service)
+        replicas: $(scale_up_replicas)
+        namespace: $(cluster_namespace)
+
+    - task: Kubernetes@1
+      displayName: Login to cluster
+      inputs:
+        command: login
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+
+    - task: ShellScript@2
+      displayName: JMeter tests
+      inputs:
+        scriptPath: kubernetes/bin/start_test_from_script_params.sh
+        args: $(cluster_namespace) $(scenario) $(data_file) "$(jmeter_args)"
+
+    - task: PublishPipelineArtifact@1
+      displayName: Archive JMeter Report
+      inputs:
+        path: $(report_dir)
+        artifact: JmeterReport
+
+    - task: PublishPipelineArtifact@1
+      displayName: Archive Results file
+      inputs:
+        path: $(results)
+        artifact: resuls.csv
+
+    - task: PublishPipelineArtifact@1
+      displayName: Archive Log
+      inputs:
+        path: $(log)
+        artifact: jmeter.log

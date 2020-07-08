@@ -1,0 +1,5 @@
+FROM gabrielstar/jmeter-base:latest
+MAINTAINER Gabriel Starczewski
+
+COPY *.properties /test/
+EXPOSE 60000 9191
