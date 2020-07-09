@@ -100,11 +100,15 @@ jobs:
         path: $(log)
         artifact: jmeter.log
 
+    - bash: |
+        ls $(report_dir)
+      displayName: showStuff
+
     - task: ShellScript@2
       displayName: Evaluate JMeter results as JUNIT tests
       inputs:
         scriptPath: modules/junit/evaluateTestResultsAsJunit.sh
-        args: $(report_dir) $(System.DefaultWorkingDirectory)/modules/junit/results/templates
+        args: $(report_dir)/statistics.json $(System.DefaultWorkingDirectory)/modules/junit/results $(System.DefaultWorkingDirectory)/modules/junit/templates
 
     - task: PublishTestResults@2
       inputs:
