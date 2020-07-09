@@ -33,9 +33,13 @@ The commands in here should be executed from Azure CLI
 Execute that in Azure CLI, changing parameters to your needs:
 
 ` az group create -l westeurope -n jmeter-group 
+
   az aks create --resource-group jmeter-group --name k8 --kubernetes-version 1.16.12 --node-vm-size Standard_D3_v2 --node-count 4 --enable-addons monitoring --generate-ssh-keys
-  az aks get-credentials --resource-group jmeter-group --name k8 --overwrite-existing 
+  
+  az aks get-credentials --resource-group jmeter-group --name k8 --overwrite-existing
+   
   kubectl get no
+  
   kubectl get po`
 
 Go to DevOps and set up a k8 connection to your cluster.
