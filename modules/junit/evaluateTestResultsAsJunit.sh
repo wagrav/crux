@@ -19,6 +19,7 @@ copyTestTemplate(){
   local templateDir="$3"
   local message="$4"
   local stackTrace="$5"
+  mkdir -p "$resDir"
   cp "$templateDir/$type"_template.xml "$resDir/$type"_TEST.xml
   sed -i "s+@message+$(echo $message)+g" "$resDir/$type"_TEST.xml
   sed -i "s+@stacktrace+$(echo $stackTrace)+g" "$resDir/$type"_TEST.xml
