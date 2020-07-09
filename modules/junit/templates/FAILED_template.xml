@@ -5,7 +5,8 @@
             <property name="args">jmeter args</property>
         </properties>
         <testcase classname="JMeterTests" name="Should end without errors" time="0" >
-            <failure message="Performance tests failed">Assertion failed</failure>
+            <failure message="Performance tests failed">@message</failure>
+            <system-out>@stacktrace</system-out>
         </testcase>
     </testsuite>
 </testsuites>

@@ -100,7 +100,13 @@ jobs:
         path: $(log)
         artifact: jmeter.log
 
+    - task: ShellScript@2
+      displayName: Evaluate JMeter results as JUNIT tests
+      inputs:
+        scriptPath: modules/junit/evaluateTestResultsAsJunit.sh
+        args: $(report_dir) $(System.DefaultWorkingDirectory)/modules/junit/results/templates
+
     - task: PublishTestResults@2
       inputs:
-        testResultsFiles: '**/*_results.xml'
+        testResultsFiles: '**/*_TEST.xml'
         failTaskOnFailedTests: true
