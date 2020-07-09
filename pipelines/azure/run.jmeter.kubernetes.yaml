@@ -12,7 +12,7 @@ variables:
   scale_up_replicas_master: 1
   service: jmeter-slaves
   service-master: jmeter-master
-  scenario: "jmx/test.jmx"
+  scenario: "jmx/test.jmxs"
   data_file: "test_data/sample_data.csv"
   threads: 1 #browsers per pod (=node=VM)
   loops: 1
@@ -99,11 +99,6 @@ jobs:
       inputs:
         path: $(log)
         artifact: jmeter.log
-
-    - bash: |
-        ls $(System.DefaultWorkingDirectory)/$(report_dir)
-        ls $(report_dir)
-      displayName: showStuff
 
     - task: ShellScript@2
       displayName: Evaluate JMeter results as JUNIT tests
