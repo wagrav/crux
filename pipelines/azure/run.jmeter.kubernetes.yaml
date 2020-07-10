@@ -22,4 +22,4 @@ variables:
   log: kubernetes/tmp/jmeter.log
 
 jobs:
-  - template: teamplates/run.jmeter.kubernetes.template.yaml
+  - template: templates/run.jmeter.kubernetes.template.yaml
