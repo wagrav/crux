@@ -22,7 +22,7 @@ variables:
   log: kubernetes/tmp/jmeter.log
   repoName: jmeter_simple_test
   repoBaseURL: https://github.com/ObjectivityLtd
-  repoURL: $(repoBaseURL)/($repoName)
+  repoURL: $(repoBaseURL)/$(repoName)
 
 jobs:
   - template: templates/run.jmeter.kubernetes.template.yaml
