@@ -12,7 +12,7 @@ variables:
   scale_up_replicas_master: 1
   service: jmeter-slaves
   service-master: jmeter-master
-  scenario: "jmx/test.jmx"
+  scenario: "path/to/jmeter/script/test.jmx"
   data_file: "test_data/sample_data.csv"
   threads: 1 #browsers per pod (=node=VM)
   loops: 1
@@ -20,6 +20,9 @@ variables:
   report_dir: kubernetes/tmp/report
   results: kubernetes/tmp/results.csv
   log: kubernetes/tmp/jmeter.log
+  repoName: jmeter_simple_test
+  repoBaseURL: https://github.com/ObjectivityLtd/
+  repoURL: $(repoBaseURL)/($repoName)
 
 jobs:
   - template: templates/run.jmeter.kubernetes.template.yaml

@@ -5,6 +5,11 @@ jobs:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 5
     steps:
+
+    - bash: |
+        git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(repoName)
+      displayName: Clone repo with tests
+
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_down_replicas)
       inputs:
