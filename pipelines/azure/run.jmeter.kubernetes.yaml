@@ -24,7 +24,7 @@ variables:
   pass: pass
   repoBaseURL: https://$(user):$(pass)@github.com/ObjectivityLtd
   repoURL: $(repoBaseURL)/$(repoName)
-  scenario: $(repoName)/ath/to/jmeter/script/test.jmx
+  scenario: $(repoName)/path/to/jmeter/script/test.jmx
 
 jobs:
   - template: templates/run.jmeter.kubernetes.template.yaml
