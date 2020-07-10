@@ -21,7 +21,9 @@ variables:
   results: kubernetes/tmp/results.csv
   log: kubernetes/tmp/jmeter.log
   repoName: jmeter_simple_test
-  repoBaseURL: https://github.com/ObjectivityLtd
+  user: user
+  pass: pass
+  repoBaseURL: https://$(user):$(pass)@github.com/ObjectivityLtd
   repoURL: $(repoBaseURL)/$(repoName)
 
 jobs:
