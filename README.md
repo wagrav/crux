@@ -9,8 +9,10 @@ In the seconds step you create a kubernetes service connection to your cluster i
 Execute that in Azure CLI, changing parameters to your needs:
 
 ``` 
+  #create cluster form CLI
   az group create -l westeurope -n jmeter-group 
-  az aks create --resource-group jmeter-group --name k8 --kubernetes-version 1.16.12 --node-vm-size Standard_D3_v2 --node-count 4 --enable-addons monitoring --generate-ssh-keys
+  az aks create --resource-group jmeter-group --name k8 --kubernetes-version 1.16.10 --node-vm-size Standard_D3_v2 --node-count 4 --enable-addons monitoring --generate-ssh-keys && 
+  #show nodes and poded
   az aks get-credentials --resource-group jmeter-group --name k8 --overwrite-existing
   kubectl get no
   kubectl get po
