@@ -9,7 +9,7 @@ jobs:
     steps:
 
     - bash: |
-        git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(repos)$(repoName)
+        git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
         ls
       displayName: Clone repo with tests
 
@@ -64,7 +64,7 @@ jobs:
       displayName: JMeter tests
       inputs:
         scriptPath: kubernetes/bin/start_test_from_script_params.sh
-        args: $(cluster_namespace) $(repos)/$(scenario) $(data_file) "$(jmeter_args)"
+        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
       displayName: Archive JMeter Report
