@@ -122,7 +122,7 @@ deployServicesToAKS(){
   OK
   # Wait for all pods to get deployed
   printf "7 Waiting for services to scale\n"
-  cd $HOME/${git_path}/pipelines/azure && source bin/wait_for_pods.sh jmeter 1 20 jmeter-master
+  cd $HOME/${git_path}/pipelines/azure && source bin/wait_for_pods.sh "$cluster_namespace" 1 20 jmeter-master
   OK
 }
 
