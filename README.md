@@ -11,7 +11,7 @@ There are 3 pipelines provided to control your deployment. All require prior set
 
 ### Pipelines
 
-![pipelines](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/pipelines.png)
+![pipelines](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/pipelines_1.png)
 
 The "run" pipeline which is where your tests happen is easily extensible with Azure Pipeline Steps.
 
