@@ -2,7 +2,13 @@
 # CRUX JMeter peformance farmework.
 
 Overview
-![overview](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/img/overview.png)
+![overview](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/arch.png)
+
+Overview
+![overview](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/overview.png)
+
+Pipelines
+![overview](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/pipelines.png)
 
 ## Setup
 
