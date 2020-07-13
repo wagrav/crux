@@ -1,11 +1,12 @@
 
-# CRUX JMeter peformance farmework.
+# CRUX JMeter peformance framework.
 
-Overview
-![overview](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/arch.png)
+CRUX is build around kubernetes. On Azure it requires a valid Kubernetes Service Connection to work. It can be easily adjusted to private Kubernetes Clusters or other Cloud Providers. 
 
 Overview
 ![overview](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/overview.png)
+
+There are 3 pipelines provided to control your deployment. All require prior set-up of Kubernetes Service Connection.
 
 Pipelines
 ![overview](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/pipelines.png)
