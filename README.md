@@ -1,4 +1,9 @@
 
+# CRUX JMeter peformance farmework.
+
+Overview
+![overview](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/img/overview.png)
+
 ## Setup
 
 In the first step you need to create a k8 cluster if you do not have one already. Cluster for Jmeter should run no other services.
