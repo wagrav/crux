@@ -39,7 +39,8 @@ RUN cd /jmeter/apache-jmeter-$JMETER_VERSION/ && wget -q -O /tmp/bzm-parallel-0.
 #adding selenium support
 RUN cd /jmeter/apache-jmeter-$JMETER_VERSION/ && wget -q -O /tmp/jpgc-webdriver-3.1.zip https://jmeter-plugins.org/files/packages/jpgc-webdriver-3.1.zip && unzip -n /tmp/jpgc-webdriver-3.1.zip && rm /tmp/jpgc-webdriver-3.1.zip
 RUN cd /jmeter/apache-jmeter-$JMETER_VERSION/ && wget -q -O /tmp/jpgc-sts-2.4.zip https://jmeter-plugins.org/files/packages/jpgc-sts-2.4.zip && unzip -n /tmp/jpgc-sts-2.4.zip && rm /tmp/jpgc-sts-2.4.zip
-
+#addign azure backend listener
+RUN wget -q -O /jmeter/apache-jmeter-$JMETER_VERSION/lib/ext/jmeter.backendlistener.azure-0.2.2.jar https://github.com/adrianmo/jmeter-backend-azure/releases/download/0.2.2/jmeter.backendlistener.azure-0.2.2.jar
 
 
 ENV JMETER_HOME /jmeter/apache-jmeter-$JMETER_VERSION/

@@ -10,7 +10,6 @@ jobs:
 
     - bash: |
         git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
-        ls
       displayName: Clone repo with tests
 
     - task: KubernetesManifest@0
