@@ -21,6 +21,7 @@ The "run" pipeline which is where your tests happen is easily extensible with Az
 * script automation around the framework is tested with BATS framework giving you certainty that it all works when things change around you
 * solution contains Chrome Headless and allows you to use Web Driver Sampler to browser-test "difficult" applications
 * Simple Table Server is included
+* You can send Live Data to Azure Insights, Azure Backend listener is included
 * contains example pipelines you can use and extend  
 
 
