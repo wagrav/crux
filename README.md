@@ -15,6 +15,15 @@ There are 3 pipelines provided to control your deployment. All require prior set
 
 The "run" pipeline which is where your tests happen is easily extensible with Azure Pipeline Steps.
 
+## Features
+
+* based on kubernetes therefore can be implemented on majority of cloud providers and private clusters
+* script automation around the framework is tested with BATS framework giving you certainty that it all works when things change around you
+* solution contains Chrome Headless and allows you to use Web Driver Sampler to browser-test "difficult" applications
+* Simple Table Server is included
+* contains example pipelines you can use and extend  
+
+
 ## Setup
 
 In the first step you need to create a k8 cluster if you do not have one already. Cluster for Jmeter should run no other services.
