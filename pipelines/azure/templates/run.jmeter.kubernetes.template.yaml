@@ -76,7 +76,8 @@ jobs:
         command: login
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-
+    - bash: |
+        ls -alh
     - task: ShellScript@2
       displayName: JMeter tests
       inputs:
