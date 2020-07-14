@@ -13,7 +13,7 @@ jobs:
             echo "Parameter:"  ${{ parameters.mode }}
         displayName: Display selected mode
 
-  - ${{ if contains(parameters.mode,'jmeter') }}:
+  - ${{ if eq(parameters['mode'],'jmeter') }}:
     - template: run.jmeter.kubernetes.template.yaml
-  - ${{ if contains(parameters.mode,'tests') }}:
+  - ${{ if eq(parameters['mode'],'tests') }}:
     - template: run.jmeter.kubernetes.template.tests.yaml
