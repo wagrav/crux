@@ -1,7 +1,7 @@
 
 # CRUX JMeter peformance framework.
 
-CRUX is build around kubernetes. On Azure it requires a valid Kubernetes Service Connection to work. It can be easily adjusted to private Kubernetes Clusters or other Cloud Providers. 
+CRUX (pron. kruhks) is build around kubernetes. On Azure it requires a valid Kubernetes Service Connection to work. It can be easily adjusted to private Kubernetes Clusters or other Cloud Providers. 
 
 ### Overview
 
