@@ -1,7 +1,7 @@
 
 # CRUX JMeter peformance framework.
 
-CRUX is build around kubernetes. On Azure it requires a valid Kubernetes Service Connection to work. It can be easily adjusted to private Kubernetes Clusters or other Cloud Providers. 
+CRUX (pron. kruhks) is build around kubernetes. On Azure it requires a valid Kubernetes Service Connection to work. It can be easily adjusted to private Kubernetes Clusters or other Cloud Providers. 
 
 ### Overview
 
@@ -18,8 +18,8 @@ The "run" pipeline which is where your tests happen is easily extensible with Az
 ## Features
 
 * based on kubernetes therefore can be implemented on majority of cloud providers and private clusters
-* script automation around the framework is tested with BATS framework giving you certainty that it all works when things change around you
-* solution contains Chrome Headless and allows you to use Web Driver Sampler to browser-test "difficult" applications
+* framework is tested with [BATS](https://github.com/bats-core/bats-core/) giving you certainty that it all works when things change around you
+* solution contains Chrome Headless and allows you to use Web Driver Sampler to browser-test "difficult" applications (e.g. Mendix-based apps)
 * Simple Table Server is included
 * You can send Live Data to Azure Insights, Azure Backend listener is included
 * contains example pipelines you can use and extend  
