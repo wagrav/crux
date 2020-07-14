@@ -6,9 +6,9 @@ parameters:
 
 jobs:
   - job: Selection
-      displayName: Selection
-      steps:
-        - bash: |
+    displayName: Selection
+    steps:
+      - bash: |
             echo "Mode selected:"  $(mode)
   - ${{ if not(eq(parameters.mode, 'tests')) }}:
       - template: run.jmeter.kubernetes.template.yaml
