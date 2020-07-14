@@ -4,6 +4,9 @@
 name: $(BuildID)
 trigger: none
 parameters:
+  - name: debug
+    default: false
+
 - name: mode
   default: jmeter
   values:
