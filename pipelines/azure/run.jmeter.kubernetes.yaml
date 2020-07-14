@@ -5,6 +5,7 @@ name: $(BuildID)
 trigger: none
 parameters:
 - name: debug
+  type: boolean
   default: false
 
 - name: mode
