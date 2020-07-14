@@ -69,7 +69,7 @@ jobs:
 
     - bash: |
         ls -alh ../
-        ls -alh ../../
+        ls -alh $(System.DefaultWorkingDirectory)
 
     - task: ShellScript@2
       displayName: JMeter tests
