@@ -28,3 +28,5 @@ variables:
 
 jobs:
   - template: templates/run.mode.selector.yaml
+    parameters:
+      - mode: tests
