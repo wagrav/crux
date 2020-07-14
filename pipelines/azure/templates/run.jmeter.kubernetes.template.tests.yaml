@@ -1,5 +1,5 @@
 jobs:
-  - job: Test the Framework
+  - job: Test_the_Framework
     displayName: BATS tests
     pool:
       vmImage: 'ubuntu-latest'
