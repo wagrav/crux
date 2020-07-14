@@ -17,10 +17,12 @@ jobs:
     steps:
     - checkout: crux
       displayName: CRUX download
+      condition: and(succeeded(), eq(parameters['download_crux'], true))
 
     - bash: |
         git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
       displayName: Clone repo $(repoName) with tests
+      condition: and(succeeded(), eq(parameters['download_crux'], false))
 
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_down_replicas)
@@ -68,10 +70,6 @@ jobs:
         command: login
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-
-    - bash: |
-        ls -alh ../
-        ls -alh $(System.DefaultWorkingDirectory)
 
     - task: ShellScript@2
       displayName: JMeter tests

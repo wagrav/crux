@@ -9,6 +9,11 @@ parameters:
     type: boolean
     default: false
 
+  - name: download_crux
+    displayName: 'If called from external pipeline this should be set to true'
+    type: boolean
+    default: false
+
 jobs:
   - job: Debug
     condition: and(succeeded(), eq('${{ parameters.debug }}', true))
@@ -16,6 +21,8 @@ jobs:
     steps:
       - bash: |
             echo "Run mode selected:"  ${{ parameters.mode }}
+            echo "Debug:"  ${{ parameters.debug }}
+            echo "Download crux:"  ${{ parameters.download_crux }}
         displayName: Display selected mode
 
   - ${{ if eq(parameters.mode,'jmeter') }}:
