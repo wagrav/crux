@@ -15,10 +15,12 @@ jobs:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 5
     steps:
+    - checkout: crux
+      displayName: CRUX download
 
     - bash: |
         git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
-      displayName: Clone repo with tests
+      displayName: Clone repo $(repoName) with tests
 
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_down_replicas)
