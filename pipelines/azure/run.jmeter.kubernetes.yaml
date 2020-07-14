@@ -17,12 +17,13 @@ parameters:
 - name: jmeter_slaves
   default: 3
   type: number
+
 - name: repo_name
-  default: "-Gthreads=1 -Gloops=1"
+  default: jmeter_simple_test
   type: string
 
 - name: jmeter_args
-  default: jmeter_simple_test
+  default: "-Gthreads=1 -Gloops=1"
   type: string
 
 - name: connection
