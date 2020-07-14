@@ -1,3 +1,10 @@
+resources:
+  repositories:
+    - repository: crux
+      type: github
+      name: ObjectivityLtd/jmeter_azure_k8_boilerplate
+      endpoint: crux
+
 parameters:
   - name: download_crux
     displayName: 'If called from external pipeline this should be set to true'
