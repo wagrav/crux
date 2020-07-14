@@ -1,3 +1,9 @@
+parameters:
+  - name: download_crux
+    displayName: 'If called from external pipeline this should be set to true'
+    type: boolean
+    default: false
+
 jobs:
   - job: JMeter_Tests
     variables:
