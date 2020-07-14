@@ -6,7 +6,7 @@ parameters:
 
 jobs:
   - job: Debug
-    condition: and(succeeded(), eq(parameters['debug'], true))
+    condition: and(succeeded(), eq('${{ parameters.debug }}', true))
     displayName: Mode selection
     steps:
       - bash: |
