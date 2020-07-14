@@ -9,6 +9,8 @@ parameters:
   values:
     - tests
     - jmeter
+- name: data_file
+  default: test_data/sample_data.csv
 
 variables:
   cluster_namespace: default
