@@ -27,5 +27,7 @@ jobs:
 
   - ${{ if eq(parameters.mode,'jmeter') }}:
     - template: run.jmeter.kubernetes.template.yaml
+      parameters:
+        download_crux: ${{ parameters.download_crux }}
   - ${{ if eq(parameters.mode,'tests') }}:
     - template: run.jmeter.kubernetes.template.tests.yaml
