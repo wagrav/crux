@@ -14,6 +14,6 @@ jobs:
         displayName: Display selected mode
 
   - ${{ if eq(parameters.mode,'jmeter') }}:
-      - template: run.jmeter.kubernetes.template.yaml
+    - template: run.jmeter.kubernetes.template.yaml
   - ${{ if eq(parameters.mode,'tests') }}:
-      - template: run.jmeter.kubernetes.template.tests.yaml
+    - template: run.jmeter.kubernetes.template.tests.yaml
