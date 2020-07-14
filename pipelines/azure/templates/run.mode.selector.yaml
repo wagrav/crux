@@ -7,4 +7,4 @@ jobs:
             echo "Parameter:"  ${{ parameters.mode }}
         displayName: Display selected mode
 
-    - template: run.jmeter.kubernetes.template$(mode).yaml
+  - template: run.jmeter.kubernetes.template$(mode).yaml
