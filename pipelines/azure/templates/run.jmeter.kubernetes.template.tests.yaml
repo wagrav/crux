@@ -15,3 +15,10 @@ jobs:
           PATH=$HOME/bin:$PATH && \
           PATH=/home/vsts/.local/bin:$PATH && \
           cd $(System.DefaultWorkingDirectory)/modules/bats && bash run_all_tests.sh
+
+      - task: PublishTestResults@2
+        displayName: Publish Framework Test Results
+        inputs:
+          failTaskOnFailedTests: true
+          testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+          testResultsFiles: '**/TestReport-*.xml'
