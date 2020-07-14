@@ -1,0 +1,17 @@
+jobs:
+  - job: Test the Framework
+    displayName: BATS tests
+    pool:
+      vmImage: 'ubuntu-latest'
+    timeoutInMinutes: 5
+    steps:
+      - task: ShellScript@2
+        displayName: Install BATS
+        inputs:
+          scriptPath: $(System.DefaultWorkingDirectory)/modules/bats/install.sh
+
+      - bash: |
+          PATH=/home/vsts/bin:$PATH && \
+          PATH=$HOME/bin:$PATH && \
+          PATH=/home/vsts/.local/bin:$PATH && \
+          cd $(System.DefaultWorkingDirectory)/modules/bats && bash run_all_tests.sh
