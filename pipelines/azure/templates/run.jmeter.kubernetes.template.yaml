@@ -23,7 +23,7 @@ jobs:
     steps:
     - checkout: crux
       displayName: CRUX download
-      condition: and(succeeded(), eq(parameters['download_crux'], true))
+      condition: and(succeeded(), eq('${{ parameters.download_crux}}', true))
 
     - bash: |
         git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
