@@ -1,9 +1,3 @@
-parameters:
-  - name: mode
-    displayName: 'Which template to use ?'
-    type: string
-    default: jmeter
-
 jobs:
   - job: Debug
     displayName: Mode selection
@@ -13,7 +7,4 @@ jobs:
             echo "Parameter:"  ${{ parameters.mode }}
         displayName: Display selected mode
 
-  - ${{ if eq(variables.x,'jmeter') }}:
-    - template: run.jmeter.kubernetes.template.yaml
-  - ${{ if eq(variables.x,'tests') }}:
-    - template: run.jmeter.kubernetes.template.tests.yaml
+    - template: run.jmeter.kubernetes.template$(mode).yaml
