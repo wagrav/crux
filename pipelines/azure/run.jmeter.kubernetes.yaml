@@ -11,25 +11,30 @@ parameters:
     - jmeter
 - name: data_file
   default: test_data/sample_data.csv
+  values:
+    - test_data/sample_data.csv
+    - test_data/sample_data2.csv
 - name: jmeter_slaves
   default: 3
   type: number
 - name: repo_name
+  default: "-Gthreads=1 -Gloops=1"
+  type: string
+
+- name: jmeter_args
   default: jmeter_simple_test
+  type: string
+
+- name: connection
+  default: k8con2
   type: string
 
 variables:
   cluster_namespace: default
-  kubernetesServiceConnection: k8con2
-  scale_down_replicas: 0
+  kubernetesServiceConnection: ${{ parameters.connection }}
   scale_up_replicas: ${{ parameters.jmeter_slaves }}
-  scale_up_replicas_master: 1
-  service: jmeter-slaves
-  service-master: jmeter-master
-  data_file: "test_data/sample_data.csv"
-  threads: 1 #browsers per pod (=node=VM)
-  loops: 1
-  jmeter_args: "-Gthreads=$(threads) -Gloops=$(loops)"
+  data_file: ${{ parameters.data_file }}
+  jmeter_args: ${{ parameters.jmeter_args }}
   repoName: ${{ parameters.repo_name }}
   user: user
   pass: pass
