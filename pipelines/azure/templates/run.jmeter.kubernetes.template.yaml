@@ -19,7 +19,7 @@ jobs:
       displayName: CRUX clone
 
     - checkout: tests
-      path: $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
+      path: $(reposRoot)/$(repoName)
       displayName: TESTS clone
 
     - bash: |
