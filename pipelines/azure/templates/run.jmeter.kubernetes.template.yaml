@@ -68,7 +68,8 @@ jobs:
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
     - bash: |
-        ls -alh
+        ls -alh ../
+        ls -alh ../../
 
     - task: ShellScript@2
       displayName: JMeter tests
