@@ -11,12 +11,18 @@ parameters:
     - jmeter
 - name: data_file
   default: test_data/sample_data.csv
+- name: jmeter_slaves
+  default: 3
+  type: number
+- name: repo_name
+  default: jmeter_simple_test
+  type: string
 
 variables:
   cluster_namespace: default
   kubernetesServiceConnection: k8con2
   scale_down_replicas: 0
-  scale_up_replicas: 3 #not more than k8 nodes number otherwise we have two slaves at 1 VM and likely crash, deployment should be uniform for predictability
+  scale_up_replicas: ${{ parameters.jmeter_slaves }}
   scale_up_replicas_master: 1
   service: jmeter-slaves
   service-master: jmeter-master
@@ -24,7 +30,7 @@ variables:
   threads: 1 #browsers per pod (=node=VM)
   loops: 1
   jmeter_args: "-Gthreads=$(threads) -Gloops=$(loops)"
-  repoName: jmeter_simple_test
+  repoName: ${{ parameters.repo_name }}
   user: user
   pass: pass
   repoBaseURL: https://$(user):$(pass)@github.com/ObjectivityLtd
