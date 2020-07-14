@@ -10,7 +10,7 @@ jobs:
     steps:
       - bash: |
             echo "Run mode selected:"  ${{ parameters.mode }}
-        condition: and(succeeded(), eq(parameters.debug, true))
+        condition: and(succeeded(), eq(parameters['debug'], true))
         displayName: Display selected mode
 
   - ${{ if eq(parameters.mode,'jmeter') }}:
