@@ -22,10 +22,10 @@ parameters:
     - tests
     - jmeter
 - name: data_file
-  default: test_data/sample_data.csv
+  default: path/to/jmeter/test_data/sample_data.csv
   values:
-    - test_data/sample_data.csv
-    - test_data/sample_data2.csv
+    - path/to/jmeter/test_data/sample_data.csv
+    - path/to/jmeter/test_data/sample_data2.csv
 - name: jmeter_slaves
   default: 1
   type: number
