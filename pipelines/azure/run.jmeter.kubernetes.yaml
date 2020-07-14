@@ -25,7 +25,9 @@ variables:
   repoBaseURL: https://$(user):$(pass)@github.com/ObjectivityLtd
   repoURL: $(repoBaseURL)/$(repoName)
   scenario: $(repoName)/path/to/jmeter/script/test.jmx
-  mode: ""
 
 jobs:
-  - template: templates/run.jmeter.kubernetes.template$(mode).yaml
+- ${{ if not(eq(parameters.mode, tests)) }}:
+  - template: templates/run.jmeter.kubernetes.template.yaml
+- ${{ if eq(parameters.mode, tests) }}:
+  - template: templates/run.jmeter.kubernetes.template.tests.yaml
