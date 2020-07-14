@@ -18,6 +18,10 @@ jobs:
     - checkout: crux
       displayName: CRUX clone
 
+    - checkout: tests
+      path: $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
+      displayName: TESTS clone
+
     - bash: |
         git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
       displayName: $(repoName) clone

@@ -11,6 +11,11 @@ resources:
       name: ObjectivityLtd/jmeter_azure_k8_boilerplate
       endpoint: crux
 
+    - repository: tests
+      type: github
+      name: ObjectivityLtd/jmeter_simple_test
+      endpoint: crux
+
 parameters:
 - name: debug
   type: boolean
