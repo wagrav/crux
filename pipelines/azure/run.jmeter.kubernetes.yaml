@@ -27,11 +27,15 @@ parameters:
     - test_data/sample_data.csv
     - test_data/sample_data2.csv
 - name: jmeter_slaves
-  default: 3
+  default: 1
   type: number
 
 - name: repo_name
   default: jmeter_simple_test
+  type: string
+
+- name: jmx
+  default: path/to/jmeter/script/bing.jmx
   type: string
 
 - name: jmeter_args
@@ -53,11 +57,10 @@ variables:
   pass: pass
   repoBaseURL: https://$(user):$(pass)@github.com/ObjectivityLtd
   repoURL: $(repoBaseURL)/$(repoName)
-  scenario: $(repoName)/path/to/jmeter/script/test.jmx
+  scenario: $(repoName)/${{ parameters.jmx }}
 
 jobs:
   - template: templates/run.mode.selector.yaml
     parameters:
       mode: ${{ parameters.mode }}
       debug: ${{ parameters.debug }}
-      download_crux: false

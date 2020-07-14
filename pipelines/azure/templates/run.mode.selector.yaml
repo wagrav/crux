@@ -9,11 +9,6 @@ parameters:
     type: boolean
     default: false
 
-  - name: download_crux
-    displayName: 'If called from external pipeline this should be set to true'
-    type: boolean
-    default: false
-
 jobs:
   - job: Debug
     condition: and(succeeded(), eq('${{ parameters.debug }}', true))
@@ -27,7 +22,5 @@ jobs:
 
   - ${{ if eq(parameters.mode,'jmeter') }}:
     - template: run.jmeter.kubernetes.template.yaml
-      parameters:
-        download_crux: ${{ parameters.download_crux }}
   - ${{ if eq(parameters.mode,'tests') }}:
     - template: run.jmeter.kubernetes.template.tests.yaml

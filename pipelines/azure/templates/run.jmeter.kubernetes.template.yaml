@@ -1,9 +1,3 @@
-parameters:
-  - name: download_crux
-    displayName: 'If called from external pipeline this should be set to true'
-    type: boolean
-    default: false
-
 jobs:
   - job: JMeter_Tests
     variables:
@@ -22,13 +16,11 @@ jobs:
     timeoutInMinutes: 5
     steps:
     - checkout: crux
-      displayName: CRUX download
-      #condition: and(succeeded(), eq('${{ parameters.download_crux}}', true))
+      displayName: CRUX clone
 
     - bash: |
         git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
-      displayName: Clone repo $(repoName) with tests
-      #condition: and(succeeded(), eq('${{ parameters.download_crux}}', false))
+      displayName: $(repoName) clone
 
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_down_replicas)
