@@ -12,7 +12,7 @@ jobs:
             echo "Run mode selected:"  $(mode)
             echo "Parameter:"  ${{ parameters.mode }}
         displayName: Display selected mode
-  - ${{ if not(eq(parameters.mode,'tests')) }}:
-      - template: run.jmeter.kubernetes.template.yaml
-  - ${{ if eq(parameters.mode,'tests') }}:
-      - template: run.jmeter.kubernetes.template.tests.yaml
+- ${{ if not(eq(parameters.mode,'tests')) }}:
+    - template: run.jmeter.kubernetes.template.yaml
+- ${{ if eq(parameters.mode,'tests') }}:
+    - template: run.jmeter.kubernetes.template.tests.yaml
