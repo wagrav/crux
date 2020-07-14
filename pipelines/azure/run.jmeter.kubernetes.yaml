@@ -27,4 +27,4 @@ variables:
   scenario: $(repoName)/path/to/jmeter/script/test.jmx
 
 jobs:
-  - template: templates/run.jmeter.kubernetes.template.$(mode).yaml
+  - template: templates/run.jmeter.kubernetes.template$(mode).yaml
