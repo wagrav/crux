@@ -27,7 +27,6 @@ variables:
   scenario: $(repoName)/path/to/jmeter/script/test.jmx
 
 jobs:
-- ${{ if not(eq(parameters.mode, tests)) }}:
-  - template: templates/run.jmeter.kubernetes.template.yaml
-- ${{ if eq(parameters.mode, tests) }}:
-  - template: templates/run.jmeter.kubernetes.template.tests.yaml
+  - template: templates/run.mode.selector.yaml
+    parameters:
+      mode: jmeter
