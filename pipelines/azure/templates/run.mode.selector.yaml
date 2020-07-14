@@ -5,7 +5,7 @@ parameters:
     default: jmeter
 
 jobs:
-  - ${{ if eq(parameters.mode, 'jmeter') }}:
+  - ${{ if not(eq(parameters.mode, 'tests')) }}:
       - template: run.jmeter.kubernetes.template.yaml
   - ${{ if eq(parameters.mode, 'tests') }}:
       - template: run.jmeter.kubernetes.template.tests.yaml
