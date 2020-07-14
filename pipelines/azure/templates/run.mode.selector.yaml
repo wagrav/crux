@@ -5,12 +5,12 @@ parameters:
     default: jmeter
 
 jobs:
-  - job: Selection
-    displayName: Selection
+  - job: Debug
+    displayName: Mode selection
     steps:
       - bash: |
-            echo "Mode selected:"  $(mode)
-  - ${{ if not(eq(parameters.mode, 'tests')) }}:
+            echo "Run mode selected:"  $(mode)
+  - ${{ if not(eq(parameters.mode,tests)) }}:
       - template: run.jmeter.kubernetes.template.yaml
-  - ${{ if eq(parameters.mode, 'tests') }}:
+  - ${{ if eq(parameters.mode,tests) }}:
       - template: run.jmeter.kubernetes.template.tests.yaml
