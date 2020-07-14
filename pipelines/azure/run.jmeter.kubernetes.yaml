@@ -5,10 +5,11 @@ name: $(BuildID)
 trigger: none
 parameters:
 - name: mode
-  default: tests
+  default: jmeter
   values:
     - tests
     - jmeter
+
 variables:
   cluster_namespace: default
   kubernetesServiceConnection: k8con2
@@ -21,9 +22,6 @@ variables:
   threads: 1 #browsers per pod (=node=VM)
   loops: 1
   jmeter_args: "-Gthreads=$(threads) -Gloops=$(loops)"
-  report_dir: kubernetes/tmp/report
-  results: kubernetes/tmp/results.csv
-  log: kubernetes/tmp/jmeter.log
   repoName: jmeter_simple_test
   user: user
   pass: pass
