@@ -2,7 +2,7 @@ jobs:
   - job: JMeter_Tests
     variables:
       reposRoot: repos
-    displayName: JMeter Tests Regression Pipeline
+    displayName: JMeter Tests
     pool:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 5
