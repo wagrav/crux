@@ -3,6 +3,14 @@
 
 name: $(BuildID)
 trigger: none
+
+resources:
+  repositories:
+    - repository: crux
+      type: github
+      name: ObjectivityLtd/jmeter_azure_k8_boilerplate
+      endpoint: crux
+
 parameters:
 - name: debug
   type: boolean
