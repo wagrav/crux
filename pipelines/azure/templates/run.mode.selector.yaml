@@ -10,10 +10,10 @@ jobs:
     steps:
       - bash: |
             echo "Run mode selected:"  $(mode)
-            echo "Parameter:"  ${{ parameters.mode }};echo "a"
+            echo "Parameter:"  ${{ parameters.mode }}
         displayName: Display selected mode
 
-  - ${{ if eq(parameters.mode,'jmeter') }}:
+  - ${{ if contains(parameters.mode,'jmeter') }}:
     - template: run.jmeter.kubernetes.template.yaml
-  - ${{ if eq(parameters.mode,'tests') }}:
+  - ${{ if contains(parameters.mode,'tests') }}:
     - template: run.jmeter.kubernetes.template.tests.yaml
