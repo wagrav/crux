@@ -51,3 +51,4 @@ jobs:
   - template: templates/run.mode.selector.yaml
     parameters:
       mode: ${{ parameters.mode }}
+      debug: ${{ parameters.debug }}

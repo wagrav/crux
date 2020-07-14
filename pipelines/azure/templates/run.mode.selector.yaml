@@ -4,6 +4,11 @@ parameters:
     type: string
     default: jmeter
 
+  - name: debug
+    displayName: 'Display additional diagnostics ?'
+    type: boolean
+    default: false
+
 jobs:
   - job: Debug
     condition: and(succeeded(), eq('${{ parameters.debug }}', true))
