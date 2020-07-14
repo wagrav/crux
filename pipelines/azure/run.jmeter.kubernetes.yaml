@@ -3,7 +3,12 @@
 
 name: $(BuildID)
 trigger: none
-#config
+parameters:
+- name: mode
+  default: tests
+  values:
+    - tests
+    - jmeter
 variables:
   cluster_namespace: default
   kubernetesServiceConnection: k8con2
@@ -28,3 +33,5 @@ variables:
 
 jobs:
   - template: templates/run.mode.selector.yaml
+    parameters:
+      mode: ${{ parameters.mode }}
