@@ -15,6 +15,7 @@ jobs:
           PATH=$HOME/bin:$PATH && \
           PATH=/home/vsts/.local/bin:$PATH && \
           cd $(System.DefaultWorkingDirectory)/modules/bats && bash run_all_tests.sh
+        displayName: Run tests
 
       - task: PublishTestResults@2
         displayName: Publish Framework Test Results
