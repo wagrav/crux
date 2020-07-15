@@ -3,7 +3,6 @@
 
 name: $(BuildID)
 trigger: none
-
 resources:
   repositories:
     - repository: crux
@@ -16,40 +15,39 @@ resources:
       name: ObjectivityLtd/jmeter_simple_test
       endpoint: crux
 
+
 parameters:
-- name: debug
-  type: boolean
-  default: false
+  - name: debug
+    type: boolean
+    default: false
 
-- name: mode
-  default: jmeter
-  values:
-    - tests
-    - jmeter
-- name: data_file
-  default: path/to/jmeter/test_data/sample_data.csv
-  values:
-    - path/to/jmeter/test_data/sample_data.csv
-    - path/to/jmeter/test_data/sample_data2.csv
-- name: jmeter_slaves
-  default: 1
-  type: number
+  - name: mode
+    default: jmeter
+    values:
+      - tests
+      - jmeter
+  - name: data_file
+    type: string
+    default: path/to/jmeter/test_data/sample_data.csv
+    values:
+      - path/to/jmeter/test_data/sample_data.csv
+      - path/to/jmeter/test_data/sample_data2.csv
 
-- name: repo_name
-  default: jmeter_simple_test
-  type: string
+  - name: jmeter_slaves
+    default: 1
+    type: number
 
-- name: jmx
-  default: path/to/jmeter/script/bing.jmx
-  type: string
+  - name: jmx
+    default: path/to/jmeter/script/bing.jmx
+    type: string
 
-- name: jmeter_args
-  default: "-Gthreads=1 -Gloops=1"
-  type: string
+  - name: jmeter_args
+    default: "-Gthreads=1 -Gloops=1"
+    type: string
 
-- name: connection
-  default: k8con2
-  type: string
+  - name: connection
+    default: k8con2
+    type: string
 
 variables:
   cluster_namespace: default
@@ -57,11 +55,8 @@ variables:
   scale_up_replicas: ${{ parameters.jmeter_slaves }}
   data_file: ${{ parameters.data_file }}
   jmeter_args: ${{ parameters.jmeter_args }}
-  repoName: ${{ parameters.repo_name }}
-  user: user
-  pass: pass
-  repoBaseURL: https://$(user):$(pass)@github.com/ObjectivityLtd
-  repoURL: $(repoBaseURL)/$(repoName)
+  repoName: jmeter_simple_test
+  cruxRepoName: jmeter_azure_k8_boilerplate
   scenario: $(repoName)/${{ parameters.jmx }}
 
 jobs:
