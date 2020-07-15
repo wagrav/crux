@@ -4,6 +4,15 @@
 name: $(BuildID)
 trigger: none
 #config
+parameters:
+  - name: mode
+    displayName: 'Which template to use ?'
+    type: string
+    default: redeploy
+    values:
+      - redeploy
+      - delete
+
 variables:
   kubernetesServiceConnection: k8con2 #edit
   namespace: default #edit
@@ -35,5 +44,5 @@ jobs:
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-      condition: and(succeeded(), eq(variables['mode'], 'redeploy'))
+      condition: and(succeeded(), not(eq('${{ parameters.mode }}', delete)))
       displayName: Deploy services to cluster
