@@ -18,13 +18,13 @@ jobs:
     - checkout: crux
       displayName: CRUX clone
 
-    #- checkout: tests
-    #  path: $(reposRoot)/$(repoName)
-    #  displayName: TESTS clone
+    - checkout: tests
+      path: $(reposRoot)/$(repoName)
+      displayName: TESTS clone
 
-    - bash: |
-        git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
-      displayName: $(repoName) clone
+    #- bash: |
+    #    git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
+    #  displayName: $(repoName) clone
 
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_down_replicas)
