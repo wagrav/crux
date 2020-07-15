@@ -27,7 +27,7 @@ jobs:
         ls -alh $(System.DefaultWorkingDirectory)
         ls -alh $(System.DefaultWorkingDirectory)/repos
 
-      displayName: $(repoName) clone
+      displayName: PREPARE tests
 
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_down_replicas)
