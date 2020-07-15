@@ -24,7 +24,9 @@ jobs:
 
     - bash: |
         #git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
-        ls -alh
+        ls -alh $(System.DefaultWorkingDirectory)
+        ls -alh $(reposRoot)
+        pwd $(reposRoot)
       displayName: $(repoName) clone
 
     - task: KubernetesManifest@0
