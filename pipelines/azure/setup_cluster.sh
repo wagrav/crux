@@ -7,7 +7,7 @@
 setVARS() {
   #K8 cluster params
   group_name=
-  location=uksouth #use location close to your app
+  location=westeurope #use location close to your app
   cluster_name=k8
   cluster_namespace=default
   kubernetes_version=1.16.10

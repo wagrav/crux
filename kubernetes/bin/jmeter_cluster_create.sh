@@ -78,8 +78,8 @@ printObjects(){
 
 setVARS $1
 checkKubectl
-setKubernetesNamespace
-createNamespace
+#setKubernetesNamespace
+#createNamespace
 createSlaves
 createMaster
 printObjects
