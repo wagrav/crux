@@ -18,7 +18,7 @@ jobs:
     - checkout: crux
       displayName: CRUX clone
 
-    - checkout: ${{ parameters.repo_name }}
+    - checkout: tests
       displayName: TESTS clone
 
     - bash: |
