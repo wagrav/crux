@@ -22,6 +22,7 @@ The "run" pipeline which is where your tests happen is easily extensible with Az
 * solution contains Chrome Headless and allows you to use Web Driver Sampler to browser-test "difficult" applications (e.g. Mendix-based apps)
 * Simple Table Server is included
 * You can send Live Data to Azure Insights, Azure Backend listener is included
+* In Azure DevOps you can either pull CRUX to your worksapce for execution or the other way around for flexibility
 * contains example pipelines you can use and extend  
 
 
