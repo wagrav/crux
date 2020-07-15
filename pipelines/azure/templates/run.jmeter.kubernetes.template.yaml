@@ -16,7 +16,6 @@ jobs:
     timeoutInMinutes: 5
     steps:
     - checkout: crux
-      path: .
       displayName: CRUX clone
 
     - checkout: tests
