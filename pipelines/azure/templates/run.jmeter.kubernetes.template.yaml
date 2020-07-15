@@ -24,6 +24,8 @@ jobs:
     - bash: |
         echo "DUPA"
         mkdir -p repos && cp -r jmeter_simple_test $(System.DefaultWorkingDirectory)/repos/jmeter_simple_test
+        cp -r jmeter_azure_k8_boilerplate/* $(System.DefaultWorkingDirectory)/
+        ls -alh $(System.DefaultWorkingDirectory)
         ls -alh $(System.DefaultWorkingDirectory)/repos
         ls -alh $(System.DefaultWorkingDirectory)/repos/jmeter_simple_test
         #git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
@@ -80,7 +82,7 @@ jobs:
     - task: ShellScript@2
       displayName: JMeter tests
       inputs:
-        scriptPath: jmeter_azure_k8_boilerplate/kubernetes/bin/start_test_from_script_params.sh
+        scriptPath: kubernetes/bin/start_test_from_script_params.sh
         args: $(cluster_namespace) $(reposRoot)/$(scenario) $(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
