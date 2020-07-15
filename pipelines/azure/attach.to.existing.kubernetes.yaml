@@ -44,5 +44,5 @@ jobs:
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-      condition: and(succeeded(), not(eq('${{ parameters.mode }}', delete)))
+      condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'delete')))
       displayName: Deploy services to cluster
