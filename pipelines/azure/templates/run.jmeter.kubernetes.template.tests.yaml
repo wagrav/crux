@@ -5,6 +5,9 @@ jobs:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 5
     steps:
+      - checkout: crux
+        displayName: CRUX clone
+
       - task: ShellScript@2
         displayName: Install BATS
         inputs:
