@@ -56,7 +56,7 @@ variables:
   data_file: ${{ parameters.data_file }}
   jmeter_args: ${{ parameters.jmeter_args }}
   repoName: jmeter_simple_test
-  cruxRepoName: jmeter_azure_k8_boilerplate
+  cruxRepoName: crux
   scenario: $(repoName)/${{ parameters.jmx }}
 
 jobs:
