@@ -8,9 +8,9 @@ parameters:
   - name: mode
     displayName: 'Which template to use ?'
     type: string
-    default: redeploy
+    default: deploy
     values:
-      - redeploy
+      - deploy
       - delete
 
 variables:
