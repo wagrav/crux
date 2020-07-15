@@ -24,8 +24,8 @@ jobs:
     - bash: |
         echo "DUPA"
         mkdir -p repos && cp -r jmeter_simple_test $(System.DefaultWorkingDirectory)/repos/jmeter_simple_test
-        ls -alh $(System.DefaultWorkingDirectory)
         ls -alh $(System.DefaultWorkingDirectory)/repos
+        ls -alh $(System.DefaultWorkingDirectory)/repos/jmeter_simple_test
         #git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
 
       displayName: PREPARE tests
