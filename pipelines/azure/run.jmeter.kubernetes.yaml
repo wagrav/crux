@@ -62,7 +62,7 @@ variables:
   pass: pass
   repoBaseURL: https://$(user):$(pass)@github.com/ObjectivityLtd
   repoURL: $(repoBaseURL)/$(repoName)
-  scenario: $(repoName)/${{ parameters.jmx }}
+  scenario: ${{ parameters.jmx }}
 
 jobs:
   - template: templates/run.mode.selector.yaml
