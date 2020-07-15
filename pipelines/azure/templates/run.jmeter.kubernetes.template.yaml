@@ -24,7 +24,7 @@ jobs:
     - bash: |
         #git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
         ls -alh $(System.DefaultWorkingDirectory)
-        cp -r crux/* .
+        cp -r jmeter_azure_k8_boilerplate/* .
 
 
       displayName: $(repoName) clone
