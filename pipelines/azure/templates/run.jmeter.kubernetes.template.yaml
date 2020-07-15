@@ -22,10 +22,11 @@ jobs:
       displayName: TESTS clone
 
     - bash: |
-        #git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
+        echo "DUPA"
         mkdir -p repos && cp jmeter_simple_test repos/jmeter_simple_test
         ls -alh $(System.DefaultWorkingDirectory)
         ls -alh $(System.DefaultWorkingDirectory)/repos
+        #git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
 
       displayName: PREPARE tests
 
