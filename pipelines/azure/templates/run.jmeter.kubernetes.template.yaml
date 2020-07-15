@@ -23,10 +23,10 @@ jobs:
 
     - bash: |
         #git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
-        ls -alh $(System.DefaultWorkingDirectory)
         mkdir -p repos
         cp jmeter_simple_test repos/
-        cp -r jmeter_azure_k8_boilerplate/* .
+        cp -R jmeter_azure_k8_boilerplate/* .
+        ls -alh $(System.DefaultWorkingDirectory)
 
 
 
