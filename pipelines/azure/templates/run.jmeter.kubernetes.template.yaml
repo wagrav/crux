@@ -18,18 +18,12 @@ jobs:
     - checkout: crux
       displayName: CRUX clone
 
-    - checkout: tests
+    - checkout: $(repoName)
       displayName: TESTS clone
 
     - bash: |
-        echo "DUPA"
-        mkdir -p repos && cp -r jmeter_simple_test $(System.DefaultWorkingDirectory)/repos/jmeter_simple_test
-        cp -r jmeter_azure_k8_boilerplate/* $(System.DefaultWorkingDirectory)/
-        ls -alh $(System.DefaultWorkingDirectory)
-        ls -alh $(System.DefaultWorkingDirectory)/repos
-        ls -alh $(System.DefaultWorkingDirectory)/repos/jmeter_simple_test
-        #git clone $(repoURL) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
-
+        mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
+        cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
       displayName: PREPARE tests
 
     - task: KubernetesManifest@0
