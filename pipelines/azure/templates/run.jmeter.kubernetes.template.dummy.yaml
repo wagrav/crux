@@ -1,5 +1,6 @@
 parameters:
   - name: crux_clone
+    type: boolean
     default: false
   #prepare_test: false
   #scale_slaves_down: false
