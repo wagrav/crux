@@ -15,6 +15,7 @@ jobs:
       displayName: TESTS clone
 
     - bash: |
+        echo "crux_clone: $(crux_clone)"
         mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
         cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
       displayName: PREPARE tests
