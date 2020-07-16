@@ -7,5 +7,5 @@ variables:
   scale_up_replicas_master: 1
   service: jmeter-slaves
   service-master: jmeter-master
-  ${{ if eq(parameters.mode,'tests') }}:
+  ${{ if eq(parameters.mode,'tests2') }}:
   crux_clone: false
