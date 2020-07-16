@@ -6,12 +6,9 @@ parameters:
 
 jobs:
   - job: JMeter_Tests
-    ${{ if not(eq(parameters.mode,'tests')) }}:
-      variables:
-        - template: default.variables.yaml
-    ${{ if eq(parameters.mode,'tests') }}:
-      variables:
-        - template: off.variables.yaml
+    variables:
+      - template: default.variables.yaml
+        mode: ${{ parameters.mode }}
 
     displayName: JMeter Tests
     pool:
