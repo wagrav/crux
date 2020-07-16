@@ -1,4 +1,10 @@
-variables:
-  - template: off.variables.yaml
+parameters:
+  - name: mode
+    displayName: 'Which template to use ?'
+    type: string
+    default: jmeter
+
 jobs:
   - template: run.jmeter.kubernetes.template.yaml
+    parameters:
+      mode: ${{ parameters.mode }}

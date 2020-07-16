@@ -1,9 +1,0 @@
-parameters:
-  - name: mode
-    displayName: 'Which template to use ?'
-    type: string
-    default: jmeter
-
-variables:
-  ${{ if eq(parameters.mode,'tests') }}:
-    crux_clone: false
