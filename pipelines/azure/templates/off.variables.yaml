@@ -5,13 +5,5 @@ parameters:
     default: jmeter
 
 variables:
-  reposRoot: repos
-  report_dir: kubernetes/tmp/report
-  results: kubernetes/tmp/results.csv
-  log: kubernetes/tmp/jmeter.log
-  scale_down_replicas: 0
-  scale_up_replicas_master: 1
-  service: jmeter-slaves
-  service-master: jmeter-master
   ${{ if eq(parameters.mode,'tests') }}:
     crux_clone: false
