@@ -23,4 +23,6 @@ jobs:
     - template: run.jmeter.kubernetes.template.yaml
   - ${{ if eq(parameters.mode,'tests') }}:
     - template: run.jmeter.kubernetes.template.tests.yaml
+      parameters:
+        mode: ${{ parameters.mode }}
     - template: run.jmeter.kubernetes.template.dummy.yaml

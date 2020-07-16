@@ -1,3 +1,6 @@
+parameters:
+  mode: ${{ parameters.mode }}
+
 variables:
   reposRoot: repos
   report_dir: kubernetes/tmp/report
@@ -8,4 +11,4 @@ variables:
   service: jmeter-slaves
   service-master: jmeter-master
   ${{ if eq(parameters.mode,'tests2') }}:
-  crux_clone: false
+    crux_clone: false

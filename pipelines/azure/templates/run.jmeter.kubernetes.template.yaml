@@ -1,7 +1,16 @@
+parameters:
+  - name: mode
+    displayName: 'Which template to use ?'
+    type: string
+    default: jmeter
+
 jobs:
   - job: JMeter_Tests
     variables:
       - template: off.variables.yaml
+        parameters:
+          mode: ${{ parameters.mode }}
+
     displayName: JMeter Tests
     pool:
       vmImage: 'ubuntu-latest'
@@ -15,7 +24,6 @@ jobs:
       displayName: TESTS clone
 
     - bash: |
-        echo "crux_clone: $(crux_clone)"
         mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
         cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
       displayName: PREPARE tests
