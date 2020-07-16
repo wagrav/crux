@@ -24,7 +24,7 @@ jobs:
 
     - checkout: tests
       displayName: TESTS clone
-      condition: and(succeeded(), not(eq(variables.tests_clone, false))
+      condition: and(succeeded(), not(eq(variables.tests_clone, false)))
 
     - bash: |
         mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
