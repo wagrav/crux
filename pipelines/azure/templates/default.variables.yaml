@@ -1,0 +1,30 @@
+parameters:
+  - name: mode
+    displayName: 'Which template to use ?'
+    type: string
+    default: jmeter
+
+variables:
+  reposRoot: repos
+  report_dir: kubernetes/tmp/report
+  results: kubernetes/tmp/results.csv
+  log: kubernetes/tmp/jmeter.log
+  scale_down_replicas: 0
+  scale_up_replicas_master: 1
+  service: jmeter-slaves
+  service-master: jmeter-master
+  ${{ if eq(parameters.mode,'tests') }}:
+    crux_clone: true
+    tests_clone: true
+    prepare_tests: true
+    scale_slaves_down: false
+    scale_master_down: false
+    scale_master_up: false
+    scale_slaves_up: false
+    login_to_cluster: true
+    jmeter_tests: false
+    archive_jmeter_report: false
+    archive_results_file: false
+    archive_log: false
+    evaluate_as_junit_tests: false
+    publish_junit_results: false

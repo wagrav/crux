@@ -1,14 +1,15 @@
+parameters:
+  - name: mode
+    displayName: 'Which template to use ?'
+    type: string
+    default: jmeter
+
 jobs:
   - job: JMeter_Tests
     variables:
-      reposRoot: repos
-      report_dir: kubernetes/tmp/report
-      results: kubernetes/tmp/results.csv
-      log: kubernetes/tmp/jmeter.log
-      scale_down_replicas: 0
-      scale_up_replicas_master: 1
-      service: jmeter-slaves
-      service-master: jmeter-master
+      - template: default.variables.yaml
+        parameters:
+          mode: ${{ parameters.mode }}
 
     displayName: JMeter Tests
     pool:
@@ -17,17 +18,21 @@ jobs:
     steps:
     - checkout: crux
       displayName: CRUX clone
+      condition: and(succeeded(), not(eq(variables.crux_clone, false)))
 
     - checkout: tests
       displayName: TESTS clone
+      condition: and(succeeded(), not(eq(variables.tests_clone, false)))
 
     - bash: |
         mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
         cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
       displayName: PREPARE tests
+      condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
 
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_down_replicas)
+      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
       inputs:
         kubernetesServiceConnection: $(kubernetesServiceConnection)
         action: scale
@@ -38,6 +43,7 @@ jobs:
 
     - task: KubernetesManifest@0
       displayName: Scale master to $(scale_down_replicas)
+      condition: and(succeeded(), not(eq(variables.scale_master_down, false)))
       inputs:
         kubernetesServiceConnection: $(kubernetesServiceConnection)
         action: scale
@@ -48,6 +54,7 @@ jobs:
 
     - task: KubernetesManifest@0
       displayName: Scale master to $(scale_up_replicas_master)
+      condition: and(succeeded(), not(eq(variables.scale_master_up, false)))
       inputs:
         kubernetesServiceConnection: $(kubernetesServiceConnection)
         action: scale
@@ -58,6 +65,7 @@ jobs:
 
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_up_replicas)
+      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
       inputs:
         kubernetesServiceConnection: $(kubernetesServiceConnection)
         action: scale
@@ -68,6 +76,7 @@ jobs:
 
     - task: Kubernetes@1
       displayName: Login to cluster
+      condition: and(succeeded(), not(eq(variables.login_to_cluster, false)))
       inputs:
         command: login
         connectionType: Kubernetes Service Connection
@@ -75,35 +84,42 @@ jobs:
 
     - task: ShellScript@2
       displayName: JMeter tests
+      condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
       inputs:
         scriptPath: kubernetes/bin/start_test_from_script_params.sh
         args: $(cluster_namespace) $(reposRoot)/$(scenario) $(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
       displayName: Archive JMeter Report
+      condition: not(eq(variables.archive_jmeter_report, false))
       inputs:
         path: $(report_dir)
         artifact: JmeterReport
 
     - task: PublishPipelineArtifact@1
+      condition: not(eq(variables.archive_results_file, false))
       displayName: Archive Results file
       inputs:
         path: $(results)
-        artifact: resuls.csv
+        artifact: results.csv
 
     - task: PublishPipelineArtifact@1
+      condition: not(eq(variables.archive_log, false))
       displayName: Archive Log
       inputs:
         path: $(log)
         artifact: jmeter.log
 
     - task: ShellScript@2
-      displayName: Evaluate JMeter results as JUNIT tests
+      displayName: Evaluate as JUNIT tests
+      condition: not(eq(variables.evaluate_as_junit_tests, false))
       inputs:
         scriptPath: modules/junit/evaluateTestResultsAsJunit.sh
         args: $(System.DefaultWorkingDirectory)/$(report_dir)/statistics.json $(System.DefaultWorkingDirectory)/modules/junit/results $(System.DefaultWorkingDirectory)/modules/junit/templates
 
     - task: PublishTestResults@2
+      displayName: Publish JUNIT results
+      condition: not(eq(variables.publish_junit_results, false))
       inputs:
         testResultsFiles: '**/*_TEST.xml'
         failTaskOnFailedTests: true
