@@ -9,10 +9,6 @@ parameters:
     type: boolean
     default: false
 
-variables:
-  - name: a
-    value: b
-
 jobs:
   - job: Debug
     condition: and(succeeded(), eq('${{ parameters.debug }}', true))
