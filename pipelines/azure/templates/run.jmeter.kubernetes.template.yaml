@@ -8,7 +8,8 @@ jobs:
   - job: JMeter_Tests
     variables:
       - template: default.variables.yaml
-        mode: ${{ parameters.mode }}
+        paramaters:
+          mode: ${{ parameters.mode }}
 
     displayName: JMeter Tests
     pool:
