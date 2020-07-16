@@ -101,7 +101,7 @@ jobs:
       displayName: Archive Results file
       inputs:
         path: $(results)
-        artifact: resuls.csv
+        artifact: results.csv
 
     - task: PublishPipelineArtifact@1
       condition: not(eq(variables.archive_log, false))
