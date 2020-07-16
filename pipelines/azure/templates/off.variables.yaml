@@ -1,5 +1,8 @@
 parameters:
-  mode: ${{ parameters.mode }}
+  - name: mode
+    displayName: 'Which template to use ?'
+    type: string
+    default: jmeter
 
 variables:
   reposRoot: repos
