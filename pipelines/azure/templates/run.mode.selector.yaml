@@ -1,3 +1,6 @@
+extends:
+  template: dummy.variables.yaml
+
 parameters:
   - name: mode
     displayName: 'Which template to use ?'
@@ -8,9 +11,6 @@ parameters:
     displayName: 'Display additional diagnostics ?'
     type: boolean
     default: false
-
-variables:
-  - template: dummy.variables.yaml
 
 jobs:
   - job: Debug
