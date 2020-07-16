@@ -17,7 +17,7 @@ jobs:
     steps:
     - checkout: crux
       displayName: CRUX clone
-      condition: and(succeeded(), not(eq(variables.crux_clone, false)))
+      condition: and(succeeded(), not(eq('${{ parameters.crux_clone }}', false)))
 
     - checkout: tests
       displayName: TESTS clone
