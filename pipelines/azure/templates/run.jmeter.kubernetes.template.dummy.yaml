@@ -1,0 +1,4 @@
+variables:
+- template: dummy.variables.yaml
+jobs:
+- template: run.jmeter.kubernetes.template.yaml
