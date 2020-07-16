@@ -1,3 +1,5 @@
+variables:
+  - template: off.variables.yaml
 jobs:
   - job: JMeter_Tests
     variables:
@@ -15,16 +17,14 @@ jobs:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 5
     steps:
-    - ${{ if not(eq(parameters.crux_clone, false)) }}:
-      - checkout: crux
-        displayName: CRUX clone
-        condition: and(succeeded(), not(eq('${{ parameters.crux_clone }}', false)))
+    - checkout: crux
+      displayName: CRUX clone
+      condition: and(succeeded(), not(eq(variables.crux_clone, false)))
 
     - checkout: tests
       displayName: TESTS clone
 
     - bash: |
-        echo ${{ parameters.crux_clone }}
         mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
         cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
       displayName: PREPARE tests
