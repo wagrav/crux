@@ -14,7 +14,8 @@ variables:
   service: jmeter-slaves
   service-master: jmeter-master
   ${{ if eq(parameters.mode,'tests') }}:
-    crux_clone: false
+    ${{ if notIn(variables.crux_clone,true,false) }}:
+      crux_clone: false
     tests_clone: false
     prepare_tests: false
     scale_slaves_down: false
