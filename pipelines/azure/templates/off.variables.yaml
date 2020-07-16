@@ -1,3 +1,6 @@
+extends:
+  template: default.variables.yaml
+
 variables:
   reposRoot: repos
   report_dir: kubernetes/tmp/report
