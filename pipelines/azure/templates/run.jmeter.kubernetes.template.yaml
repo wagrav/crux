@@ -15,9 +15,10 @@ jobs:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 5
     steps:
-    - checkout: crux
-      displayName: CRUX clone
-      condition: and(succeeded(), not(eq('${{ parameters.crux_clone }}', false)))
+    ${{ if not(eq(parameters.crux_clone, false)) }}:
+      - checkout: crux
+        displayName: CRUX clone
+        condition: and(succeeded(), not(eq('${{ parameters.crux_clone }}', false)))
 
     - checkout: tests
       displayName: TESTS clone
