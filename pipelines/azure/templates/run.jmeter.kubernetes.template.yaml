@@ -1,6 +1,6 @@
-variables:
-  - template: off.variables.yaml
 jobs:
+  variables:
+    - template: off.variables.yaml
   - job: JMeter_Tests
     variables:
       reposRoot: repos
