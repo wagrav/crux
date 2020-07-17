@@ -5,30 +5,34 @@ readThresholds(){
   local statisticsFile="$2"
   local testResultsDir="$3"
   local templatesDir="$4"
-  while IFS=: read -r f1 f2 f3 || [[ -n "$f1" ]]; do #to include last line for non POSIX files
-     if [[ ! "$f1" =~ \#.* ]];then #skip comments
-        local sampler=$f1
-        local metric=$f2
-        local threshold_max=$f3
-        echo " -- Evaluating condition for sampler: $sampler, metric: $metric, threshold: $threshold_max"
-        local samplerEscaped=$(echo "$sampler" | sed 's/\//_/g') # chnage / to _
-        local testName="Metric $metric should not breach threshold for sampler $samplerEscaped"
-        if [ "$sampler" == "ANY" ];then #ANY is a special keyword
-          res=$(getHighestValueForAnyMetric "$statisticsFile" "$metric")
-        else
-          res=$(getMetricForSampler "$statisticsFile" "$sampler" "$metric")
+  if [ ! -f "$thresholdsFile" ];then
+    echo "No thresholds file found"
+  else
+    while IFS=: read -r f1 f2 f3 || [[ -n "$f1" ]]; do #to include last line for non POSIX files
+       if [[ ! "$f1" =~ \#.* ]];then #skip comments
+          local sampler=$f1
+          local metric=$f2
+          local threshold_max=$f3
+          echo " -- Evaluating condition for sampler: $sampler, metric: $metric, threshold: $threshold_max"
+          local samplerEscaped=$(echo "$sampler" | sed 's/\//_/g') # chnage / to _
+          local testName="Metric $metric should not breach threshold for sampler $samplerEscaped"
+          if [ "$sampler" == "ANY" ];then #ANY is a special keyword
+            res=$(getHighestValueForAnyMetric "$statisticsFile" "$metric")
+          else
+            res=$(getMetricForSampler "$statisticsFile" "$sampler" "$metric")
+          fi
+          local stackTrace=" Condition : $sampler, metric actual value: $res, max threshold: $threshold_max"
+          cond=$(awk 'BEGIN {print ('$threshold_max' >= '$res')}')
+          if [ "$cond" == "1" ] ;then #use awk for floating point comparisons
+            echo " -- --> Test for $sampler has passed with metric value: $res"
+            copyTestTemplate "PASS" "$testResultsDir" "$templatesDir" "Threshold has not been breached" "$stackTrace" "$testName"
+          else
+            echo " -- --> Test for $sampler has failed with metric value: $res"
+            copyTestTemplate "FAILED" "$testResultsDir" "$templatesDir" "Threshold has been breached" "$stackTrace" "$testName"
+          fi
         fi
-        local stackTrace=" Condition : $sampler, metric actual value: $res, max threshold: $threshold_max"
-        cond=$(awk 'BEGIN {print ('$threshold_max' >= '$res')}')
-        if [ "$cond" == "1" ] ;then #use awk for floating point comparisons
-          echo " -- --> Test for $sampler has passed with metric value: $res"
-          copyTestTemplate "PASS" "$testResultsDir" "$templatesDir" "Threshold has not been breached" "$stackTrace" "$testName"
-        else
-          echo " -- --> Test for $sampler has failed with metric value: $res"
-          copyTestTemplate "FAILED" "$testResultsDir" "$templatesDir" "Threshold has been breached" "$stackTrace" "$testName"
-        fi
-      fi
-  done <"$thresholdsFile"
+    done <"$thresholdsFile"
+  fi
 }
 
 getMetricForSampler(){
@@ -104,8 +108,7 @@ run_main(){
   local templatesDir=$3
   local thresholdsFile=$4
   checkForErrors $statisticsFile $testResultsDir $templatesDir
-  readThresholds "$statisticsFile" "$thresholdsFile" $testResultsDir $templatesDir
-
+  readThresholds $thresholdsFile $statisticsFile $testResultsDir $templatesDir
 }
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   run_main "$1" "$2" "$3" "$4"

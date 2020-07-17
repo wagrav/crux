@@ -13,8 +13,7 @@ function setup(){
   source evaluateTestResultsAsJunit.sh
 }
 function teardown(){
-  rm -f results/*.xml
-
+ rm -f results/*.xml
 }
 
 #error-based and general
@@ -34,17 +33,17 @@ function teardown(){
 }
 
 @test "IT: run_main should not throw errors when no errors in statistics.json" {
-  run run_main test_data/statistics.no.errors.json
+  run run_main test_data/statistics.no.errors.json results templates test_data/thresholds.any.properties
   assert_output --partial "Test ended without errors"
 }
 
 @test "IT: run_main should  throw errors when  errors in statistics.json" {
-  run run_main test_data/statistics.json
+  run run_main test_data/statistics.json results templates test_data/thresholds.any.properties
   assert_output --partial "Test ended with errors"
 }
 
 @test "IT: run_main should  detect when statistics.json does not exist" {
-  run run_main test_data/statistics.does.not.exist.json
+  run run_main test_data/statistics.does.not.exist.json results templates test_data/thresholds.any.properties
   assert_output --partial "does not exist"
 }
 
@@ -86,14 +85,15 @@ function teardown(){
     local resDir=$2
     local templatesDir=$3
     local testStatus=$4
-    run run_main "$file" "$resDir" "$templatesDir"
+    local threshold_file=$5
+    run run_main "$file" "$resDir" "$templatesDir" "$threshold_file"
     assert_success
     run cat "$resDir/$testStatus"_Should_pass_without_errors_TEST.xml
     assert_success
   }
-  test test_data/statistics.no.errors.json results templates PASS
-  test test_data/statistics.json results templates FAILED
-  test test_data/statistics.does.not.exist.json results templates SKIP
+  test test_data/statistics.no.errors.json results templates PASS test_data/thresholds.any.properties
+  test test_data/statistics.json results templates FAILED test_data/thresholds.any.properties
+  test test_data/statistics.does.not.exist.json results templates SKIP test_data/thresholds.any.properties
 
 }
 
@@ -133,7 +133,7 @@ function teardown(){
 #e2e test, UT i IT na readThresholds z mockami
 
 @test "E2E: readThresholds should produce right JUNIT tests files" {
-  run readThresholds test_data/thresholds.no.alert.properties test_data/statistics.json
+  run readThresholds test_data/thresholds.no.alert.properties test_data/statistics.json results templates
   assert_success
   run cat results/FAILED_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_ANY_TEST.xml
   assert_success
@@ -142,7 +142,7 @@ function teardown(){
 }
 
 @test "E2E: readThresholds JUNIT files should contain correct details inside" {
-  run readThresholds test_data/thresholds.no.alert.properties test_data/statistics.json
+  run readThresholds test_data/thresholds.no.alert.properties test_data/statistics.json results templates
   run cat results/FAILED_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_ANY_TEST.xml
   assert_output --partial '<system-out>Condition : ANY, metric actual value: 1103.8, max threshold: 1100.5</system-out>'
   assert_output --partial '<failure message="Performance tests failed">Threshold has been breached</failure>'
@@ -165,7 +165,7 @@ function teardown(){
        getHighestValueForAnyMetric
      }
       export -f getHighestValueForAnyMetric getMetricForSampler
-      run readThresholds "$threshold_file" "$statistics_file"
+      run readThresholds "$threshold_file" "$statistics_file" results templates
       assert_output --partial " -- --> Test for $sampler has $expected_status with metric value: $value"
   }
   test 1001 test_data/thresholds.any.properties test_data/statistics.json ANY failed
@@ -176,6 +176,6 @@ function teardown(){
 }
 
 @test "UT: readThresholds should ignore comments in thresholds file" {
-  run readThresholds test_data/thresholds.comments.properties test_data/statistics.json
+  run readThresholds test_data/thresholds.comments.properties test_data/statistics.json results templates
   assert_output ""
 }
