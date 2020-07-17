@@ -4,7 +4,7 @@
         <properties>
             <property name="args">jmeter args</property>
         </properties>
-        <testcase classname="JMeterTests" name="Should end without errors" time="0" >
+        <testcase classname="JMeterTests" name="@name" time="0" >
             <failure message="Performance tests failed">@message</failure>
             <system-out>@stacktrace</system-out>
         </testcase>

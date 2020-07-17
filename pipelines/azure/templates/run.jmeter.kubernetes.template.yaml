@@ -115,7 +115,7 @@ jobs:
       condition: not(eq(variables.evaluate_as_junit_tests, false))
       inputs:
         scriptPath: modules/junit/evaluateTestResultsAsJunit.sh
-        args: $(System.DefaultWorkingDirectory)/$(report_dir)/statistics.json $(System.DefaultWorkingDirectory)/modules/junit/results $(System.DefaultWorkingDirectory)/modules/junit/templates
+        args: $(System.DefaultWorkingDirectory)/$(report_dir)/statistics.json $(System.DefaultWorkingDirectory)/modules/junit/results $(System.DefaultWorkingDirectory)/modules/junit/templates $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)/thresholds.properties
 
     - task: PublishTestResults@2
       displayName: Publish JUNIT results

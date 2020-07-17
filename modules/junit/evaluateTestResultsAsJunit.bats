@@ -14,8 +14,10 @@ function setup(){
 }
 function teardown(){
   rm -f results/*.xml
+
 }
 
+#error-based and general
 @test "UT: getSampleResultsJSON should return correct result" {
   run getSampleResultsJSON test_data/statistics.json "GET /api/skills"
   assert_output --partial 'transaction": "GET /api/skills"'
@@ -53,28 +55,28 @@ function teardown(){
   assert_output --partial '"percentile_99_milis": 844.040000000001'
 }
 @test "UT: copyTestTemplate produces correct test file for FAILED test" {
-  run copyTestTemplate "FAILED" "results" "templates" "There are multiple errors in tests" "my stack trace"
+  run copyTestTemplate "FAILED" "results" "templates" "There are multiple errors in tests" "my stack trace" "Should pass"
   assert_success
-  run cat results/FAILED_TEST.xml
+  run cat results/FAILED_Should_pass_TEST.xml
   assert_output --partial '<failure message="Performance tests failed">There are multiple errors in tests</failure>'
   assert_output --partial '<system-out>my stack trace</system-out'
 }
 @test "UT: checkForErrors should produce correctly formatted test results for FAILED test" {
   run checkForErrors test_data/statistics.json "results" "templates"
   assert_success
-  run cat results/FAILED_TEST.xml
+  run cat results/FAILED_Should_pass_without_errors_TEST.xml
   assert_output --partial '<failure message="Performance tests failed">There are multiple errors in tests</failure>'
   refute_output --partial '<system-out>my stack trace</system-out'
 }
 @test "UT: checkForErrors should produce correctly formatted test results for PASS test" {
   run checkForErrors test_data/statistics.no.errors.json "results" "templates"
   assert_success
-  run cat results/PASS_TEST.xml
+  run cat results/PASS_Should_pass_without_errors_TEST.xml
   assert_success
 }
 @test "UT: checkForErrors should produce correctly formatted test results for SKIP test" {
   run checkForErrors test_data/statistics.does.not.exist.json "results" "templates"
-  run cat results/SKIP_TEST.xml
+  run cat results/SKIP_Should_pass_without_errors_TEST.xml
   assert_success
 }
 
@@ -86,11 +88,94 @@ function teardown(){
     local testStatus=$4
     run run_main "$file" "$resDir" "$templatesDir"
     assert_success
-    run cat "$resDir/$testStatus"_TEST.xml
+    run cat "$resDir/$testStatus"_Should_pass_without_errors_TEST.xml
     assert_success
   }
   test test_data/statistics.no.errors.json results templates PASS
   test test_data/statistics.json results templates FAILED
   test test_data/statistics.does.not.exist.json results templates SKIP
 
+}
+
+#metric-based
+
+@test "UT: getMetricForSampler should return correct result gor given metric and sampler" {
+  test() {
+    local file=$1
+    local sampler=$2
+    local metric=$3
+    local expected_output=$4
+    run getMetricForSampler "$file" "$sampler" "$metric" "$expected_output"
+    assert_output "$expected_output"
+  }
+  test test_data/statistics.json "PUT /api/userskills" pct1ResTime 259
+  test test_data/statistics.json "TC_Change Additional Skill Competence" meanResTime 228.4967948717948
+}
+
+@test "UT: getAnyMetric should return correct result gor given metric" {
+  test() {
+    local file=$1
+    local metric=$2
+    local expected_output=$3
+    local index=$4
+    run getAnyMetric "$file" "$metric" "$expected_output"
+    assert_line --index $index --partial "$expected_output"
+  }
+  test test_data/statistics.json errorCount 24 26
+  test test_data/statistics.json meanResTime 228.4967948717948 7
+}
+
+@test "UT: getHighestValueForAnyMetric should return correct results" {
+  run getHighestValueForAnyMetric test_data/statistics.json pct1ResTime
+  assert_output 1103.8
+}
+
+#e2e test, UT i IT na readThresholds z mockami
+
+@test "E2E: readThresholds should produce right JUNIT tests files" {
+  run readThresholds test_data/thresholds.no.alert.properties test_data/statistics.json
+  assert_success
+  run cat results/FAILED_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_ANY_TEST.xml
+  assert_success
+  run cat results/PASS_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_PUT__api_userskills_TEST.xml
+  assert_success
+}
+
+@test "E2E: readThresholds JUNIT files should contain correct details inside" {
+  run readThresholds test_data/thresholds.no.alert.properties test_data/statistics.json
+  run cat results/FAILED_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_ANY_TEST.xml
+  assert_output --partial '<system-out>Condition : ANY, metric actual value: 1103.8, max threshold: 1100.5</system-out>'
+  assert_output --partial '<failure message="Performance tests failed">Threshold has been breached</failure>'
+  run cat results/PASS_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_PUT__api_userskills_TEST.xml
+  assert_output --partial '<testcase classname="JMeterTests" name="PASS_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_PUT__api_userskills" time="0" />'
+}
+
+@test "UT: readThresholds should properly evaluate thresholds for samplers" {
+  test(){
+      local value=$1
+      local threshold_file=$2
+      local statistics_file=$3
+      local sampler=$4
+      local expected_status=$5
+
+      getHighestValueForAnyMetric(){ #stub
+        echo "$value"
+     }
+      getMetricForSampler(){ #stub
+       getHighestValueForAnyMetric
+     }
+      export -f getHighestValueForAnyMetric getMetricForSampler
+      run readThresholds "$threshold_file" "$statistics_file"
+      assert_output --partial " -- --> Test for $sampler has $expected_status with metric value: $value"
+  }
+  test 1001 test_data/thresholds.any.properties test_data/statistics.json ANY failed
+  test 99.999 test_data/thresholds.any.properties test_data/statistics.json ANY passed
+  test 99.999 test_data/thresholds.no.alert.properties test_data/statistics.json "PUT /api/userskills" passed
+  test 299.999 test_data/thresholds.no.alert.properties test_data/statistics.json "PUT /api/userskills" failed
+
+}
+
+@test "UT: readThresholds should ignore comments in thresholds file" {
+  run readThresholds test_data/thresholds.comments.properties test_data/statistics.json
+  assert_output ""
 }
