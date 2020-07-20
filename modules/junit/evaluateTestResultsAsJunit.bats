@@ -13,8 +13,7 @@ function setup(){
   source evaluateTestResultsAsJunit.sh
 }
 function teardown(){
- #rm -f results/*.xml
- echo ""
+ rm -f results/*.xml
 }
 
 #error-based and general
