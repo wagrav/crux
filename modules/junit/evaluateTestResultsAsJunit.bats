@@ -95,6 +95,7 @@ function teardown(){
   test test_data/statistics.no.errors.json results templates PASS test_data/thresholds.any.properties
   test test_data/statistics.json results templates FAILED test_data/thresholds.any.properties
   test test_data/statistics.does.not.exist.json results templates SKIP test_data/thresholds.any.properties
+  test test_data/statistics.ugly.chars.json results templates PASS test_data/thresholds.any.properties
 
 }
 
@@ -111,7 +112,7 @@ function teardown(){
   }
   test test_data/statistics.json "PUT /api/userskills" pct1ResTime 259
   test test_data/statistics.json "TC_Change Additional Skill Competence" meanResTime 228.4967948717948
-  test test_data/statistics.ugly.chars.json "Sampler~!@#$%^&*()_+" minResTime 65.1
+  test test_data/statistics.ugly.chars.json "Sampler~!@$%^&*()_+" minResTime 65.1
 }
 
 @test "UT: getAnyMetric should return correct result gor given metric" {
@@ -141,6 +142,11 @@ function teardown(){
   run cat results/FAILED_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_ANY_TEST.xml
   assert_success
   run cat results/PASS_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_PUT__api_userskills_TEST.xml
+  assert_success
+
+  run readThresholds test_data/thresholds.ugly.chars.properties test_data/statistics.ugly.chars.json results templates
+  assert_success
+  run cat results/'PASS_Metric_pct1ResTime_should_not_breach_threshold_for_sampler_'\''Sampler~!@$%^&*()_+'\''_TEST.xml'
   assert_success
 }
 

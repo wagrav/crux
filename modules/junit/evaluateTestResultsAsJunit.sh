@@ -76,6 +76,7 @@ copyTestTemplate(){
   local name="$6"
   local title="$7"
   name=$(echo "$name" | sed 's/ /_/g')
+  #name=$(printf "%q" "$name")
   name="$type"_"$name"
   mkdir -p "$resDir"
   cp "$templateDir/$type"_template.xml "$resDir/$name"_TEST.xml

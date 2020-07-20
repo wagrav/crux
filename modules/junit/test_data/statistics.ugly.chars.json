@@ -14,7 +14,7 @@
     "receivedKBytesPerSec" : 0.7006862376622534,
     "sentKBytesPerSec" : 3.6844683296606666
   },
-  "Sampler~!@#$%^&*()_+" : {
+  "Sampler~!@$%^&*()_+" : {
     "transaction" : "TC_Select Travel Preference",
     "sampleCount" : 126,
     "errorCount" : 21,
