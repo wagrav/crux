@@ -8,6 +8,7 @@ resources:
     - repository: crux
       type: github
       name: ObjectivityLtd/crux
+      ref: refs/heads/feature/junit_percentile_thresholds
       endpoint: crux
 
     - repository: tests
@@ -31,7 +32,6 @@ parameters:
     default: path/to/jmeter/test_data/sample_data.csv
     values:
       - path/to/jmeter/test_data/sample_data.csv
-      - path/to/jmeter/test_data/sample_data2.csv
 
   - name: jmeter_slaves
     default: 1
@@ -53,7 +53,7 @@ variables:
   cluster_namespace: default
   kubernetesServiceConnection: ${{ parameters.connection }}
   scale_up_replicas: ${{ parameters.jmeter_slaves }}
-  data_file: ${{ parameters.data_file }}
+  data_file: $(repoName)/${{ parameters.data_file }}
   jmeter_args: ${{ parameters.jmeter_args }}
   repoName: jmeter_simple_test
   cruxRepoName: crux

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-    <testsuite name="JMeterTests" errors="0" skipped="0" tests="1" failures="0">
-        <testcase classname="JMeterTests" name="Should end without errors" time="0" />
+    <testsuite name="@title" errors="0" skipped="0" tests="1" failures="0">
+        <testcase classname="JMeterTests" name="@name" time="0" />
     </testsuite>
 </testsuites>
