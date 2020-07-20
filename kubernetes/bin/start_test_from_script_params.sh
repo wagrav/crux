@@ -29,8 +29,8 @@ prepareEnv(){
 
 copyTestFilesToMasterPod(){
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
-  kubectl cp "$root_dir/$data_file" -n $tenant "$master_pod:/$test_dir/"
-  kubectl exec -ti -n $tenant $master_pod -- ls "$master_pod:/$test_dir/"
+  kubectl cp "$root_dir/$data_file" -n $tenant "$master_pod:$test_dir/"
+  kubectl exec -ti -n $tenant $master_pod -- ls "$master_pod:$test_dir/"
 }
 cleanMasterPod(){
   kubectl exec -ti -n $tenant $master_pod -- rm -Rf "$tmp"
