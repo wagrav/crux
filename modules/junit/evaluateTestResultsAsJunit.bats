@@ -114,7 +114,7 @@ function teardown(){
   test test_data/statistics.ugly.chars.json "Sampler~!@$%^&*()_+" minResTime 65.1
 }
 
-@test "UT: getAnyMetric should return correct result gor given metric" {
+@test "UT: getAnyMetric should return correct result gor given metric and should ignore Total sampler" {
   test() {
     local file=$1
     local metric=$2
@@ -123,9 +123,10 @@ function teardown(){
     run getAnyMetric "$file" "$metric" "$expected_output"
     assert_line --index $index --partial "$expected_output"
   }
-  test test_data/statistics.json errorCount 24 26
+  test test_data/statistics.json errorCount 21 25
   test test_data/statistics.json meanResTime 228.4967948717948 7
   test test_data/statistics.ugly.chars.json errorPct 16.666666 1
+  test test_data/statistics.ugly.chars.json errorPct "" 3 #3 is null because it is Total
 }
 
 @test "UT: getHighestValueForAnyMetric should return correct results" {

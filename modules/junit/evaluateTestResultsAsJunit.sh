@@ -60,7 +60,8 @@ getHighestValueForAnyMetric(){
 getAnyMetric(){
   local statisticsFile=$1
   local metric=$2
-  cat "$statisticsFile" | jq ".[].\"$metric"\"
+  cat "$statisticsFile" | jq ".[] | select (.transaction!=\"Total\") .\"$metric\""
+
 }
 
 getErrorStackTrace(){
