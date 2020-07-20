@@ -54,6 +54,11 @@ Edit the pipeline pipline/azure/attach.to.existing.kubernetes.yaml and set k8 co
 
 ## Usage
 
+JMeters test belong to software project they are written for. We recommend you store them in actual software repo. A sample repo to hold your tests can be found in here: https://github.com/ObjectivityLtd/jmeter_simple_test. Fork it, edit:
+* run.jmeter.kubernetes.yaml - runs actual tests with selected version of CRUX.
+and you are good to go.
+
+
 There are 2 pipelines supplied in CRUX that you can use for admin activities:
 
 * stop.jmeter.kubernetes.yaml - stops tests gracefully
@@ -61,10 +66,5 @@ There are 2 pipelines supplied in CRUX that you can use for admin activities:
 
 Edit these pipelines providing k8 connection prior to use.
 
-A sample repo to hold your tests can be found in here: https://github.com/ObjectivityLtd/jmeter_simple_test. Fork it, edit
-
-* run.jmeter.kubernetes.yaml - runs actual tests with selected version of CRUX.
-
-and you are good to go.
 
 Happy testing! :) 
