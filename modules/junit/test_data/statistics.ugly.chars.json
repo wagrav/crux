@@ -1,0 +1,47 @@
+{
+  "Sampler#$%^&*" : {
+    "transaction" : "PUT /api/userskills",
+    "sampleCount" : 5916,
+    "errorCount" : 3,
+    "errorPct" : 0.05070994,
+    "meanResTime" : 218.26453684922265,
+    "minResTime" : 70.0,
+    "maxResTime" : 5057.0,
+    "pct1ResTime" : 259.0,
+    "pct2ResTime" : 355.14999999999964,
+    "pct3ResTime" : 1351.4899999999998,
+    "throughput" : 1.7845992343960688,
+    "receivedKBytesPerSec" : 0.7006862376622534,
+    "sentKBytesPerSec" : 3.6844683296606666
+  },
+  "Sampler~!@#$%^&*()_+" : {
+    "transaction" : "TC_Select Travel Preference",
+    "sampleCount" : 126,
+    "errorCount" : 21,
+    "errorPct" : 16.666666,
+    "meanResTime" : 196.69047619047618,
+    "minResTime" : 65.1,
+    "maxResTime" : 911.0,
+    "pct1ResTime" : 265.09999999999997,
+    "pct2ResTime" : 356.0999999999999,
+    "pct3ResTime" : 844.040000000001,
+    "throughput" : 0.055157028997275856,
+    "receivedKBytesPerSec" : 0.023324518377359,
+    "sentKBytesPerSec" : 0.11416920190186688
+  },
+  "Total" : {
+    "transaction" : "Total",
+    "sampleCount" : 8530,
+    "errorCount" : 24,
+    "errorPct" : 0.2813599,
+    "meanResTime" : 220.12391559202803,
+    "minResTime" : 49.0,
+    "maxResTime" : 5057.0,
+    "pct1ResTime" : 275.0,
+    "pct2ResTime" : 389.0,
+    "pct3ResTime" : 1323.0700000000015,
+    "throughput" : 2.5668509703779985,
+    "receivedKBytesPerSec" : 3.1154755756268626,
+    "sentKBytesPerSec" : 5.337663668722154
+  }
+}

@@ -5,6 +5,7 @@ readThresholds(){
   local statisticsFile="$2"
   local testResultsDir="$3"
   local templatesDir="$4"
+  local title="Thresholds"
   if [ ! -f "$thresholdsFile" ];then
     echo "No thresholds file found"
   else
@@ -25,10 +26,10 @@ readThresholds(){
           cond=$(awk 'BEGIN {print ('$threshold_max' >= '$res')}')
           if [ "$cond" == "1" ] ;then #use awk for floating point comparisons
             echo " -- --> Test for $sampler has passed with metric value: $res"
-            copyTestTemplate "PASS" "$testResultsDir" "$templatesDir" "Threshold has not been breached" "$stackTrace" "$testName"
+            copyTestTemplate "PASS" "$testResultsDir" "$templatesDir" "Threshold has not been breached" "$stackTrace" "$testName" "$title"
           else
             echo " -- --> Test for $sampler has failed with metric value: $res"
-            copyTestTemplate "FAILED" "$testResultsDir" "$templatesDir" "Threshold has been breached" "$stackTrace" "$testName"
+            copyTestTemplate "FAILED" "$testResultsDir" "$templatesDir" "Threshold has been breached" "$stackTrace" "$testName" "$title"
           fi
         fi
     done <"$thresholdsFile"
@@ -73,6 +74,7 @@ copyTestTemplate(){
   local message="$4"
   local stackTrace="$5"
   local name="$6"
+  local title="$7"
   name=$(echo "$name" | sed 's/ /_/g')
   name="$type"_"$name"
   mkdir -p "$resDir"
@@ -80,25 +82,27 @@ copyTestTemplate(){
   sed -i "s+@message+$(echo $message)+g" "$resDir/$name"_TEST.xml
   sed -i "s+@stacktrace+$(echo $stackTrace)+g" "$resDir/$name"_TEST.xml
   sed -i "s+@name+$(echo $name)+g" "$resDir/$name"_TEST.xml
+  sed -i "s+@title+$(echo $title)+g" "$resDir/$name"_TEST.xml
 }
 checkForErrors(){
   local statisticsFile=$1
   local testResultsDir=$2
   local templatesDir=$3
   local testName="Should pass without errors"
+  local title="Errors"
   if [ -f "$statisticsFile" ]; then
     errors=$(getErrorCount $statisticsFile)
     if [ "$errors" != "0" ];then
       echo "Test ended with errors"
       stackTrace=$(getErrorStackTrace $statisticsFile)
-      copyTestTemplate "FAILED" "$testResultsDir" "$templatesDir" "There are multiple errors in tests" "$stackTrace" "$testName"
+      copyTestTemplate "FAILED" "$testResultsDir" "$templatesDir" "There are multiple errors in tests" "$stackTrace" "$testName" "$title"
     else
       echo "Test ended without errors"
-      copyTestTemplate "PASS" "results" "templates" "There are no errors in tests" "no errors" "$testName"
+      copyTestTemplate "PASS" "results" "templates" "There are no errors in tests" "no errors" "$testName" "$title"
     fi
   else
     echo "$statisticsFile does not exist"
-    copyTestTemplate "SKIP" "results" "templates" "Tests have not been run or statistics.json does not exist" "skipped" "$testName"
+    copyTestTemplate "SKIP" "results" "templates" "Tests have not been run or statistics.json does not exist" "skipped" "$testName" "$title"
   fi
 
 }

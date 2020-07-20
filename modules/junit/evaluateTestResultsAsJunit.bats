@@ -13,7 +13,8 @@ function setup(){
   source evaluateTestResultsAsJunit.sh
 }
 function teardown(){
- rm -f results/*.xml
+ #rm -f results/*.xml
+ echo ""
 }
 
 #error-based and general
@@ -54,7 +55,7 @@ function teardown(){
   assert_output --partial '"percentile_99_milis": 844.040000000001'
 }
 @test "UT: copyTestTemplate produces correct test file for FAILED test" {
-  run copyTestTemplate "FAILED" "results" "templates" "There are multiple errors in tests" "my stack trace" "Should pass"
+  run copyTestTemplate "FAILED" "results" "templates" "There are multiple errors in tests" "my stack trace" "Should pass" "Errors"
   assert_success
   run cat results/FAILED_Should_pass_TEST.xml
   assert_output --partial '<failure message="Performance tests failed">There are multiple errors in tests</failure>'
@@ -110,6 +111,7 @@ function teardown(){
   }
   test test_data/statistics.json "PUT /api/userskills" pct1ResTime 259
   test test_data/statistics.json "TC_Change Additional Skill Competence" meanResTime 228.4967948717948
+  test test_data/statistics.ugly.chars.json "Sampler~!@#$%^&*()_+" minResTime 65.1
 }
 
 @test "UT: getAnyMetric should return correct result gor given metric" {
@@ -123,6 +125,7 @@ function teardown(){
   }
   test test_data/statistics.json errorCount 24 26
   test test_data/statistics.json meanResTime 228.4967948717948 7
+  test test_data/statistics.ugly.chars.json errorPct 16.666666 1
 }
 
 @test "UT: getHighestValueForAnyMetric should return correct results" {
