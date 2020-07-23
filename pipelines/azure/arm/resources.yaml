@@ -15,7 +15,10 @@ jobs:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az deployment group create --name temp --resource-group mygroup --template-file $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json --parameters nodeSize=Standard_D2_v2 nodeCount=2 existingClusterName=perf_qinlkwwubxksw1 clusterNamePrefix=perf
+            output=$(az deployment group create --name temp --resource-group mygroup --template-file $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json --parameters nodeSize=Standard_D2_v2 nodeCount=2 existingClusterName="" clusterNamePrefix=perf)
+            name=$(echo $output |jq -r '.properties.outputs.name.value')
+            echo "Cluster name created: $name"
+            echo "##vso[task.setvariable variable=name]${name}"
 
       - task: AzureCLI@2
         displayName: Recreate connection
@@ -26,3 +29,12 @@ jobs:
           inlineScript: |
             bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/delete_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(name)
             bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/create_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(name) perf_qinlkwwubxksw mygroup $(System.DefaultWorkingDirectory)/pipelines/azure/arm
+
+      - task: AzureCLI@2
+        displayName: Create cluster from ARM
+        inputs:
+          azureSubscription: mygroup
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            az aks delete --name $(name) --resource-group mygroup

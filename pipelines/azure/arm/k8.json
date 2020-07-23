@@ -69,5 +69,11 @@
       },
       "resources": []
     }
-  ]
+  ],
+  "outputs": {
+    "name": {
+      "type" : "string",
+      "value" : "[variables('clusterName')]"
+    }
+  }
 }

@@ -41,7 +41,7 @@
     "pct2ResTime" : 134.24999999999997,
     "pct3ResTime" : 136.0,
     "throughput" : 0.19467941167881792,
-    "receivedKBytesPerSec" : 0.07148384647581595,
+    "receivdeKBytesPerSec" : 0.07148384647581595,
     "sentKBytesPerSec" : 0.5633155242229858
   },
   "POST  api/camunda/task/taskId/complete  Observation5" : {
