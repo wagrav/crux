@@ -15,7 +15,7 @@ jobs:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az deployment group create --name temp --resource-group mygroup --template-file k8.json --parameters nodeSize=Standard_D2_v2 nodeCount=2 existingClusterName=perf_qinlkwwubxksw clusterNamePrefix=perf
+            az deployment group create --name temp --resource-group mygroup --template-file $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json --parameters nodeSize=Standard_D2_v2 nodeCount=2 existingClusterName=perf_qinlkwwubxksw clusterNamePrefix=perf
 
       - task: AzureCLI@2
         displayName: Recreate connection
