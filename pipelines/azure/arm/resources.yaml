@@ -18,7 +18,7 @@ jobs:
             output=$(az deployment group create --name temp --resource-group mygroup --template-file $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json --parameters nodeSize=Standard_D2_v2 nodeCount=2 existingClusterName="" clusterNamePrefix=perf)
             cname=$(echo $output |jq -r '.properties.outputs.name.value')
             echo "Cluster name created: $cname"
-            echo "##vso[task.setvariable variable=name]${cname}"
+            echo "##vso[task.setvariable variable=cname]${cname}"
 
       - task: AzureCLI@2
         displayName: Recreate connection
