@@ -9,10 +9,20 @@ jobs:
     timeoutInMinutes: 5
     steps:
       - task: AzureCLI@2
-        displayName: Azure CLI
+        displayName: Create cluster from ARM
         inputs:
           azureSubscription: mygroup
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
+            az deployment group create --name temp --resource-group mygroup --template-file k8.json --parameters nodeSize=Standard_D2_v2 nodeCount=2 existingClusterName=perf_qinlkwwubxksw clusterNamePrefix=perf
+
+      - task: AzureCLI@2
+        displayName: Recreate connection
+        inputs:
+          azureSubscription: mygroup
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/delete_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(name)
             bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/create_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(name) perf_qinlkwwubxksw mygroup $(System.DefaultWorkingDirectory)/pipelines/azure/arm
