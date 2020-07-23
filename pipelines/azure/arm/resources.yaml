@@ -1,0 +1,19 @@
+name: $(BuildID)
+trigger: none
+
+jobs:
+  - job: Create_Resources
+    displayName: Create_Resources
+    pool:
+      vmImage: 'ubuntu-latest'
+    timeoutInMinutes: 5
+    steps:
+      - task: AzureCLI@2
+        displayName: Azure CLI
+        inputs:
+          azureSubscription: mygroup
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: bash
+            kube=$(az aks get-credentials --name perf_qinlkwwubxksw  --resource-group mygroup -f -)
+            echo $kube
