@@ -17,4 +17,4 @@ jobs:
           inlineScript: |
             #kube=$(az aks get-credentials --name perf_qinlkwwubxksw  --resource-group mygroup -f -)
             #source bin/create_service_connection.sh $devops_org $devops_project $devops_user $pat $devops_service_connection_name $cluster_name $group_name > /dev/null 2>&1
-            source bin/create_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(name) perf_qinlkwwubxksw mygroup
+            source create_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(name) perf_qinlkwwubxksw mygroup

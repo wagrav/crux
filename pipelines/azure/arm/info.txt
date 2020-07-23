@@ -1,0 +1,13 @@
+1. Create a cluster from ARM (with resource group I guess) :
+    output -> cluster name
+    endpoint URL
+2. Have ARM tested locally
+    - add tests for ARM in test pipeline
+3. Create Service Connection Automatically, inputs: clusterName, subscription, name, namespace
+4. Remove resource group
+5. Add perfect pipeline integration example
+
+Inputs: group name, cluster name
+    Create pipeline, if cluster name is provided use that for ARM deployment
+    Perhaps delete cluster with Azure CLI task- because currently ARM templates do not support decomissioning
+
