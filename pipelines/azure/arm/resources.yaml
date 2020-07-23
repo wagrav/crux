@@ -37,4 +37,4 @@ jobs:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az aks delete --name $(cname) --resource-group mygroup
+            az aks delete --name $(cname) --resource-group mygroup --yes
