@@ -12,8 +12,8 @@ jobs:
         displayName: Azure CLI
         inputs:
           azureSubscription: mygroup
-          scriptType: ps
+          scriptType: bash
           scriptLocation: inlineScript
-          inlineScript: bash
+          inlineScript:
             kube=$(az aks get-credentials --name perf_qinlkwwubxksw  --resource-group mygroup -f -)
             echo $kube
