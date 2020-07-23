@@ -15,7 +15,7 @@ jobs:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            output=$(az deployment group create --name temp$(BuildID) --resource-group mygroup --template-file $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json --parameters nodeSize=Standard_D2_v2 nodeCount=2 existingClusterName="" clusterNamePrefix=perf)
+            output=$(az deployment group create --name temp$(Build.BuildID) --resource-group mygroup --template-file $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json --parameters nodeSize=Standard_D2_v2 nodeCount=2 existingClusterName="" clusterNamePrefix=perf)
             cname=$(echo $output |jq -r '.properties.outputs.name.value')
             echo "Cluster name created: $cname"
             echo "##vso[task.setvariable variable=cname]${cname}"
