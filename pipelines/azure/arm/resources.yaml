@@ -15,4 +15,4 @@ jobs:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/create_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(name) perf_qinlkwwubxksw mygroup
+            bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/create_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(name) perf_qinlkwwubxksw mygroup $(System.DefaultWorkingDirectory)/pipelines/azure/arm
