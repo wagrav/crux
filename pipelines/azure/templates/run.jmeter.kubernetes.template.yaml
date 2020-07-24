@@ -30,6 +30,36 @@ jobs:
       displayName: PREPARE tests
       condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
 
+    - task: AzureCLI@2
+      condition: and(succeeded(), eq(parameters.mode, 'jmeter_dynamic'))
+      displayName: Create cluster/connection
+      inputs:
+        azureSubscription: $(armServiceConnection)
+        scriptType: bash
+        scriptPath: $(armModulePath)/create_cluster_and_connection.sh
+        arguments: temp$(Build.BuildID) $(rgroup) $(armModulePath)/k8.json $(clusterNodeSize) $(clusterNodeNumber) perf_$(Build.BuildID)_ cname $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) $(armModulePath)
+
+    - bash: |
+        echo "##vso[task.setvariable variable=kubernetesServiceConnection]$(k8conn)"
+      condition: and(succeeded(), eq(parameters.mode, 'jmeter_dynamic'))
+      displayName: 'Overwrite service connection'
+
+    - task: Kubernetes@1
+      displayName: Login to cluster
+      condition: and(succeeded(), eq(parameters.mode, 'jmeter_dynamic'))
+      inputs:
+        command: login
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+
+    - bash: |
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
+      condition: and(succeeded(), eq(parameters.mode, 'jmeter_dynamic'))
+      displayName: Deploy services to cluster
+
     - task: KubernetesManifest@0
       displayName: Scale slaves to $(scale_down_replicas)
       condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
@@ -123,3 +153,12 @@ jobs:
       inputs:
         testResultsFiles: '**/*_TEST.xml'
         failTaskOnFailedTests: true
+
+    - task: AzureCLI@2
+      displayName: Delete cluster/connection
+      condition: and(succeeded(), eq(parameters.mode, 'jmeter_dynamic'))
+      inputs:
+        azureSubscription: $(armServiceConnection)
+        scriptType: bash
+        scriptPath: $(armModulePath)/delete_cluster_and_connection.sh
+        arguments: $(armModulePath) $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn)
