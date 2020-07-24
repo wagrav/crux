@@ -31,18 +31,10 @@ jobs:
           arguments: gstarczewski jmeter gstarczewski $(pat) $(k8conn) $(cname) $(rgroup) $(System.DefaultWorkingDirectory)/pipelines/azure/arm
 
       - task: AzureCLI@2
-        displayName: Delete cluster
+        displayName: Delete cluster and connection
         inputs:
           azureSubscription: mygroup
           scriptType: bash
-          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/delete_cluster.sh
-          arguments: $(cname) $(rgroup)
+          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/delete_cluster_and_connection.sh
+          arguments: $(System.DefaultWorkingDirectory)/pipelines/azure/arm $(cname) $(rgroup) gstarczewski jmeter gstarczewski $(pat) $(k8conn)
 
-      - task: AzureCLI@2
-        displayName: Delete cluster and service connection
-        inputs:
-          azureSubscription: mygroup
-          scriptType: bash
-          scriptLocation: inlineScript
-          inlineScript: |
-            bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/delete_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(k8conn)

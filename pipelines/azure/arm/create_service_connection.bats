@@ -9,7 +9,7 @@ function setup(){
 }
 
 
-@test "UT: All variables are replaced in JSON template" {
+@test "UT:create_service_connection: All variables are replaced in JSON template" {
   az(){
     echo "http://dummy.url"
   }

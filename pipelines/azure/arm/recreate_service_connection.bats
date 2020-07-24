@@ -9,7 +9,7 @@ function setup(){
 }
 
 
-@test "UT: Creation and Deletion should be called" {
+@test "UT:recreate_service_connection: Creation and Deletion should be called" {
   #these are spies
   create_service_connection(){
     echo "__create_service_connection"

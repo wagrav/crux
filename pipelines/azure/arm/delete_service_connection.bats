@@ -9,7 +9,7 @@ function setup(){
 }
 
 
-@test "UT: When service_connection_id is empty function skips" {
+@test "UT:delete_service_connection: When service_connection_id is empty function skips" {
   curl(){
     echo""
   }
