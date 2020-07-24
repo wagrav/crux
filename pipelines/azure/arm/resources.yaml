@@ -40,6 +40,7 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az aks delete --name $(cname) --resource-group $(rgroup) --yes --no-wait
+            echo "Cluster $(cname) has been scheduled for deletion."
 
       - task: AzureCLI@2
         displayName: Delete a service connection to cluster
