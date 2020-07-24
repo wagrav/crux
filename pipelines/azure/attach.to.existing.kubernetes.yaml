@@ -14,7 +14,7 @@ parameters:
       - delete
 
 variables:
-  kubernetesServiceConnection: $(kubernetesServiceConnection) #edit
+  #kubernetesServiceConnection: $(kubernetesServiceConnection) #edit
   namespace: default #edit
   service: jmeter-slaves
   service-master: jmeter-master
