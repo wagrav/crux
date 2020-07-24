@@ -14,7 +14,6 @@ jobs:
     displayName: JMeter Tests
     pool:
       vmImage: 'ubuntu-latest'
-    timeoutInMinutes: 5
     steps:
     - checkout: crux
       displayName: CRUX clone
@@ -53,6 +52,7 @@ jobs:
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
     - bash: |
+        echo $(kubernetesServiceConnection)
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
