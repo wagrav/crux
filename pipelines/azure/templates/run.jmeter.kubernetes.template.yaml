@@ -52,6 +52,19 @@ jobs:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
+    - task: AzureCLI@2
+      displayName: Refresh creds
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      inputs:
+        azureSubscription: $(armServiceConnection)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+           echo "Refreshing credentials"
+           az aks get-credentials --resource-group $(rgroup) --name $(cname) --overwrite-existing
+           echo "Using connection: $(kubernetesServiceConnection)"
+           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+
     - bash: |
         echo "Using connection: $(kubernetesServiceConnection)"
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
