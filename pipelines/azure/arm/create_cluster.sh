@@ -12,6 +12,8 @@ create_cluster() {
   cluster_name=$(echo $output |jq -r '.properties.outputs.name.value')
   echo "Cluster name created: $cluster_name"
   echo "##vso[task.setvariable variable=$output_variable]${cluster_name}"
+  echo "OUTPUT VAR: $output_variable"
+  echo "OUTPUT VAR EXPANDED ${!output_variable}"
 }
 
 
