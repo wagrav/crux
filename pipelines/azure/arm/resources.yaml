@@ -1,22 +1,21 @@
 name: $(BuildID)
 trigger: none
-
+variables:
+  armModulePath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm
+  k8conn: k8_$(Build.BuildID)
+  armServiceConnection: mygroup
+  clusterNodeSize: Standard_D2_v2
+  clusterNodeNumber: 2
+  devOpsOrg: gstarczewski
+  devOpsProject: jmeter
+  devOpsPatUser: gstarczewski
+  devOpsPat: $(pat)
 jobs:
   - job: Create_Resources
     displayName: Create_Resources
     pool:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 20
-    variables:
-      armModulePath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm
-      k8conn: k8_$(Build.BuildID)
-      armServiceConnection: mygroup
-      clusterNodeSize: Standard_D2_v2
-      clusterNodeNumber: 2
-      devOpsOrg: gstarczewski
-      devOpsProject: jmeter
-      devOpsPatUser: gstarczewski
-      devOpsPat: $(pat)
     steps:
       - task: AzureCLI@2
         displayName: Create cluster/connection
