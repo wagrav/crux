@@ -13,6 +13,7 @@ function runAll(){
   result_folder=$(pwd)/tmp
   mkdir -p "$result_folder"
   runModuleTests junit "$result_folder"
+  runModuleTests ../pipelines/azure/arm "$result_folder"
 }
 
 runAll

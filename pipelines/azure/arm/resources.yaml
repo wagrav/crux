@@ -29,7 +29,6 @@ jobs:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            #bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/delete_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(k8conn)
             bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/recreate_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(k8conn) $(cname) $(rgroup) $(System.DefaultWorkingDirectory)/pipelines/azure/arm
 
       - task: AzureCLI@2
