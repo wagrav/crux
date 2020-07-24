@@ -65,6 +65,14 @@ jobs:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
+    - task: Kubernetes@1
+      displayName: Create
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      inputs:
+        command: create
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
 
     - bash: |
         echo "Using connection: $(kubernetesServiceConnection)"
