@@ -41,7 +41,7 @@
     }
   },
   "variables": {
-    "clusterName": "[if(not(equals(parameters('existingClusterName'),'')),parameters('existingClusterName'),concat(parameters('clusterNamePrefix'), uniqueString(resourceGroup().id)))]"
+    "clusterName": "[if(not(empty(parameters('existingClusterName'))),parameters('existingClusterName'),concat(parameters('clusterNamePrefix'), uniqueString(resourceGroup().id)))]"
   },
   "resources": [
     {
