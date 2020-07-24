@@ -13,6 +13,8 @@ variables:
   scale_up_replicas_master: 1
   service: jmeter-slaves
   service-master: jmeter-master
+  armModulePath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm
+  k8conn: k8_$(Build.BuildID)
   ${{ if eq(parameters.mode,'tests') }}:
     crux_clone: true
     tests_clone: true

@@ -15,7 +15,7 @@ jobs:
     displayName: Create_Resources
     pool:
       vmImage: 'ubuntu-latest'
-    timeoutInMinutes: 20
+    timeoutInMinutes: 30
     steps:
       - task: AzureCLI@2
         displayName: Create cluster/connection
@@ -31,5 +31,5 @@ jobs:
           azureSubscription: $(armServiceConnection)
           scriptType: bash
           scriptPath: $(armModulePath)/delete_cluster_and_connection.sh
-          arguments: $(armModulePath)/pipelines/azure/arm $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn)
+          arguments: $(armModulePath) $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn)
 
