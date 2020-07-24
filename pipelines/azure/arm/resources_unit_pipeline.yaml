@@ -1,0 +1,4 @@
+TBD
+
+This pipeline should call individual scripts not the aggregate ones
+It should be added to E2E tests

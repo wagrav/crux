@@ -15,16 +15,8 @@ jobs:
         inputs:
           azureSubscription: mygroup
           scriptType: bash
-          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/create_cluster.sh
-          arguments: temp$(Build.BuildID) $(rgroup) $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json Standard_D2_v2 2 perf_$(Build.BuildID)_ cname
-
-      - task: AzureCLI@2
-        displayName: Create a service connection to cluster
-        inputs:
-          azureSubscription: mygroup
-          scriptType: bash
-          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/recreate_service_connection.sh
-          arguments: gstarczewski jmeter gstarczewski $(pat) $(k8conn) $(cname) $(rgroup) $(System.DefaultWorkingDirectory)/pipelines/azure/arm
+          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/create_cluster_and_connection.sh
+          arguments: temp$(Build.BuildID) $(rgroup) $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json Standard_D2_v2 2 perf_$(Build.BuildID)_ cname gstarczewski jmeter gstarczewski $(pat) $(k8conn) $(System.DefaultWorkingDirectory)/pipelines/azure/arm
 
       - task: AzureCLI@2
         displayName: Delete cluster and connection
