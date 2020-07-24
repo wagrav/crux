@@ -20,7 +20,8 @@ function teardown(){
   assert_output --partial "Cluster name created: perfqinlkwwubxksw"
 }
 
-@test "UT:create_cluster: should set output variable to pipeline" {
-  run create_cluster "deployment_name" "resource_group" "template_file" "node_size" "node_count" "cluster_name_prefix" "output_variable"
-    assert_output --partial "##vso[task.setvariable variable=output_variable]perfqinlkwwubxksw"
+@test "UT:create_cluster: should set output variable to pipeline and within current script" {
+  run create_cluster "deployment_name" "resource_group" "template_file" "node_size" "node_count" "cluster_name_prefix" "cluster_name"
+  assert_output --partial "##vso[task.setvariable variable=cluster_name]perfqinlkwwubxksw"
+  assert_output --partial "OUTPUT VAR EXPANDED perfqinlkwwubxksw"
 }

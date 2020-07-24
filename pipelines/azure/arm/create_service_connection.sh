@@ -9,7 +9,7 @@ create_service_connection() {
   local resource_group=$7
   local path=$8
 
-  url=$(az aks show --name $cluster_name --resource-group $resource_group | jq '.fqdn' | sed "s/\"//g") || :
+  url=$(az aks show --name "$cluster_name" --resource-group "$resource_group" | jq '.fqdn' | sed "s/\"//g") || :
   printf "Creating kubernetes connection $name for cluster: $cluster_name \n\t url: $url"
   source "$path"/template.json.sh $name $url $cluster_name $resource_group> "$path"/payload.json
   ls

@@ -12,6 +12,7 @@ create_cluster() {
   cluster_name=$(echo $output |jq -r '.properties.outputs.name.value')
   echo "Cluster name created: $cluster_name"
   echo "##vso[task.setvariable variable=$output_variable]${cluster_name}"
+  printf -v "$output_variable" "$cluster_name" #this is required because azure task will not set it for current script only subsequent steps
   echo "OUTPUT VAR: $output_variable"
   echo "OUTPUT VAR EXPANDED ${!output_variable}"
 }
