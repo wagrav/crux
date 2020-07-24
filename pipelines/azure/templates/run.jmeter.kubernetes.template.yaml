@@ -31,7 +31,7 @@ jobs:
       condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
 
     - task: AzureCLI@2
-      condition: and(succeeded(), eq(eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       displayName: Create cluster/connection
       inputs:
         azureSubscription: $(armServiceConnection)
@@ -41,12 +41,12 @@ jobs:
 
     - bash: |
         echo "##vso[task.setvariable variable=kubernetesServiceConnection]$(k8conn)"
-      condition: and(succeeded(), eq(eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       displayName: 'Overwrite service connection'
 
     - task: Kubernetes@1
       displayName: Login to cluster
-      condition: and(succeeded(), eq(eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       inputs:
         command: login
         connectionType: Kubernetes Service Connection
@@ -57,7 +57,7 @@ jobs:
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-      condition: and(succeeded(), eq(eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       displayName: Deploy services to cluster
 
     - task: KubernetesManifest@0
@@ -156,7 +156,7 @@ jobs:
 
     - task: AzureCLI@2
       displayName: Delete cluster/connection
-      condition: and(succeeded(), eq(eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       inputs:
         azureSubscription: $(armServiceConnection)
         scriptType: bash
