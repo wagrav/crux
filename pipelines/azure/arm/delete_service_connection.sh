@@ -25,4 +25,8 @@ delete_service_connection() {
   fi
 
 }
-delete_service_connection "$@"
+
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  delete_service_connection "$@"
+fi
