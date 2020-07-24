@@ -40,6 +40,7 @@ jobs:
 
     - bash: |
         echo "##vso[task.setvariable variable=kubernetesServiceConnection]$(k8conn)"
+        echo "Setting active service connection to $(k8conn)"
       condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       displayName: 'Overwrite service connection'
 
@@ -52,7 +53,7 @@ jobs:
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
     - bash: |
-        echo $(kubernetesServiceConnection)
+        echo "Using connection: $(kubernetesServiceConnection)"
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
