@@ -8,21 +8,29 @@ jobs:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 20
     variables:
+      armModulePath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm
       k8conn: k8_$(Build.BuildID)
+      armServiceConnection: mygroup
+      clusterNodeSize: Standard_D2_v2
+      clusterNodeNumber: 2
+      devOpsOrg: gstarczewski
+      devOpsProject: jmeter
+      devOpsPatUser: gstarczewski
+      devOpsPat: $(pat)
     steps:
       - task: AzureCLI@2
-        displayName: Create cluster dynamically with ARM
+        displayName: Create cluster/connection
         inputs:
-          azureSubscription: mygroup
+          azureSubscription: $(armServiceConnection)
           scriptType: bash
-          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/create_cluster_and_connection.sh
-          arguments: temp$(Build.BuildID) $(rgroup) $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json Standard_D2_v2 2 perf_$(Build.BuildID)_ cname gstarczewski jmeter gstarczewski $(pat) $(k8conn) $(System.DefaultWorkingDirectory)/pipelines/azure/arm
+          scriptPath: $(armModulePath)/create_cluster_and_connection.sh
+          arguments: temp$(Build.BuildID) $(rgroup) $(armModulePath)/k8.json $(clusterNodeSize) $(clusterNodeNumber) perf_$(Build.BuildID)_ cname $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) $(armModulePath)
 
       - task: AzureCLI@2
-        displayName: Delete cluster and connection
+        displayName: Delete cluster/connection
         inputs:
-          azureSubscription: mygroup
+          azureSubscription: $(armServiceConnection)
           scriptType: bash
-          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/delete_cluster_and_connection.sh
-          arguments: $(System.DefaultWorkingDirectory)/pipelines/azure/arm $(cname) $(rgroup) gstarczewski jmeter gstarczewski $(pat) $(k8conn)
+          scriptPath: $(armModulePath)/delete_cluster_and_connection.sh
+          arguments: $(armModulePath)/pipelines/azure/arm $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn)
 
