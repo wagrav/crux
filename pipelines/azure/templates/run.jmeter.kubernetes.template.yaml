@@ -52,7 +52,6 @@ jobs:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-           sleep $(sleep) || :
            echo "Refreshing credentials"
            az aks get-credentials --resource-group $(rgroup) --name $(cname) --overwrite-existing
            echo "Using connection: $(kubernetesServiceConnection)"
@@ -81,7 +80,7 @@ jobs:
             printf "\n\tWait for cluster $sleep_time_s seconds"
             sleep $sleep_time_s
            done
-           sleep 180
+           sleep $(sleep) |:
            bash kubernetes/bin/start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: Kubernetes@1
