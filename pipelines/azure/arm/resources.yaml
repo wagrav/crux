@@ -15,12 +15,8 @@ jobs:
         inputs:
           azureSubscription: mygroup
           scriptType: bash
-          scriptLocation: inlineScript
-          inlineScript: |
-            output=$(az deployment group create --name temp$(Build.BuildID) --resource-group $(rgroup) --template-file $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json --parameters nodeSize=Standard_D2_v2 nodeCount=2 clusterNamePrefix=perf_$(Build.BuildID)_)
-            cname=$(echo $output |jq -r '.properties.outputs.name.value')
-            echo "Cluster name created: $cname"
-            echo "##vso[task.setvariable variable=cname]${cname}"
+          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/create_cluster.sh
+          arguments: temp$(Build.BuildID) $(rgroup) $(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json Standard_D2_v2 2 perf_$(Build.BuildID)_ cname
 
       - task: AzureCLI@2
         displayName: Create a service connection to cluster
