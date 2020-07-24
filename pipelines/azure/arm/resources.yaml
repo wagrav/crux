@@ -27,9 +27,16 @@ jobs:
         inputs:
           azureSubscription: mygroup
           scriptType: bash
-          scriptLocation: inlineScript
-          inlineScript: |
-            bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/recreate_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(k8conn) $(cname) $(rgroup) $(System.DefaultWorkingDirectory)/pipelines/azure/arm
+          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/recreate_service_connection.sh
+          arguments: gstarczewski jmeter gstarczewski $(pat) $(k8conn) $(cname) $(rgroup) $(System.DefaultWorkingDirectory)/pipelines/azure/arm
+
+      task: AzureCLI@2
+        displayName: Delete cluster
+        inputs:
+          azureSubscription: mygroup
+          scriptType: bash
+          scriptPath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm/delete_cluster.sh
+          arguments: $(cname) $(rgroup)
 
       - task: AzureCLI@2
         displayName: Delete cluster and service connection
@@ -38,6 +45,4 @@ jobs:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az aks delete --name $(cname) --resource-group $(rgroup) --yes --no-wait
-            echo "Cluster $(cname) has been scheduled for deletion."
             bash $(System.DefaultWorkingDirectory)/pipelines/azure/arm/delete_service_connection.sh gstarczewski jmeter gstarczewski $(pat) $(k8conn)
