@@ -26,12 +26,6 @@ jobs:
     - bash: |
         mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
         cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
-        echo "Deafult"
-        $(System.DefaultWorkingDirectory)/
-        echo "Repo root"
-        $(System.DefaultWorkingDirectory)/$(reposRoot)/
-        echo "Scenario"
-        ls $(System.DefaultWorkingDirectory)/$(reposRoot)/$(scenario)
       displayName: PREPARE tests
       condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
 
@@ -202,7 +196,7 @@ jobs:
 
     - task: AzureCLI@2
       displayName: Delete cluster/connection
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: eq('${{ parameters.mode }}', 'jmeter_dynamic')
       inputs:
         azureSubscription: $(armServiceConnection)
         scriptType: bash
