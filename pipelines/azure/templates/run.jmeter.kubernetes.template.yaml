@@ -52,17 +52,6 @@ jobs:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
-    - task: KubernetesManifest@0
-      displayName: Scale slaves to $(scale_down_replicas)
-      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
-      inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
-        action: scale
-        kind: deployment
-        name: $(service)
-        replicas: $(scale_down_replicas)
-        namespace: $(cluster_namespace)
-
     - task: AzureCLI@2
       displayName: Refresh creds
       condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
@@ -71,6 +60,7 @@ jobs:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
+           sleep $(sleep) || :
            echo "Refreshing credentials"
            az aks get-credentials --resource-group $(rgroup) --name $(cname) --overwrite-existing
            echo "Using connection: $(kubernetesServiceConnection)"
