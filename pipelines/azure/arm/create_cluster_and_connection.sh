@@ -20,7 +20,7 @@ create_cluster_and_connection() {
   create_cluster "$deployment_name" "$resource_group" "$template_file" "$node_size" "$node_count" "$cluster_name_prefix" "$output_variable"
 
   source "$path"/create_service_connection.sh
-  create_service_connection "$org" "$project" "$user" "$pat" "$connection_name" "${!output_variable}" "$resource_group" "$path"
+  create_service_connection "$org" "$project" "$user" "$pat" "$connection_name" "${output_variable}" "$resource_group" "$path"
 
 }
 
