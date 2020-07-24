@@ -64,32 +64,32 @@ jobs:
             sleep $sleep_time_s
            done
 
-          until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
-          do
+           until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
+           do
             printf "\n\tWait for cluster $sleep_time_s seconds"
             sleep $sleep_time_s
-          done
+           done
 
-          until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
-          do
+           until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
+           do
             printf "\n\tWait for cluster $sleep_time_s seconds"
             sleep $sleep_time_s
-          done
+           done
 
-          until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
-          do
+           until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
+           do
            printf "\n\tWait for cluster $sleep_time_s seconds"
            sleep $sleep_time_s
-          done
+           done
 
 
-          kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-          do
-           printf "\n\tWait for cluster $sleep_time_s seconds"
-           sleep $sleep_time_s
-          done
+           until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
+           do
+            printf "\n\tWait for cluster $sleep_time_s seconds"
+            sleep $sleep_time_s
+           done
 
-          bash kubernetes/bin/start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
+           bash kubernetes/bin/start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: Kubernetes@1
       displayName: Login to cluster
