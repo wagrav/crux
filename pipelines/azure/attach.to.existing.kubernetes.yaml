@@ -35,6 +35,14 @@ jobs:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
+    - task: Kubernetes@1
+      displayName: Create
+      inputs:
+        command: create
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+
     - bash: |
         kubectl delete -n $(namespace) deployment/jmeter-slaves deployment/jmeter-master svc/jmeter-slaves-svc configmap/jmeter-load-test ||:
       displayName: Delete existing deployment
