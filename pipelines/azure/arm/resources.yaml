@@ -9,7 +9,7 @@ jobs:
     timeoutInMinutes: 5
     steps:
       - task: AzureCLI@2
-        displayName: Create cluster from ARM
+        displayName: Create cluster dynamically with ARM
         inputs:
           azureSubscription: mygroup
           scriptType: bash
@@ -21,7 +21,7 @@ jobs:
             echo "##vso[task.setvariable variable=cname]${cname}"
 
       - task: AzureCLI@2
-        displayName: Recreate connection
+        displayName: Create a service connection to cluster
         inputs:
           azureSubscription: mygroup
           scriptType: bash
@@ -37,4 +37,4 @@ jobs:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az aks delete --name $(cname) --resource-group mygroup --yes
+            az aks delete --name $(cname) --resource-group mygroup --yes --no-wait
