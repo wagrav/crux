@@ -80,7 +80,7 @@ jobs:
             printf "\n\tWait for cluster $sleep_time_s seconds"
             sleep $sleep_time_s
            done
-           sleep $(sleep) |:
+           sleep $(sleep) ||:
            bash kubernetes/bin/start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: Kubernetes@1
