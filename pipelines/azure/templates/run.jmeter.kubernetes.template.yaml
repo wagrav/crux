@@ -64,6 +64,33 @@ jobs:
             sleep $sleep_time_s
            done
 
+          until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
+          do
+            printf "\n\tWait for cluster $sleep_time_s seconds"
+            sleep $sleep_time_s
+          done
+
+          until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
+          do
+            printf "\n\tWait for cluster $sleep_time_s seconds"
+            sleep $sleep_time_s
+          done
+
+          until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
+          do
+           printf "\n\tWait for cluster $sleep_time_s seconds"
+           sleep $sleep_time_s
+          done
+
+
+          kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
+          do
+           printf "\n\tWait for cluster $sleep_time_s seconds"
+           sleep $sleep_time_s
+          done
+
+          bash kubernetes/bin/start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
+
     - task: Kubernetes@1
       displayName: Login to cluster
       condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
@@ -81,64 +108,64 @@ jobs:
       condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       displayName: Deploy services to cluster
 
-    - task: KubernetesManifest@0
-      displayName: Scale slaves to $(scale_down_replicas)
-      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
-      inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
-        action: scale
-        kind: deployment
-        name: $(service)
-        replicas: $(scale_down_replicas)
-        namespace: $(cluster_namespace)
-
-    - task: KubernetesManifest@0
-      displayName: Scale master to $(scale_down_replicas)
-      condition: and(succeeded(), not(eq(variables.scale_master_down, false)))
-      inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
-        action: scale
-        kind: deployment
-        name: $(service-master)
-        replicas: $(scale_down_replicas)
-        namespace: $(cluster_namespace)
-
-    - task: KubernetesManifest@0
-      displayName: Scale master to $(scale_up_replicas_master)
-      condition: and(succeeded(), not(eq(variables.scale_master_up, false)))
-      inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
-        action: scale
-        kind: deployment
-        name: $(service-master)
-        replicas: $(scale_up_replicas_master)
-        namespace: $(cluster_namespace)
-
-    - task: KubernetesManifest@0
-      displayName: Scale slaves to $(scale_up_replicas)
-      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
-      inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
-        action: scale
-        kind: deployment
-        name: $(service)
-        replicas: $(scale_up_replicas)
-        namespace: $(cluster_namespace)
-
-    - task: Kubernetes@1
-      displayName: Login to cluster
-      condition: and(succeeded(), not(eq(variables.login_to_cluster, false)))
-      inputs:
-        command: login
-        connectionType: Kubernetes Service Connection
-        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-
-    - task: ShellScript@2
-      displayName: JMeter tests
-      condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
-      inputs:
-        scriptPath: kubernetes/bin/start_test_from_script_params.sh
-        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
+#    - task: KubernetesManifest@0
+#      displayName: Scale slaves to $(scale_down_replicas)
+#      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
+#      inputs:
+#        kubernetesServiceConnection: $(kubernetesServiceConnection)
+#        action: scale
+#        kind: deployment
+#        name: $(service)
+#        replicas: $(scale_down_replicas)
+#        namespace: $(cluster_namespace)
+#
+#    - task: KubernetesManifest@0
+#      displayName: Scale master to $(scale_down_replicas)
+#      condition: and(succeeded(), not(eq(variables.scale_master_down, false)))
+#      inputs:
+#        kubernetesServiceConnection: $(kubernetesServiceConnection)
+#        action: scale
+#        kind: deployment
+#        name: $(service-master)
+#        replicas: $(scale_down_replicas)
+#        namespace: $(cluster_namespace)
+#
+#    - task: KubernetesManifest@0
+#      displayName: Scale master to $(scale_up_replicas_master)
+#      condition: and(succeeded(), not(eq(variables.scale_master_up, false)))
+#      inputs:
+#        kubernetesServiceConnection: $(kubernetesServiceConnection)
+#        action: scale
+#        kind: deployment
+#        name: $(service-master)
+#        replicas: $(scale_up_replicas_master)
+#        namespace: $(cluster_namespace)
+#
+#    - task: KubernetesManifest@0
+#      displayName: Scale slaves to $(scale_up_replicas)
+#      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
+#      inputs:
+#        kubernetesServiceConnection: $(kubernetesServiceConnection)
+#        action: scale
+#        kind: deployment
+#        name: $(service)
+#        replicas: $(scale_up_replicas)
+#        namespace: $(cluster_namespace)
+#
+#    - task: Kubernetes@1
+#      displayName: Login to cluster
+#      condition: and(succeeded(), not(eq(variables.login_to_cluster, false)))
+#      inputs:
+#        command: login
+#        connectionType: Kubernetes Service Connection
+#        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+#
+#    - task: ShellScript@2
+#      displayName: JMeter tests
+#      condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
+#      inputs:
+#        scriptPath: kubernetes/bin/start_test_from_script_params.sh
+#        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
       displayName: Archive JMeter Report
