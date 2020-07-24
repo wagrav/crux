@@ -87,7 +87,7 @@ jobs:
             sleep $sleep_time_s
            done
            sleep $(sleep) ||:
-           bash kubernetes/bin/start_test_from_script_params.sh $(cluster_namespace) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(scenario) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(data_file) "$(jmeter_args)"
+           cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: Kubernetes@1
       displayName: Login to cluster
