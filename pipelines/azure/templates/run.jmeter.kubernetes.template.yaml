@@ -56,6 +56,13 @@ jobs:
            echo "Refreshing credentials"
            az aks get-credentials --resource-group $(rgroup) --name $(cname) --overwrite-existing
            echo "Using connection: $(kubernetesServiceConnection)"
+           status=1
+           sleep_time_s=10
+           until kubectl create -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+           do
+            printf "\n\tWait for cluster $sleep_time_s seconds"
+            sleep $sleep_time_s
+           done
 
     - task: Kubernetes@1
       displayName: Login to cluster
@@ -64,15 +71,6 @@ jobs:
         command: login
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-
-    - task: Kubernetes@1
-      displayName: Create
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
-      inputs:
-        command: create
-        connectionType: Kubernetes Service Connection
-        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
 
     - bash: |
         echo "Using connection: $(kubernetesServiceConnection)"
