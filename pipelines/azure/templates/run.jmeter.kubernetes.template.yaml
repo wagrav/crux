@@ -44,14 +44,6 @@ jobs:
       condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       displayName: 'Overwrite service connection'
 
-    - task: Kubernetes@1
-      displayName: Login to cluster
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
-      inputs:
-        command: login
-        connectionType: Kubernetes Service Connection
-        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-
     - task: AzureCLI@2
       displayName: Refresh creds
       condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
@@ -64,7 +56,15 @@ jobs:
            echo "Refreshing credentials"
            az aks get-credentials --resource-group $(rgroup) --name $(cname) --overwrite-existing
            echo "Using connection: $(kubernetesServiceConnection)"
-           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+
+    - task: Kubernetes@1
+      displayName: Login to cluster
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      inputs:
+        command: login
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+
 
     - bash: |
         echo "Using connection: $(kubernetesServiceConnection)"
