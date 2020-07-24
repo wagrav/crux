@@ -10,6 +10,7 @@ variables:
   devOpsProject: jmeter
   devOpsPatUser: gstarczewski
   devOpsPat: $(pat)
+  rgroup: jmeter-group
 jobs:
   - job: Create_Resources
     displayName: Create_Resources
