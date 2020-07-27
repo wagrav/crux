@@ -30,8 +30,8 @@ jobs:
       condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
 
     - task: AzureCLI@2
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
-      displayName: Create cluster/connection
+      condition: and(succeeded(), not(eq(variables.create_cluster, false)))
+      displayName: Create cluster
       inputs:
         azureSubscription: $(armServiceConnection)
         scriptType: bash
@@ -46,8 +46,8 @@ jobs:
 #      displayName: Configure cluster for use - DYNAMIC
 
     - task: Kubernetes@1
-      displayName: Configure cluster for use - STATIC
-      condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'jmeter_dynamic')))
+      displayName: Configure cluster
+      condition: and(succeeded(), not(eq(variables.configure_cluster, false)))
       inputs:
         command: login
         connectionType: Kubernetes Service Connection
@@ -55,6 +55,7 @@ jobs:
 
     - task: ShellScript@2
       displayName: Deploy services to cluster
+      condition: and(succeeded(), not(eq(variables.deploy_to_cluster, false)))
       inputs:
         scriptPath: $(armModulePath)/wait_for_pods.sh
         args: $(System.DefaultWorkingDirectory) $(cluster_namespace) $(service-master) $(service) $(scale_up_replicas)
@@ -88,7 +89,7 @@ jobs:
         artifact: jmeter.log
 
     - task: PublishPipelineArtifact@1
-      condition: not(eq(variables.archive_log, false))
+      condition: not(eq(variables.archive_errors, false))
       displayName: Archive Errors
       inputs:
         path: $(errors)
@@ -110,7 +111,7 @@ jobs:
 
     - task: AzureCLI@2
       displayName: Delete cluster/connection
-      condition: and(always(),eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(succeeded(), not(eq(variables.delete_cluster, false)))
       inputs:
         azureSubscription: $(armServiceConnection)
         scriptType: bash

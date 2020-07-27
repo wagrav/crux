@@ -20,14 +20,46 @@ variables:
     crux_clone: true
     tests_clone: true
     prepare_tests: true
-    scale_slaves_down: false
-    scale_master_down: false
-    scale_master_up: false
-    scale_slaves_up: false
-    login_to_cluster: true
+    create_cluster: false
+    configure_cluster: false
+    deploy_to_cluster: false
+    delete_cluster: false
     jmeter_tests: false
     archive_jmeter_report: false
     archive_results_file: false
     archive_log: false
+    archive_errors: false
     evaluate_as_junit_tests: false
     publish_junit_results: false
+
+  ${{ if eq(parameters.mode,'jmeter') }}:
+    crux_clone: true
+    tests_clone: true
+    prepare_tests: true
+    create_cluster: false
+    configure_cluster: true
+    deploy_to_cluster: true
+    delete_cluster: false
+    jmeter_tests: true
+    archive_jmeter_report: true
+    archive_results_file: true
+    archive_log: true
+    archive_errors: true
+    evaluate_as_junit_tests: true
+    publish_junit_results: true
+
+  ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
+    crux_clone: true
+    tests_clone: true
+    prepare_tests: true
+    create_cluster: true
+    configure_cluster: false
+    deploy_to_cluster: true
+    delete_cluster: true
+    jmeter_tests: true
+    archive_jmeter_report: true
+    archive_results_file: true
+    archive_log: true
+    archive_errors: true
+    evaluate_as_junit_tests: true
+    publish_junit_results: true
