@@ -63,7 +63,7 @@ jobs:
       displayName: JMeter tests
       condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
       inputs:
-        scriptPath: kubernetes/bin/start_test_from_script_params.sh
+        scriptPath: kubernetes/bin/jmeter.sh
         args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
