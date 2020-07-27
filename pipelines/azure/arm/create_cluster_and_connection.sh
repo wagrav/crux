@@ -1,4 +1,9 @@
 #!/bin/bash
+refresh_creds(){
+  local resource_group=$1
+  local cluster_name=$2
+  az aks get-credentials --resource-group "$resource_group" --name "$cluster_name" --overwrite-existing
+}
 create_cluster_and_connection() {
   local deployment_name=$1
   local resource_group=$2
@@ -22,6 +27,7 @@ create_cluster_and_connection() {
   source "$path"/create_service_connection.sh
   echo "Creating connection for: ${!output_variable}"
   create_service_connection "$org" "$project" "$user" "$pat" "$connection_name" "${!output_variable}" "$resource_group" "$path"
+  refresh_creds "$resource_group" "${!output_variable}"
 
 }
 

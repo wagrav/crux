@@ -53,10 +53,7 @@ jobs:
         scriptLocation: inlineScript
         inlineScript: |
            echo "Refreshing credentials"
-           az aks get-credentials --resource-group $(rgroup) --name $(cname) --overwrite-existing
-           echo "Using connection: $(kubernetesServiceConnection)"
-           status=1
-           sleep_time_s=10
+           #az aks get-credentials --resource-group $(rgroup) --name $(cname) --overwrite-existing
            kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
            kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
            kubectl create -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
@@ -64,6 +61,8 @@ jobs:
 
            cd pipelines/azure/bin && bash wait_for_pods.sh $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
            #cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
+
+
 
     - task: AzureCLI@2
       displayName: JMeter tests
