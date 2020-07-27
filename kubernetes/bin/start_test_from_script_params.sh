@@ -35,6 +35,7 @@ copyTestFilesToMasterPod(){
 cleanMasterPod(){
   kubectl exec -ti -n $tenant $master_pod -- rm -Rf "$tmp"
   kubectl exec -ti -n $tenant $master_pod -- mkdir -p "$tmp/$report_dir"
+  kubectl exec -ti -n $tenant $master_pod -- touch "$test_dir/errors.xml"
 }
 runTest(){
   printf "\t\n Jmeter user args $user_args"
