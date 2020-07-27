@@ -44,6 +44,7 @@ copyTestResultsToLocal(){
   kubectl cp "$tenant/$master_pod:$tmp/$report_dir" "$local_report_dir/"
   kubectl cp "$tenant/$master_pod:$tmp/results.csv" "$working_dir/../tmp/results.csv"
   kubectl cp "$tenant/$master_pod:/test/jmeter.log" "$working_dir/../tmp/jmeter.log"
+  kubectl cp "$tenant/$master_pod:/test/errors.xml" "$working_dir/../tmp/errors.xml"
   head -n10 "$working_dir/../tmp/results.csv"
 }
 

@@ -47,7 +47,7 @@ wait_for_cluster_ready(){
   kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_configmap.yaml
   kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_deploy_v16.yaml
   #Wait till ready
-  bash "$rootPath"/pipelines/azure/bin/wait_for_pods.sh "$cluster_namespace" $scale_up_replicas_master $sleep_interval "$service_master"
+  wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval "$service_master"
 
   #Assure clean test env by scaling fresh
   kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" "$service_master"
@@ -55,8 +55,8 @@ wait_for_cluster_ready(){
   kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas_master" "$service_master"
   kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas" "$service_slave"
 
-  bash "$rootPath"/pipelines/azure/bin/wait_for_pods.sh "$cluster_namespace" $scale_up_replicas_master $sleep_interval $service_master
-  bash "$rootPath"/pipelines/azure/bin/wait_for_pods.sh "$cluster_namespace" $scale_up_replicas $sleep_interval $service_slave
+  wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval $service_master
+  wait_for_pods "$cluster_namespace" $scale_up_replicas $sleep_interval $service_slave
 
 }
 
