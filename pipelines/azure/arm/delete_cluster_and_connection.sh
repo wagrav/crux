@@ -8,13 +8,17 @@ delete_cluster_and_connection() {
   local user=$6
   local pat=$7
   local connection_name=$8
+  local skipConnectionDeletion=$9
 
   source "$path"/delete_cluster.sh
   delete_cluster "$cluster_name" "$resource_group"
 
-  source "$path"/delete_service_connection.sh
-  delete_service_connection "$org" "$project" "$user" "$pat" "$connection_name"
-
+  if [ -z "$skipConnectionDeletion" ];then
+    echo "Skipping connection deletion"
+  else
+    source "$path"/delete_service_connection.sh
+    delete_service_connection "$org" "$project" "$user" "$pat" "$connection_name"
+  fi
 }
 
 

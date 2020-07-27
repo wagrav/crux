@@ -36,14 +36,14 @@ jobs:
         azureSubscription: $(armServiceConnection)
         scriptType: bash
         scriptPath: $(armModulePath)/create_cluster_and_connection.sh
-        arguments: temp$(Build.BuildID) $(rgroup) $(armModulePath)/k8.json $(clusterNodeSize) $(clusterNodeNumber) perf_$(Build.BuildID)_ cname $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) $(armModulePath)
+        arguments: temp$(Build.BuildID) $(rgroup) $(armModulePath)/k8.json $(clusterNodeSize) $(clusterNodeNumber) perf_$(Build.BuildID)_ cname $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) $(armModulePath) skip
 
-    # a step necessary if we want to unify pipelines so ARM version dynamically creates a k8 connection
-    - bash: |
-        echo "##vso[task.setvariable variable=kubernetesServiceConnection]$(k8conn)"
-        echo "Setting active service connection to $(k8conn)"
-      condition: and(eq(variables.overwrite_connection,true), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
-      displayName: Configure cluster for use - DYNAMIC
+#    # a step necessary if we want to unify pipelines so ARM version dynamically creates a k8 connection
+#    - bash: |
+#        echo "##vso[task.setvariable variable=kubernetesServiceConnection]$(k8conn)"
+#        echo "Setting active service connection to $(k8conn)"
+#      condition: and(eq(variables.overwrite_connection,true), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+#      displayName: Configure cluster for use - DYNAMIC
 
     - task: Kubernetes@1
       displayName: Configure cluster for use - STATIC
@@ -115,4 +115,4 @@ jobs:
         azureSubscription: $(armServiceConnection)
         scriptType: bash
         scriptPath: $(armModulePath)/delete_cluster_and_connection.sh
-        arguments: $(armModulePath) $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn)
+        arguments: $(armModulePath) $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) skip

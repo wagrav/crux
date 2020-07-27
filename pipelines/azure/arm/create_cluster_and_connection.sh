@@ -19,14 +19,19 @@ create_cluster_and_connection() {
   local pat=${11}
   local connection_name=${12}
   local path=${13}
+  local skipConnectionCreation=${13}
 
 
   source "$path"/create_cluster.sh
   create_cluster "$deployment_name" "$resource_group" "$template_file" "$node_size" "$node_count" "$cluster_name_prefix" "$output_variable"
 
-  source "$path"/create_service_connection.sh
-  echo "Creating connection for: ${!output_variable}"
-  create_service_connection "$org" "$project" "$user" "$pat" "$connection_name" "${!output_variable}" "$resource_group" "$path"
+  if [ -z "$skipConnectionCreation" ];then
+    echo "Creating connection skipped ..."
+  else
+    source "$path"/create_service_connection.sh
+    echo "Creating connection for: ${!output_variable}"
+    create_service_connection "$org" "$project" "$user" "$pat" "$connection_name" "${!output_variable}" "$resource_group" "$path"
+  fi
   refresh_creds "$resource_group" "${!output_variable}"
 
 }
