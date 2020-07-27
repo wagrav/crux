@@ -103,7 +103,7 @@ jobs:
         failTaskOnFailedTests: true
 
     - task: AzureCLI@2
-      displayName: Delete cluster/connection
+      displayName: Delete cluster
       condition: and(succeeded(), not(eq(variables.delete_cluster, false)))
       inputs:
         azureSubscription: $(armServiceConnection)
