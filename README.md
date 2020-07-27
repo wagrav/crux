@@ -23,11 +23,12 @@ The "run" pipeline which is where your tests happen is easily extensible with Az
 * solution contains Chrome Headless and allows you to use Web Driver Sampler to browser-test "difficult" applications (e.g. Mendix-based apps)
 * Simple Table Server is included and ready to use
 * You can send Live Data to Azure Insights, Azure Backend listener is included
-* JMeter pipeline publishes JUNIT result and fails on errors
+* JMeter pipeline publishes [JUNIT](https://github.com/ObjectivityLtd/crux/wiki/JMETER-tests-as-JUNIT) results and fails on errors
 * contains example pipelines you can use and extend  
 
 
 ## Setup
+
 
 In the first step you need to create a k8 cluster if you do not have one already. Cluster for Jmeter should run no other services.
 In the seconds step you create a kubernetes service connection to your cluster in your DevOps. 
