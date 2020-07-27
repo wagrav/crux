@@ -42,41 +42,10 @@ jobs:
         echo "##vso[task.setvariable variable=kubernetesServiceConnection]$(k8conn)"
         echo "Setting active service connection to $(k8conn)"
       condition: and(eq(variables.overwrite_connection,true), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
-      displayName: 'Overwrite service connection'
-
-    - task: AzureCLI@2
-      displayName: Deploy services to cluster
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
-      inputs:
-        azureSubscription: $(armServiceConnection)
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-           echo "Refreshing credentials"
-           #az aks get-credentials --resource-group $(rgroup) --name $(cname) --overwrite-existing
-           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
-           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-           kubectl create -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
-           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
-
-           cd pipelines/azure/bin && bash wait_for_pods.sh $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
-           #cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
-
-
-
-    - task: AzureCLI@2
-      displayName: JMeter tests
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
-      inputs:
-        azureSubscription: $(armServiceConnection)
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-          cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
-
+      displayName: Configure cluster for use - DYNAMIC
 
     - task: Kubernetes@1
-      displayName: Login to cluster
+      displayName: Configure cluster for use - STATIC
       condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'jmeter_dynamic')))
       inputs:
         command: login
@@ -89,10 +58,34 @@ jobs:
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-      condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'jmeter_dynamic')))
+      #condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'jmeter_dynamic')))
       displayName: Deploy services to cluster
 
-#    - task: KubernetesManifest@0
+#    - task: AzureCLI@2
+#      displayName: Deploy services to cluster
+#      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+#      inputs:
+#        azureSubscription: $(armServiceConnection)
+#        scriptType: bash
+#        scriptLocation: inlineScript
+#        inlineScript: |
+#           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
+#           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
+#           kubectl create -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+#           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
+
+    - task: AzureCLI@2
+      displayName: Wait for cluster services to be ready
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      inputs:
+        azureSubscription: $(armServiceConnection)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+           bash pipelines/azure/bin/wait_for_pods.sh $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
+
+
+      #    - task: KubernetesManifest@0
 #      displayName: Scale slaves to $(scale_down_replicas)
 #      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
 #      inputs:
@@ -150,6 +143,16 @@ jobs:
 #      inputs:
 #        scriptPath: kubernetes/bin/start_test_from_script_params.sh
 #        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
+
+    - task: AzureCLI@2
+      displayName: JMeter tests
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      inputs:
+        azureSubscription: $(armServiceConnection)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
       displayName: Archive JMeter Report
