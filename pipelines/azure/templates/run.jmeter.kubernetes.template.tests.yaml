@@ -40,4 +40,3 @@ jobs:
         inputs:
           testResultsFormat: 'NUnit'
           testResultsFiles: '$(System.DefaultWorkingDirectory)/kubernetes/tmp/*-armttk.xml'
-        condition: always(
