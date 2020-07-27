@@ -14,6 +14,10 @@ jobs:
           scriptPath: $(System.DefaultWorkingDirectory)/modules/bats/install.sh
 
       - bash: |
+          mkdir -p $(System.DefaultWorkingDirectory)/arm_ttk_test_results
+        displayName: Preapare  ARM-TTk tests env
+
+      - bash: |
           PATH=/home/vsts/bin:$PATH && \
           PATH=$HOME/bin:$PATH && \
           PATH=/home/vsts/.local/bin:$PATH && \
@@ -21,8 +25,19 @@ jobs:
         displayName: Run tests
 
       - task: PublishTestResults@2
-        displayName: Publish Framework Test Results
+        displayName: Publish Framework BATS Tests Results
         inputs:
           failTaskOnFailedTests: true
           testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
           testResultsFiles: '**/TestReport-*.xml'
+
+      - task: RunARMTTKTests@1
+        inputs:
+          templatelocation: '$(System.DefaultWorkingDirectory)/pipelines/azure/arm/k8.json'
+          resultLocation: '$(System.DefaultWorkingDirectory)/arm_ttk_test_results'
+
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'NUnit'
+          testResultsFiles: '$(System.DefaultWorkingDirectory)/kubernetes/tmp/*-armttk.xml'
+        condition: always(
