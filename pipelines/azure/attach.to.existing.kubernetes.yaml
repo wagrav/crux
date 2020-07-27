@@ -14,7 +14,7 @@ parameters:
       - delete
 
 variables:
-  kubernetesServiceConnection: k8con2 #edit
+  #kubernetesServiceConnection: $(kubernetesServiceConnection) #edit
   namespace: default #edit
   service: jmeter-slaves
   service-master: jmeter-master
@@ -34,6 +34,14 @@ jobs:
         command: login
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+
+    - task: Kubernetes@1
+      displayName: Create
+      inputs:
+        command: create
+        connectionType: Kubernetes Service Connection
+        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
+        arguments: -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
 
     - bash: |
         kubectl delete -n $(namespace) deployment/jmeter-slaves deployment/jmeter-master svc/jmeter-slaves-svc configmap/jmeter-load-test ||:

@@ -1,1 +1,0 @@
-./start_test_from_script_params.sh jmeter cloudssky.jmx

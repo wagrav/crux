@@ -14,7 +14,6 @@ jobs:
     displayName: JMeter Tests
     pool:
       vmImage: 'ubuntu-latest'
-    timeoutInMinutes: 5
     steps:
     - checkout: crux
       displayName: CRUX clone
@@ -30,63 +29,35 @@ jobs:
       displayName: PREPARE tests
       condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
 
-    - task: KubernetesManifest@0
-      displayName: Scale slaves to $(scale_down_replicas)
-      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
+    - task: AzureCLI@2
+      condition: and(succeeded(), not(eq(variables.create_cluster, false)))
+      displayName: Create cluster
       inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
-        action: scale
-        kind: deployment
-        name: $(service)
-        replicas: $(scale_down_replicas)
-        namespace: $(cluster_namespace)
-
-    - task: KubernetesManifest@0
-      displayName: Scale master to $(scale_down_replicas)
-      condition: and(succeeded(), not(eq(variables.scale_master_down, false)))
-      inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
-        action: scale
-        kind: deployment
-        name: $(service-master)
-        replicas: $(scale_down_replicas)
-        namespace: $(cluster_namespace)
-
-    - task: KubernetesManifest@0
-      displayName: Scale master to $(scale_up_replicas_master)
-      condition: and(succeeded(), not(eq(variables.scale_master_up, false)))
-      inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
-        action: scale
-        kind: deployment
-        name: $(service-master)
-        replicas: $(scale_up_replicas_master)
-        namespace: $(cluster_namespace)
-
-    - task: KubernetesManifest@0
-      displayName: Scale slaves to $(scale_up_replicas)
-      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
-      inputs:
-        kubernetesServiceConnection: $(kubernetesServiceConnection)
-        action: scale
-        kind: deployment
-        name: $(service)
-        replicas: $(scale_up_replicas)
-        namespace: $(cluster_namespace)
+        azureSubscription: $(armServiceConnection)
+        scriptType: bash
+        scriptPath: $(armModulePath)/create_cluster_and_connection.sh
+        arguments: temp$(Build.BuildID) $(rgroup) $(armModulePath)/k8.json $(clusterNodeSize) $(clusterNodeNumber) perf_$(Build.BuildID)_ cname $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) $(armModulePath) skip
 
     - task: Kubernetes@1
-      displayName: Login to cluster
-      condition: and(succeeded(), not(eq(variables.login_to_cluster, false)))
+      displayName: Configure cluster
+      condition: and(succeeded(), not(eq(variables.configure_cluster, false)))
       inputs:
         command: login
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
     - task: ShellScript@2
+      displayName: Deploy services to cluster
+      condition: and(succeeded(), not(eq(variables.deploy_to_cluster, false)))
+      inputs:
+        scriptPath: $(armModulePath)/wait_for_pods.sh
+        args: $(System.DefaultWorkingDirectory) $(cluster_namespace) $(service-master) $(service) $(scale_up_replicas)
+
+    - task: ShellScript@2
       displayName: JMeter tests
       condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
       inputs:
-        scriptPath: kubernetes/bin/start_test_from_script_params.sh
+        scriptPath: kubernetes/bin/jmeter.sh
         args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
@@ -110,6 +81,13 @@ jobs:
         path: $(log)
         artifact: jmeter.log
 
+    - task: PublishPipelineArtifact@1
+      condition: not(eq(variables.archive_errors, false))
+      displayName: Archive Errors
+      inputs:
+        path: $(errors)
+        artifact: errors.xml
+
     - task: ShellScript@2
       displayName: Evaluate as JUNIT tests
       condition: not(eq(variables.evaluate_as_junit_tests, false))
@@ -123,3 +101,12 @@ jobs:
       inputs:
         testResultsFiles: '**/*_TEST.xml'
         failTaskOnFailedTests: true
+
+    - task: AzureCLI@2
+      displayName: Delete cluster/connection
+      condition: and(succeeded(), not(eq(variables.delete_cluster, false)))
+      inputs:
+        azureSubscription: $(armServiceConnection)
+        scriptType: bash
+        scriptPath: $(armModulePath)/delete_cluster_and_connection.sh
+        arguments: $(armModulePath) $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) skip

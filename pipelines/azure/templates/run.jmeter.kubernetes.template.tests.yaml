@@ -1,5 +1,5 @@
 jobs:
-  - job: Test_the_Framework
+  - job: bats_tests
     displayName: BATS tests
     pool:
       vmImage: 'ubuntu-latest'
@@ -21,8 +21,32 @@ jobs:
         displayName: Run tests
 
       - task: PublishTestResults@2
-        displayName: Publish Framework Test Results
+        displayName: Publish Framework BATS Tests Results
         inputs:
           failTaskOnFailedTests: true
           testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
           testResultsFiles: '**/TestReport-*.xml'
+
+  - job: arm_ttk_tests
+    displayName: ARM TTK tests
+    timeoutInMinutes: 5
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+      - checkout: crux
+        displayName: CRUX clone
+
+      - powershell: |
+            New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\arm_ttk_test_results
+        displayName: Prepare
+
+      - task: RunARMTTKTests@1
+        inputs:
+          templatelocation: '$(System.DefaultWorkingDirectory)\pipelines\azure\arm\k8.json'
+          resultLocation: '$(System.DefaultWorkingDirectory)\arm_ttk_test_results'
+
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'NUnit'
+          testResultsFiles: '$(System.DefaultWorkingDirectory)\arm_ttk_test_results\*-armttk.xml'
+

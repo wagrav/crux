@@ -6,7 +6,7 @@ template="
   },
   \"name\": \"$1\",
   \"type\": \"kubernetes\",
-  \"url\": \"$2\",
+  \"url\": \"https://$2\",
   \"authorization\": {
     \"parameters\": {
       \"clusterContext\": \"$3\",

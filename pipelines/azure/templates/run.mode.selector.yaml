@@ -19,8 +19,10 @@ jobs:
             echo "Debug:"  ${{ parameters.debug }}
         displayName: Display selected mode
 
-  - ${{ if eq(parameters.mode,'jmeter') }}:
+  - ${{ if not(eq(parameters.mode,'tests')) }}: #jmeter variants
     - template: run.jmeter.kubernetes.template.yaml
+      parameters:
+        mode: ${{ parameters.mode }}
   - ${{ if eq(parameters.mode,'tests') }}:
     - template: run.jmeter.kubernetes.template.tests.yaml
     - template: run.jmeter.kubernetes.template.yaml
