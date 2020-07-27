@@ -50,10 +50,10 @@ wait_for_cluster_ready(){
   wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval "$service_master"
 
   #Assure clean test env by scaling fresh
-  kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" "$service_master"
-  kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" "$service_slave"
-  kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas_master" "$service_master"
-  kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas" "$service_slave"
+  kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath"/jmeter_master_deploy_v16.yaml
+  kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
+  kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas_master" -f "$rootPath"/jmeter_master_deploy_v16.yaml
+  kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
 
   wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval $service_master
   wait_for_pods "$cluster_namespace" $scale_up_replicas $sleep_interval $service_slave
