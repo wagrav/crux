@@ -38,6 +38,7 @@ jobs:
         scriptPath: $(armModulePath)/create_cluster_and_connection.sh
         arguments: temp$(Build.BuildID) $(rgroup) $(armModulePath)/k8.json $(clusterNodeSize) $(clusterNodeNumber) perf_$(Build.BuildID)_ cname $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) $(armModulePath)
 
+    # a step necessary if we want to unify pipelines so ARM version dynamically creates a k8 connection
     - bash: |
         echo "##vso[task.setvariable variable=kubernetesServiceConnection]$(k8conn)"
         echo "Setting active service connection to $(k8conn)"
@@ -61,29 +62,12 @@ jobs:
       #condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'jmeter_dynamic')))
       displayName: Deploy services to cluster
 
-#    - task: AzureCLI@2
-#      displayName: Deploy services to cluster
-#      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
-#      inputs:
-#        azureSubscription: $(armServiceConnection)
-#        scriptType: bash
-#        scriptLocation: inlineScript
-#        inlineScript: |
-#           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
-#           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-#           kubectl create -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
-#           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
-
-    - task: AzureCLI@2
+    - task: ShellScript@2
       displayName: Wait for cluster services to be ready
       condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       inputs:
-        azureSubscription: $(armServiceConnection)
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-           bash pipelines/azure/bin/wait_for_pods.sh $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
-
+        scriptPath: pipelines/azure/bin/wait_for_pods.sh
+        args: $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
 
       #    - task: KubernetesManifest@0
 #      displayName: Scale slaves to $(scale_down_replicas)
@@ -128,31 +112,23 @@ jobs:
 #        name: $(service)
 #        replicas: $(scale_up_replicas)
 #        namespace: $(cluster_namespace)
-#
-#    - task: Kubernetes@1
-#      displayName: Login to cluster
-#      condition: and(succeeded(), not(eq(variables.login_to_cluster, false)))
-#      inputs:
-#        command: login
-#        connectionType: Kubernetes Service Connection
-#        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-#
-#    - task: ShellScript@2
-#      displayName: JMeter tests
-#      condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
-#      inputs:
-#        scriptPath: kubernetes/bin/start_test_from_script_params.sh
-#        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
-    - task: AzureCLI@2
+    - task: ShellScript@2
       displayName: JMeter tests
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
       inputs:
-        azureSubscription: $(armServiceConnection)
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-          cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
+        scriptPath: kubernetes/bin/start_test_from_script_params.sh
+        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
+
+#    - task: AzureCLI@2
+#      displayName: JMeter tests
+#      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+#      inputs:
+#        azureSubscription: $(armServiceConnection)
+#        scriptType: bash
+#        scriptLocation: inlineScript
+#        inlineScript: |
+#          cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
       displayName: Archive JMeter Report
