@@ -21,7 +21,7 @@ function setup(){
     echo "__source"
   }
   export -f delete_service_connection delete_cluster source
-  run delete_cluster_and_connection "path" "cluster_name" "resource_group" "org" "project" "user" "pat" "connection_name"
+  run delete_cluster_and_connection "path" "cluster_name" "resource_group" "org" "project" "user" "pat" "connection_name" "noskip"
   assert_success
   assert_output --partial  "__delete_service_connection"
   assert_output --partial  "__delete_cluster"
