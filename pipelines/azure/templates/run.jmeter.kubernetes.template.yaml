@@ -41,7 +41,7 @@ jobs:
     - bash: |
         echo "##vso[task.setvariable variable=kubernetesServiceConnection]$(k8conn)"
         echo "Setting active service connection to $(k8conn)"
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(eq(variables.overwrite_connection,), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       displayName: 'Overwrite service connection'
 
     - task: AzureCLI@2
@@ -62,7 +62,7 @@ jobs:
            kubectl create -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
            kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
 
-           cd kubernetes/bin && bash wait_for_pods.sh $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
+           cd pipelines/azure/bin && bash wait_for_pods.sh $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
            #cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: AzureCLI@2
@@ -189,7 +189,7 @@ jobs:
 
     - task: AzureCLI@2
       displayName: Delete cluster/connection
-      condition: eq('${{ parameters.mode }}', 'jmeter_dynamic')
+      condition: and(always(),eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       inputs:
         azureSubscription: $(armServiceConnection)
         scriptType: bash
