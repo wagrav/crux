@@ -30,6 +30,8 @@ jobs:
   - job: arm_ttk_tests
     displayName: ARM TTK tests
     timeoutInMinutes: 5
+    pool:
+      vmImage: 'windows-latest'
     steps:
       - powershell: |
             New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\arm_ttk_test_results
