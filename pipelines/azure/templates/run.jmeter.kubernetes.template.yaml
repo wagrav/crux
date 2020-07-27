@@ -45,7 +45,7 @@ jobs:
       displayName: 'Overwrite service connection'
 
     - task: AzureCLI@2
-      displayName: Refresh creds
+      displayName: Deploy services to cluster
       condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       inputs:
         azureSubscription: $(armServiceConnection)
@@ -57,35 +57,27 @@ jobs:
            echo "Using connection: $(kubernetesServiceConnection)"
            status=1
            sleep_time_s=10
-           until kubectl create -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
-           do
-            printf "\n\tWait for cluster $sleep_time_s seconds"
-            sleep $sleep_time_s
-           done
+           kubectl create -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
+           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
+           kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
 
-           until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
-           do
-            printf "\n\tWait for cluster $sleep_time_s seconds"
-            sleep $sleep_time_s
-           done
+           #cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
-           until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
-           do
-            printf "\n\tWait for cluster $sleep_time_s seconds"
-            sleep $sleep_time_s
-           done
+    - task: AzureCLI@2
+      displayName: JMeter tests
+      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      inputs:
+        azureSubscription: $(armServiceConnection)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
-           until kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-           do
-            printf "\n\tWait for cluster $sleep_time_s seconds"
-            sleep $sleep_time_s
-           done
-           sleep $(sleep) ||:
-           cd kubernetes/bin/ && bash start_test_from_script_params.sh $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: Kubernetes@1
       displayName: Login to cluster
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'jmeter_dynamic')))
       inputs:
         command: login
         connectionType: Kubernetes Service Connection
@@ -97,7 +89,7 @@ jobs:
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'jmeter_dynamic')))
       displayName: Deploy services to cluster
 
 #    - task: KubernetesManifest@0
