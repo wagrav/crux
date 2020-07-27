@@ -53,73 +53,11 @@ jobs:
         connectionType: Kubernetes Service Connection
         kubernetesServiceEndpoint: $(kubernetesServiceConnection)
 
-    - bash: |
-        echo "Using connection: $(kubernetesServiceConnection)"
-        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
-        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
-        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
-        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
-
-        bash pipelines/azure/bin/wait_for_pods.sh $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
-        kubectl scale --replicas=$(scale_down_replicas) $(service-master)
-        kubectl scale --replicas=$(scale_down_replicas) $(service)
-        kubectl scale --replicas=$(scale_up_replicas_master) $(service-master)
-        kubectl scale --replicas=$(scale_up_replicas) $(service)
-        bash pipelines/azure/bin/wait_for_pods.sh $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
-        bash pipelines/azure/bin/wait_for_pods.sh $(cluster_namespace) $(scale_up_replicas) 20 $(service)
-      #condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'jmeter_dynamic')))
+    - task: ShellScript@2
       displayName: Deploy services to cluster
-
-#    - task: ShellScript@2
-#      displayName: Wait for cluster services to be ready
-#      condition: and(succeeded(), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
-#      inputs:
-#        scriptPath: pipelines/azure/bin/wait_for_pods.sh
-#        args: $(cluster_namespace) $(scale_up_replicas_master) 20 $(service-master)
-
-      #    - task: KubernetesManifest@0
-#      displayName: Scale slaves to $(scale_down_replicas)
-#      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
-#      inputs:
-#        kubernetesServiceConnection: $(kubernetesServiceConnection)
-#        action: scale
-#        kind: deployment
-#        name: $(service)
-#        replicas: $(scale_down_replicas)
-#        namespace: $(cluster_namespace)
-#
-#    - task: KubernetesManifest@0
-#      displayName: Scale master to $(scale_down_replicas)
-#      condition: and(succeeded(), not(eq(variables.scale_master_down, false)))
-#      inputs:
-#        kubernetesServiceConnection: $(kubernetesServiceConnection)
-#        action: scale
-#        kind: deployment
-#        name: $(service-master)
-#        replicas: $(scale_down_replicas)
-#        namespace: $(cluster_namespace)
-#
-#    - task: KubernetesManifest@0
-#      displayName: Scale master to $(scale_up_replicas_master)
-#      condition: and(succeeded(), not(eq(variables.scale_master_up, false)))
-#      inputs:
-#        kubernetesServiceConnection: $(kubernetesServiceConnection)
-#        action: scale
-#        kind: deployment
-#        name: $(service-master)
-#        replicas: $(scale_up_replicas_master)
-#        namespace: $(cluster_namespace)
-#
-#    - task: KubernetesManifest@0
-#      displayName: Scale slaves to $(scale_up_replicas)
-#      condition: and(succeeded(), not(eq(variables.scale_slaves_down, false)))
-#      inputs:
-#        kubernetesServiceConnection: $(kubernetesServiceConnection)
-#        action: scale
-#        kind: deployment
-#        name: $(service)
-#        replicas: $(scale_up_replicas)
-#        namespace: $(cluster_namespace)
+      inputs:
+        scriptPath: pipelines/azure/arm/wait_for_pods.sh
+        args: $(System.DefaultWorkingDirectory) $(cluster_namespace) $(service-master) $(service) $(scale_up_replicas)
 
     - task: ShellScript@2
       displayName: JMeter tests
