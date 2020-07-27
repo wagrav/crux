@@ -56,7 +56,7 @@ jobs:
     - task: ShellScript@2
       displayName: Deploy services to cluster
       inputs:
-        scriptPath: pipelines/azure/arm/wait_for_pods.sh
+        scriptPath: pipelines/azure/bin/wait_for_pods.sh
         args: $(System.DefaultWorkingDirectory) $(cluster_namespace) $(service-master) $(service) $(scale_up_replicas)
 
     - task: ShellScript@2
