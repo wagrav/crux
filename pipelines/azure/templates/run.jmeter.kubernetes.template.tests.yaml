@@ -33,6 +33,9 @@ jobs:
     pool:
       vmImage: 'windows-latest'
     steps:
+      - checkout: crux
+        displayName: CRUX clone
+
       - powershell: |
             New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\arm_ttk_test_results
         displayName: Prepare
