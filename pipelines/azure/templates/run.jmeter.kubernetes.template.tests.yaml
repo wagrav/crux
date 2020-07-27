@@ -33,7 +33,7 @@ jobs:
     steps:
       - powershell: |
             New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\arm_ttk_test_results
-          displayName: Prepare
+        displayName: Prepare
 
       - task: RunARMTTKTests@1
         inputs:
