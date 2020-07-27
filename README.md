@@ -19,7 +19,7 @@ The "run" pipeline which is where your tests happen is easily extensible with Az
 
 * based on kubernetes therefore can be implemented on majority of cloud providers and private clusters
 * supports dynamic kubernetes cluster creation but works with provided cluster too, see for details.
-*framework is tested with [BATS](https://github.com/bats-core/bats-core/) and [ARM-TTK](https://github.com/Azure/arm-ttk) giving you certainty that it all works when things change around you
+* framework is tested with [BATS](https://github.com/bats-core/bats-core/) and [ARM-TTK](https://github.com/Azure/arm-ttk) giving you certainty that it all works when things change around you
 * solution contains Chrome Headless and allows you to use Web Driver Sampler to browser-test "difficult" applications (e.g. Mendix-based apps)
 * Simple Table Server is included and ready to use
 * You can send Live Data to Azure Insights, Azure Backend listener is included
