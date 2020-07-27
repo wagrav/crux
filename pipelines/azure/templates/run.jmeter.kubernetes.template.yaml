@@ -41,7 +41,7 @@ jobs:
     - bash: |
         echo "##vso[task.setvariable variable=kubernetesServiceConnection]$(k8conn)"
         echo "Setting active service connection to $(k8conn)"
-      condition: and(eq(variables.overwrite_connection,), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
+      condition: and(eq(variables.overwrite_connection,true), eq('${{ parameters.mode }}', 'jmeter_dynamic'))
       displayName: 'Overwrite service connection'
 
     - task: AzureCLI@2
