@@ -17,6 +17,7 @@ The "run" pipeline which is where your tests happen is easily extensible with Az
 
 ## Features
 
+* the purpose of crux is a self-service tool that makes it easy for DEV teams to incorporate performance testing in their continuous deliery pipelines 
 * based on kubernetes therefore can be implemented on majority of cloud providers and private clusters
 * supports dynamic kubernetes cluster creation but works with provided cluster too, see [modes](https://github.com/ObjectivityLtd/crux/wiki/Modes) for details.
 * framework is tested with [BATS](https://github.com/bats-core/bats-core/) and [ARM-TTK](https://github.com/Azure/arm-ttk) giving you certainty that it all works when things change around you
