@@ -18,11 +18,13 @@ parameters:
     type: string
     default: k8
 
+  - name: namespace
+    displayName: 'Namespace ?'
+    type: string
+    default: default
+
 variables:
   namespace: default #edit
-  service: jmeter-slaves
-  service-master: jmeter-master
-  mode: redeploy # redeploy|delete
 
 jobs:
   - job: JMeter_Tests
