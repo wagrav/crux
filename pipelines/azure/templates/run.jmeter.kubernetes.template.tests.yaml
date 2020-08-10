@@ -28,7 +28,7 @@ jobs:
           testResultsFiles: '**/TestReport-*.xml'
 
   - job: arm_and_pester_tests
-    displayName: ARM TTK tests
+    displayName: ARM and Pester tests
     timeoutInMinutes: 5
     pool:
       vmImage: 'windows-latest'
