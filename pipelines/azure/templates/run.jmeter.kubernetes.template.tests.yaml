@@ -27,7 +27,7 @@ jobs:
           testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
           testResultsFiles: '**/TestReport-*.xml'
 
-  - job: arm_ttk_tests
+  - job: arm_and_pester_tests
     displayName: ARM TTK tests
     timeoutInMinutes: 5
     pool:
