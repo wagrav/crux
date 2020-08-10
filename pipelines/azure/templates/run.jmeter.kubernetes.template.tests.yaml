@@ -55,6 +55,12 @@ jobs:
           testResultsFiles: '$(System.DefaultWorkingDirectory)/modules/pester/results/*pesterTEST.xml'
           failTaskOnFailedTests: true
 
+      - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8'
+        displayName: 'Install ReportGenerator tool'
+
+      - script: 'reportgenerator -reports:"$(System.DefaultWorkingDirectory)/modules/pester/results/*pesterCoverageTEST.xml" -targetdir:"$(System.DefaultWorkingDirectory)/modules/pester/results/" -reporttypes:"JaCoCo"'
+        displayName: 'Create reports'
+
       - task: PublishCodeCoverageResults@1
         displayName: Publish Pester Code Coverage
         inputs:
