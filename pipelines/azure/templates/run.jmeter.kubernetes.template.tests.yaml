@@ -66,6 +66,7 @@ jobs:
         inputs:
           codeCoverageTool: 'JaCoCo'
           summaryFileLocation: '$(System.DefaultWorkingDirectory)/modules/pester/results/*pesterCoverageTEST.xml'
+          reportDirectory: "$(System.DefaultWorkingDirectory)/modules/pester/results/"
 
       - task: RunARMTTKTests@1
         displayName: Run ARM TTK tests
