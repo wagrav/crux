@@ -1,6 +1,6 @@
 jobs:
   - job: bats_tests
-    displayName: BATS tests
+    displayName: BASH modules tests
     pool:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 5
@@ -28,7 +28,7 @@ jobs:
           testResultsFiles: '**/TestReport-*.xml'
 
   - job: arm_and_pester_tests
-    displayName: ARM and Pester tests
+    displayName: Powershell modules and ARM tests
     timeoutInMinutes: 5
     pool:
       vmImage: 'windows-latest'
