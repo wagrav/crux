@@ -6,7 +6,7 @@ $env=$args[0]
 
 #assures we all use teh same pester version
 if($env -contains 'azure'){
-    Get-InstalledModule -Name Pester | Uninstall-Module -Force  #uninstall default perester 5
+    Uninstall-Module -Name Pester -Force  #uninstall default perester 5
     Install-Module -Name Pester -Force -SkipPublisherCheck -RequiredVersion 3.4.0 #install windows 10 pester
 }else{
     $modules = Get-Module -list
