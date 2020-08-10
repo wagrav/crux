@@ -58,6 +58,7 @@ jobs:
       - task: PublishCodeCoverageResults@1
         displayName: Publish Pester Code Coverage
         inputs:
+          codeCoverageTool: 'JaCoCo'
           summaryFileLocation: '$(System.DefaultWorkingDirectory)/modules/pester/results/*pesterCoverageTEST.xml'
 
       - task: RunARMTTKTests@1
