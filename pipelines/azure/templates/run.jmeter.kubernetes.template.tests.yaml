@@ -38,7 +38,7 @@ jobs:
 
       - powershell: |
             New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\arm_ttk_test_results
-            New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\pester_test_results
+            New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\modules\pester\results
         displayName: Prepare
 
       - task: RunARMTTKTests@1
