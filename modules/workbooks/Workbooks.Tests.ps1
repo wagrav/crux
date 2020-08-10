@@ -4,8 +4,8 @@ function Get-IsSkipped {
 }
 $isSkipped = Get-IsSkipped
 
-Describe "d" {
-    It "i" -Skip:$isSkipped {
+Describe "Sample test" {
+    It "Sample test" -Skip:$isSkipped {
 
     }
 }
