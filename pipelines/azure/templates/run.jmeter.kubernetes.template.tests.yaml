@@ -55,6 +55,11 @@ jobs:
           testResultsFiles: '$(System.DefaultWorkingDirectory)/modules/pester/results/*pesterTEST.xml'
           failTaskOnFailedTests: true
 
+      - task: PublishCodeCoverageResults@1
+        display: Publish Pester Code Coverage
+        inputs:
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/modules/pester/results/*pesterCoverageTEST.xml'
+
       - task: RunARMTTKTests@1
         displayName: Run ARM TTK tests
         inputs:
