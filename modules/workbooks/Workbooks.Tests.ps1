@@ -1,7 +1,5 @@
-function Get-IsSkipped {
-    Start-Sleep -Second 1
-    $false
-}
+Import-Module $PSScriptRoot\Workbooks.psm1
+
 $isSkipped = Get-IsSkipped
 
 Describe "Sample test" {
