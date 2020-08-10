@@ -20,7 +20,7 @@ spec:
             medium: Memory
       containers:
       - name: jmslave
-        image: gabrielstar/jmeter-slave:latest
+        image: gabrielstar/crux-slave:0.0.1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 1099
