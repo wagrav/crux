@@ -56,6 +56,7 @@ jobs:
       - task: PowerShell@2
         displayName: Run Pester tests with Coverage
         inputs:
+          arguments: 'azure'
           filePath: '$(System.DefaultWorkingDirectory)\modules\pester\RunAllTests.ps1'
           pwsh: true
 
