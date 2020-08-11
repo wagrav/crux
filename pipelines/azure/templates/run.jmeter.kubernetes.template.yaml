@@ -53,6 +53,9 @@ jobs:
         scriptPath: $(armModulePath)/wait_for_pods.sh
         args: $(System.DefaultWorkingDirectory) $(cluster_namespace) $(service-master) $(service) $(scale_up_replicas)
 
+    - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: mocks/step.jmeter_tests.yaml
+
     - task: ShellScript@2
       displayName: JMeter tests
       condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
