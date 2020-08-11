@@ -11,6 +11,13 @@ variables:
   service-master: jmeter-master
   armModulePath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm
   k8conn: k8_$(Build.BuildID)
+  ${{ if not(eq(parameters.mode,'tests')) }}:
+    report_dir: kubernetes/tmp/report
+    results: kubernetes/tmp/results.csv
+    log: kubernetes/tmp/jmeter.log
+    errors: kubernetes/tmp/errors.xml
+    reposRoot: repos
+
   ${{ if eq(parameters.mode,'tests') }}:
     crux_clone: true
     tests_clone: true
@@ -51,11 +58,6 @@ variables:
     archive_errors: true
     evaluate_as_junit_tests: true
     publish_junit_results: true
-    report_dir: kubernetes/tmp/report
-    results: kubernetes/tmp/results.csv
-    log: kubernetes/tmp/jmeter.log
-    errors: kubernetes/tmp/errors.xml
-    reposRoot: repos
 
   ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
     crux_clone: true
@@ -72,8 +74,3 @@ variables:
     archive_errors: true
     evaluate_as_junit_tests: true
     publish_junit_results: true
-    report_dir: kubernetes/tmp/report
-    results: kubernetes/tmp/results.csv
-    log: kubernetes/tmp/jmeter.log
-    errors: kubernetes/tmp/errors.xml
-    reposRoot: repos
