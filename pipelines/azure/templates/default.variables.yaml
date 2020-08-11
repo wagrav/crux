@@ -6,10 +6,6 @@ parameters:
 
 variables:
   reposRoot: repos
-  report_dir: kubernetes/tmp/report
-  results: kubernetes/tmp/results.csv
-  log: kubernetes/tmp/jmeter.log
-  errors: kubernetes/tmp/errors.xml
   scale_down_replicas: 0
   scale_up_replicas_master: 1
   service: jmeter-slaves
@@ -54,6 +50,10 @@ variables:
     archive_errors: true
     evaluate_as_junit_tests: true
     publish_junit_results: true
+    report_dir: kubernetes/tmp/report
+    results: kubernetes/tmp/results.csv
+    log: kubernetes/tmp/jmeter.log
+    errors: kubernetes/tmp/errors.xml
 
   ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
     crux_clone: true
@@ -70,3 +70,7 @@ variables:
     archive_errors: true
     evaluate_as_junit_tests: true
     publish_junit_results: true
+    report_dir: kubernetes/tmp/report
+    results: kubernetes/tmp/results.csv
+    log: kubernetes/tmp/jmeter.log
+    errors: kubernetes/tmp/errors.xml
