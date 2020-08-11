@@ -3,7 +3,7 @@ steps:
       echo ${{ parameters.mode }}
       echo "Creating dummy data for following steps"
       mkdir -p $(report_dir)
-      touch $(results) $(log) $(errors)
+      touch $(results) $(log) $(errors) $(report_dir)/index.html
 
     condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
     displayName: JMeter tests (Mock)
