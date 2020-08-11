@@ -1,0 +1,9 @@
+steps:
+  - task: AzureCLI@2
+    displayName: Delete cluster
+    condition: and(succeeded(), not(eq(variables.delete_cluster, false)))
+    inputs:
+      azureSubscription: $(armServiceConnection)
+      scriptType: bash
+      scriptPath: $(armModulePath)/delete_cluster_and_connection.sh
+      arguments: $(armModulePath) $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) skip

@@ -63,46 +63,38 @@ jobs:
     - ${{ if not(eq(parameters.mode, 'tests')) }}:
         - template: steps/step.archive_jmeter_report.yaml
 
-    - task: PublishPipelineArtifact@1
-      condition: not(eq(variables.archive_results_file, false))
-      displayName: Archive Results file
-      inputs:
-        path: $(results)
-        artifact: results.csv
+    - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: mocks/step.archive_jmeter_results.yaml
 
-    - task: PublishPipelineArtifact@1
-      condition: not(eq(variables.archive_log, false))
-      displayName: Archive Log
-      inputs:
-        path: $(log)
-        artifact: jmeter.log
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: steps/step.archive_jmeter_results.yaml
 
-    - task: PublishPipelineArtifact@1
-      condition: not(eq(variables.archive_errors, false))
-      displayName: Archive Errors
-      inputs:
-        path: $(errors)
-        artifact: errors.xml
+    - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: mocks/step.archive_jmeter_log.yaml
 
-    - task: ShellScript@2
-      displayName: Evaluate as JUNIT tests
-      condition: not(eq(variables.evaluate_as_junit_tests, false))
-      inputs:
-        scriptPath: modules/junit/evaluateTestResultsAsJunit.sh
-        args: $(System.DefaultWorkingDirectory)/$(report_dir)/statistics.json $(System.DefaultWorkingDirectory)/modules/junit/results $(System.DefaultWorkingDirectory)/modules/junit/templates $(System.DefaultWorkingDirectory)/$(reposRoot)/$(thresholds_file)
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: steps/step.archive_jmeter_log.yaml
 
-    - task: PublishTestResults@2
-      displayName: Publish JUNIT results
-      condition: not(eq(variables.publish_junit_results, false))
-      inputs:
-        testResultsFiles: '**/*_TEST.xml'
-        failTaskOnFailedTests: true
+    - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: mocks/step.archive_jmeter_errors.yaml
 
-    - task: AzureCLI@2
-      displayName: Delete cluster
-      condition: and(succeeded(), not(eq(variables.delete_cluster, false)))
-      inputs:
-        azureSubscription: $(armServiceConnection)
-        scriptType: bash
-        scriptPath: $(armModulePath)/delete_cluster_and_connection.sh
-        arguments: $(armModulePath) $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) skip
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: steps/step.archive_jmeter_errors.yaml
+
+    - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: mocks/step.junit.yaml
+
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: steps/step.junit.yaml
+
+    - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: mocks/step.junit_publish.yaml
+
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: steps/step.junit_publish.yaml
+
+    - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: mocks/step.delete_cluster.yaml
+
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: steps/step.delete_cluster.yaml

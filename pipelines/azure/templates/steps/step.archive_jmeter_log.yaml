@@ -1,0 +1,7 @@
+steps:
+  - task: PublishPipelineArtifact@1
+    condition: not(eq(variables.archive_log, false))
+    displayName: Archive Log
+    inputs:
+      path: $(log)
+      artifact: jmeter.log

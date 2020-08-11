@@ -1,0 +1,7 @@
+steps:
+  - task: PublishPipelineArtifact@1
+    condition: not(eq(variables.archive_errors, false))
+    displayName: Archive Errors
+    inputs:
+      path: $(errors)
+      artifact: errors.xml
