@@ -15,13 +15,17 @@ jobs:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - checkout: crux
-      displayName: CRUX clone
-      condition: and(succeeded(), not(eq(variables.crux_clone, false)))
+      - ${{ if eq(parameters.mode, 'tests') }}:
+          - template: mocks/step.crux_clone.yaml
 
-    - checkout: tests
-      displayName: TESTS clone
-      condition: and(succeeded(), not(eq(variables.tests_clone, false)))
+      - ${{ if not(eq(parameters.mode, 'tests')) }}:
+          - template: steps/step.crux_clone.yaml
+            -
+      - ${{ if eq(parameters.mode, 'tests') }}:
+          - template: mocks/step.tests_clone.yaml
+
+      - ${{ if not(eq(parameters.mode, 'tests')) }}:
+          - template: steps/step.tests_clone.yaml
 
     - bash: |
         mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
@@ -58,13 +62,6 @@ jobs:
 
     - ${{ if not(eq(parameters.mode, 'tests')) }}:
         - template: steps/step.jmeter_tests.yaml
-
-#    - task: ShellScript@2
-#      displayName: JMeter tests
-#      condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
-#      inputs:
-#        scriptPath: kubernetes/bin/jmeter.sh
-#        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
       displayName: Archive JMeter Report
