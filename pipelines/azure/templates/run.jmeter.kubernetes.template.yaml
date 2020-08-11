@@ -15,17 +15,17 @@ jobs:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-      - ${{ if eq(parameters.mode, 'tests') }}:
-          - template: mocks/step.crux_clone.yaml
+    - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: mocks/step.crux_clone.yaml
 
-      - ${{ if not(eq(parameters.mode, 'tests')) }}:
-          - template: steps/step.crux_clone.yaml
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: steps/step.crux_clone.yaml
 
-      - ${{ if eq(parameters.mode, 'tests') }}:
-          - template: mocks/step.tests_clone.yaml
+    - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: mocks/step.tests_clone.yaml
 
-      - ${{ if not(eq(parameters.mode, 'tests')) }}:
-          - template: steps/step.tests_clone.yaml
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: steps/step.tests_clone.yaml
 
     - bash: |
         mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
