@@ -5,7 +5,6 @@ parameters:
     default: jmeter
 
 variables:
-  reposRoot: repos
   scale_down_replicas: 0
   scale_up_replicas_master: 1
   service: jmeter-slaves
@@ -34,6 +33,7 @@ variables:
     log: $(mock_dir)/jmeter.log
     errors: $(mock_dir)/errors.xml
     thresholds_file: $(mock_dir)/thresholds.properties
+    reposRoot: ""
 
 
   ${{ if eq(parameters.mode,'jmeter') }}:
@@ -55,6 +55,7 @@ variables:
     results: kubernetes/tmp/results.csv
     log: kubernetes/tmp/jmeter.log
     errors: kubernetes/tmp/errors.xml
+    reposRoot: repos
 
   ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
     crux_clone: true
@@ -75,3 +76,4 @@ variables:
     results: kubernetes/tmp/results.csv
     log: kubernetes/tmp/jmeter.log
     errors: kubernetes/tmp/errors.xml
+    reposRoot: repos
