@@ -56,12 +56,15 @@ jobs:
     - ${{ if eq(parameters.mode, 'tests') }}:
         - template: mocks/step.jmeter_tests.yaml
 
-    - task: ShellScript@2
-      displayName: JMeter tests
-      condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
-      inputs:
-        scriptPath: kubernetes/bin/jmeter.sh
-        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: steps/step.jmeter_tests.yaml
+
+#    - task: ShellScript@2
+#      displayName: JMeter tests
+#      condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
+#      inputs:
+#        scriptPath: kubernetes/bin/jmeter.sh
+#        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
 
     - task: PublishPipelineArtifact@1
       displayName: Archive JMeter Report

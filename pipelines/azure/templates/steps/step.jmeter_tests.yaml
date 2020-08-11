@@ -1,0 +1,7 @@
+steps:
+  - task: ShellScript@2
+    displayName: JMeter tests
+    condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
+    inputs:
+      scriptPath: kubernetes/bin/jmeter.sh
+      args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
