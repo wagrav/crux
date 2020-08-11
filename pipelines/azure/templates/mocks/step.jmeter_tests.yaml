@@ -1,3 +1,9 @@
 steps:
-  - script: echo ${{ parameters.mode }}
-    displayName: JMeter tests
+  - bash: |
+      echo ${{ parameters.mode }}
+      echo "Creating dummy data for following steps"
+      mkdir -p $(report_dir)
+      touch $(results) $(log) $(errors)
+
+    condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
+    displayName: JMeter tests (Mock)
