@@ -1,9 +1,11 @@
 steps:
   - bash: |
       echo ${{ parameters.mode }}
-      echo "Creating dummy data for following steps"
+      echo "Creating dummy data: report_dir"
       mkdir -p $(report_dir)
+      echo "Creating dummy data: jmeter.log, results.csv, report"
       touch $(results) $(log) $(errors) $(report_dir)/index.html
-
+      cp pipelines/azure/templates/mocks/test_data/statistics.json $(report_dir)/
+      cp pipelines/azure/templates/mocks/test_data/thresholds.properties $(thresholds_file)
     condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
     displayName: JMeter tests (Mock)

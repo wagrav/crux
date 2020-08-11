@@ -25,14 +25,15 @@ variables:
     archive_results_file: true
     archive_log: true
     archive_errors: true
-    evaluate_as_junit_tests: false
-    publish_junit_results: false
+    evaluate_as_junit_tests: true
+    publish_junit_results: true
     #changing paths for mock to avoid clash with real tests
     mock_dir: mocked/kubernetes/tmp
     report_dir: $(mock_dir)/report
     results: $(mock_dir)/results.csv
     log: $(mock_dir)/jmeter.log
     errors: $(mock_dir)/errors.xml
+    thresholds_file: $(mock_dir)/thresholds.properties
 
 
   ${{ if eq(parameters.mode,'jmeter') }}:
