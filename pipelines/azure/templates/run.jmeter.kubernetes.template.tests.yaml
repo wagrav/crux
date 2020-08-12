@@ -101,6 +101,9 @@ jobs:
           - /home/vsts/work/1/s/:/bats
 
     steps:
+      - checkout: crux
+        displayName: CRUX clone
+
       - bash: |
           groovy -v
           ls /bats
