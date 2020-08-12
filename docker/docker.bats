@@ -4,12 +4,12 @@ load $HOME/test/'test_helper/bats-assert/load.bash'
 
 test_image_name=gabrielstar/jmeter-base
 test_image_name_master=gabrielstar/jmeter-master
-run_opts="--shm-size=2g --rm -it"
+run_opts="--shm-size=2g --rm"
 jmeter_test_successful_output="Err:     0 (0.00%)"
 
 # setup_file does not work well for this, so I build docker image in first test as an ugly but stable work-around
 # whover knows how to fix it, you get a beer. Rememeber this case is equivalent of setup_file.
-@test "IT: Docker Image Builds Successfully" {
+@test "IT: Docker Base Image Builds Successfully" {
   docker image rm $test_image_name ||:
   docker build -t $test_image_name -f Dockerfile .
 }
