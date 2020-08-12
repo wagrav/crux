@@ -29,6 +29,7 @@ jobs:
           testResultsFiles: '**/TestReport-*.xml'
 
   - job: arm_and_pester_tests
+    condition: not(eq(variables['pester_tests'], false))
     displayName: Powershell modules and ARM tests
     timeoutInMinutes: 5
     pool:
