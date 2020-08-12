@@ -94,10 +94,14 @@ jobs:
         jmeter-slave:
           containerImage: 'gabrielstar/crux-slave:0.0.1'
 
-    container:
-      image: $[ variables['containerImage'] ]
+    services:
+      jmeter-image:
+        image: $[ variables['containerImage'] ]
+        volumes:
+          - $(System.DefaultWorkingDirectory)/crux:/bats
+
     steps:
       - bash: |
           groovy -v
-          ls /__w/1/s/path
+          ls /bats
         displayName: Check groovy version
