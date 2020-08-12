@@ -83,7 +83,7 @@ jobs:
   - job: docker_images_tests
     displayName: Docker images tests
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-16.04'
     timeoutInMinutes: 5
     strategy:
       matrix:
