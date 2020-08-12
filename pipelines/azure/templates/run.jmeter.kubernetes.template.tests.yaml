@@ -96,7 +96,7 @@ jobs:
 
     container:
       image: $[ variables['containerImage'] ]
-      options: -v '$(System.DefaultWorkingDirectory):/bats'
+      options: -v '.:/bats'
 
     steps:
       - bash: |
