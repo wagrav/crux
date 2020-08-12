@@ -1,6 +1,6 @@
 jobs:
   - job: bats_tests
-    condition: not(eq('${{ variables.bats_tests }}', false))
+    condition: not(eq(variables['bats_tests'], false))
     displayName: BASH modules tests
     pool:
       vmImage: 'ubuntu-latest'
