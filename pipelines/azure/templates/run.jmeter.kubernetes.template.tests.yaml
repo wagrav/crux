@@ -96,10 +96,8 @@ jobs:
 
     container:
       image: $[ variables['containerImage'] ]
-      options: -v '.:/bats'
-
     steps:
       - bash: |
           groovy -v
-          ls /bats
+          ls /__w/1
         displayName: Check groovy version
