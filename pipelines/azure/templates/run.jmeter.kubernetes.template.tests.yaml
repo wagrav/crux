@@ -98,7 +98,6 @@ jobs:
       image: $[ variables['containerImage'] ]
     steps:
       - bash: |
-          echo $(System.DefaultWorkingDirectory)
           groovy -v
-          ls /__w/1/a /__w/1/b /__w/1/s
+          ls /__w/1/s/path
         displayName: Check groovy version
