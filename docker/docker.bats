@@ -29,7 +29,7 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
   local cmd_execute_jmeter_test="jmeter -n -t $test_scenario"
   local cmd="$cmd_start_sts && $wait_for_sts && $cmd_execute_jmeter_test"
   #WHEN I run a jmeter test that use chrome headless and webdriver and I print result file to stdout
-  run docker run $run_opts $test_image_name_master "/bin/bash -c $cmd"
+  run docker run $run_opts $test_image_name_master /bin/bash -c "$cmd"
   #Then test is a success
   assert_output --partial  "$jmeter_test_successful_output"
 }
@@ -42,7 +42,7 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
   local cmd_execute_jmeter_test="jmeter -n -t $test_scenario"
   local cmd="$cmd_start_sts && $wait_for_sts && $cmd_execute_jmeter_test"
   #WHEN I run a jmeter test that use chrome headless and webdriver and I print result file to stdout
-  run docker run $run_opts $test_image_name_master "/bin/bash -c $cmd"
+  run docker run $run_opts $test_image_name_master /bin/bash -c "$cmd"
   #Then test is a success
   assert_output --partial  "$jmeter_test_successful_output"
 }
