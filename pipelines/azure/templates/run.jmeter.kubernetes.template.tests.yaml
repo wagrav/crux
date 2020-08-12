@@ -98,7 +98,7 @@ jobs:
       jmeter-image:
         image: $[ variables['containerImage'] ]
         volumes:
-          - $(System.DefaultWorkingDirectory)/crux:/bats
+          - /home/vsts/work/1/s/:/bats
 
     steps:
       - bash: |
