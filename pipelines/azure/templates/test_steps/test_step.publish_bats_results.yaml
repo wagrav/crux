@@ -1,5 +1,6 @@
 steps:
   - task: PublishTestResults@2
+    condition: always()
     displayName: Publish Framework BATS Tests Results
     inputs:
       failTaskOnFailedTests: true
