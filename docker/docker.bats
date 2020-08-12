@@ -3,8 +3,8 @@
 load $HOME/test/'test_helper/bats-assert/load.bash'
 load $HOME/test/'test_helper/bats-support/load.bash'
 
-test_image_name=gabrielstar/jmeter-base
-test_image_name_master=gabrielstar/jmeter-master
+test_image_name=gabrielstar/crux-base
+test_image_name_master=gabrielstar/crux-master:0.0.1
 run_opts="--shm-size=1g --rm"
 jmeter_test_successful_output="Err:     0 (0.00%)"
 
@@ -81,22 +81,27 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
   docker build -t $test_image_name_master -f Dockerfile-master .
 }
 
-@test "IT: JMeter Simple Table Server starts automatically on Master" {
-  #this requires an entry in user.properties file and additonal command line args as below
-  local result_file=results.csv
+@test "E2E: JMeter Test works fine with Simple Table Server" {
   local test_scenario=test_table_server.jmx
+  local cmd_start_sts="screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/simple-table-server.sh -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=/test "
+  local wait_for_sts="sleep 2" #time for sts to start, need to be refactored to conditional loop
+  local cmd_execute_jmeter_test="jmeter -n -t $test_scenario"
+  local cmd="$cmd_start_sts && $wait_for_sts && $cmd_execute_jmeter_test"
   #WHEN I run a jmeter test that use chrome headless and webdriver and I print result file to stdout
-  run docker run $run_opts $test_image_name_master jmeter -DjmeterPlugin.sts.loadAndRunOnStartup=true -DjmeterPlugin.sts.port=9191 -DjmeterPlugin.sts.datasetDirectory=/test -n -t $test_scenario #host must be jmeter Ip in docker container
+  run docker run $run_opts $test_image_name_master "/bin/bash -c $cmd"
   #Then test is a success
-  assert_output --partial  x #"$jmeter_test_successful_output"
+  assert_output --partial  "$jmeter_test_successful_output"
 }
 
 @test "IT: JMeter Simple Table Server and Chrome Headless work fine" {
-  #this requires an entry in user.properties file and additonal command line args as below
-  local result_file=results.csv
+
   local test_scenario=selenium_chrome_headless_sts.jmx
+  local cmd_start_sts="screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/simple-table-server.sh -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=/test "
+  local wait_for_sts="sleep 2" #time for sts to start, need to be refactored to conditional loop
+  local cmd_execute_jmeter_test="jmeter -n -t $test_scenario"
+  local cmd="$cmd_start_sts && $wait_for_sts && $cmd_execute_jmeter_test"
   #WHEN I run a jmeter test that use chrome headless and webdriver and I print result file to stdout
-  run docker run $run_opts $test_image_name_master jmeter -DjmeterPlugin.sts.loadAndRunOnStartup=true -DjmeterPlugin.sts.port=9191 -DjmeterPlugin.sts.datasetDirectory=/test -n -t $test_scenario #host must be jmeter Ip in docker container
+  run docker run $run_opts $test_image_name_master "/bin/bash -c $cmd"
   #Then test is a success
-  assert_output --partial "$jmeter_test_successful_output"
+  assert_output --partial  "$jmeter_test_successful_output"
 }
