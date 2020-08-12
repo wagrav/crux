@@ -83,15 +83,15 @@ jobs:
           testResultsFiles: '$(System.DefaultWorkingDirectory)\arm_ttk_test_results\*-armttk.xml'
 
   - job: docker_images_tests
-    displayName: Docker images tests
+    displayName: Docker images min contract tests for
     pool:
       vmImage: 'ubuntu-16.04'
     timeoutInMinutes: 5
     strategy:
       matrix:
-        master:
+        jmeter-master:
           containerImage: 'gabrielstar/crux-master:0.0.1'
-        slave:
+        jmeter-slave:
           containerImage: 'gabrielstar/crux-slave:0.0.1'
 
     container:
@@ -99,5 +99,5 @@ jobs:
     steps:
       - bash: |
           groovy -v
-          ls /__w/1
+          ls /__w/1/a /__w/1/b /__w/1/s
         displayName: Check groovy version
