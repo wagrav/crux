@@ -96,6 +96,7 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
 @test "IT: Docker Base Image Builds Successfully" {
   docker image rm $test_image_name ||:
   run docker build -t $test_image_name -f Dockerfile .
+  assert_output --partial "Successfully built"
   assert_succes
 }
 
