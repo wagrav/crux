@@ -92,6 +92,7 @@ jobs:
         slave:
           containerImage: 'gabrielstar/crux-slave'
 
+    container: $[ variables['containerImage'] ]
     steps:
       - bash: |
           groovy -v
