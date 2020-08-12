@@ -3,8 +3,9 @@
 load $HOME/test/'test_helper/bats-assert/load.bash'
 load $HOME/test/'test_helper/bats-support/load.bash'
 
-test_image_name=gabrielstar/crux-base
-test_image_name_master=gabrielstar/crux-master:0.0.1
+test_image_name=gabrielstar/crux-base:latest
+test_image_name_master=gabrielstar/crux-master:latest
+test_image_name_slave=gabrielstar/crux-slave:latest
 run_opts="--shm-size=1g --rm"
 jmeter_test_successful_output="Err:     0 (0.00%)"
 
@@ -92,12 +93,20 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
 }
 
 
-@test "IT: Docker Master Image Builds Successfully" {
-  docker image rm $test_image_name_master ||:
-  docker build -t $test_image_name_master -f Dockerfile-master .
-}
-
 @test "IT: Docker Base Image Builds Successfully" {
   docker image rm $test_image_name ||:
-  docker build -t $test_image_name -f Dockerfile .
+  run docker build -t $test_image_name -f Dockerfile .
+  assert_succes
+}
+
+@test "IT: Docker Master Image Builds Successfully" {
+  docker image rm $test_image_name_master ||:
+  run docker build -t $test_image_name_master -f Dockerfile-master .
+  assert_success
+}
+
+@test "IT: Docker Slave Image Builds Successfully" {
+  docker image rm $test_image_name_slave ||:
+  run docker build -t $test_image_name_slave -f Dockerfile-slave .
+  assert_success
 }
