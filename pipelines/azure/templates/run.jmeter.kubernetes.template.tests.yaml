@@ -12,10 +12,7 @@ jobs:
       - checkout: crux
         displayName: CRUX clone
 
-      - task: ShellScript@2
-        displayName: Install BATS
-        inputs:
-          scriptPath: $(System.DefaultWorkingDirectory)/modules/bats/install.sh
+      - template: test_steps/test_step.install_bats.yaml
 
       - bash: |
           PATH=/home/vsts/bin:$PATH && \
@@ -94,7 +91,7 @@ jobs:
       - checkout: crux
         displayName: CRUX clone
       - template: test_steps/test_step.install_bats.yaml
-      - template: test_steps/test_step.run_bats.yaml
+      - template: test_steps/test_step.run_docker_bats.yaml
       - bash: |
           ls -alh
       - bash: |
