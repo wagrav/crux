@@ -10,7 +10,7 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
 
 # setup_file does not work well for this, so I build docker image in first test as an ugly but stable work-around
 # whover knows how to fix it, you get a beer. Rememeber this case is equivalent of setup_file.
-@test "IT: Chromedriver 83.0.4103.39 is installed flaky" {
+@test "IT: Chromedriver 83.0.4103.39 is installed " {
   run docker run $run_opts $test_image_name chromedriver --version
   #Then it is successful
   assert_output --partial "ChromeDriver 83.0.4103.39"
@@ -22,7 +22,7 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
   echo $output
   assert_output --partial "Google Chrome 83.0.4103.61"
 }
-@test "E2E: JMeter Test works fine with Simple Table Server flaky" {
+@test "E2E: JMeter Test works fine with Simple Table Server " {
   local test_scenario=test_table_server.jmx
   local cmd_start_sts="screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/simple-table-server.sh -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=/test "
   local wait_for_sts="sleep 2" #time for sts to start, need to be refactored to conditional loop
@@ -34,7 +34,7 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
   assert_output --partial  "$jmeter_test_successful_output"
 }
 
-@test "E2E: JMeter Simple Table Server and Chrome Headless work fine flaky" {
+@test "E2E: JMeter Simple Table Server and Chrome Headless work fine " {
 
   local test_scenario=selenium_chrome_headless_sts.jmx
   local cmd_start_sts="screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/simple-table-server.sh -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=/test "

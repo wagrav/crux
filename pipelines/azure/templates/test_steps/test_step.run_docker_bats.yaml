@@ -3,6 +3,5 @@ steps:
       PATH=/home/vsts/bin:$PATH && \
       PATH=$HOME/bin:$PATH && \
       PATH=/home/vsts/.local/bin:$PATH && \
-      cd $(System.DefaultWorkingDirectory)/docker && mkdir -p docker_tests_results && bats --filter flaky --no-tempdir-cleanup -o docker_tests_results -F junit *.bats
-      cat docker_tests_results/report.tap
+      cd $(System.DefaultWorkingDirectory)/docker && mkdir -p docker_tests_results && bats -o docker_tests_results -F junit *.bats
     displayName: Run Docker Image tests
