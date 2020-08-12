@@ -90,9 +90,9 @@ jobs:
     strategy:
       matrix:
         master:
-          containerImage: 'gabrielstar/crux-master'
+          containerImage: 'gabrielstar/crux-master:0.0.1'
         slave:
-          containerImage: 'gabrielstar/crux-slave'
+          containerImage: 'gabrielstar/crux-slave:0.0.1'
 
     container: $[ variables['containerImage'] ]
     steps:
