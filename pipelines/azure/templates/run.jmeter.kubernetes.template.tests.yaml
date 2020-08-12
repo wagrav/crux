@@ -21,7 +21,7 @@ jobs:
           cd $(System.DefaultWorkingDirectory)/modules/bats && bash run_all_tests.sh
         displayName: Run tests
 
-       - template: test_steps/publish_bats_results.yaml
+      - template: test_steps/publish_bats_results.yaml
 
   - job: arm_and_pester_tests
     condition: not(eq(variables['pester_tests'], false))
