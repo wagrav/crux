@@ -91,7 +91,7 @@ jobs:
       - checkout: crux
         displayName: CRUX clone
       - bash: |
-          docker run --shm-size=2g --rm -it gabrielstar/crux:0.0.1 chromedriver --version
+          docker run --shm-size=2g gabrielstar/crux:0.0.1 chromedriver --version
 
 
 
