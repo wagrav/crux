@@ -1,3 +1,6 @@
+#This pipeline is supposed to execute without external resources such as kubernetes cluster or an arm connection
+#Therefore it only handles UT and IT tests
+
 jobs:
   - job: bats_tests
     condition: not(eq(variables['bats_tests'], false))
@@ -91,7 +94,7 @@ jobs:
       - checkout: crux
         displayName: CRUX clone
       - bash: |
-          docker run --shm-size=2g gabrielstar/crux:0.0.1 chromedriver --version
+          docker run --shm-size=2g gabrielstar/crux-master:0.0.1 chromedriver --version
 
 
 
