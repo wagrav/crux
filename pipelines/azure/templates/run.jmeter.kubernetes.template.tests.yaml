@@ -108,17 +108,19 @@ jobs:
         jmeter-slave:
           containerImage: 'gabrielstar/crux-slave:0.0.1'
 
-    services:
-      jmeter-image:
-        image: $[ variables['containerImage'] ]
-        volumes:
-          - /home/vsts/work/1/s/:/bats
+#    services:
+#      jmeter-image:
+#        image: $[ variables['containerImage'] ]
+#        volumes:
+#          - /home/vsts/work/1/s/:/bats
 
+    container: $[ variables['containerImage'] ]
     steps:
       - checkout: crux
         displayName: CRUX clone
 
       - bash: |
           groovy -v
-          ls /bats
+          ls /
+          ls crux
         displayName: Check groovy version
