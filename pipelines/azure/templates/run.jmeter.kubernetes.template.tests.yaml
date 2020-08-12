@@ -82,8 +82,9 @@ jobs:
           testResultsFormat: 'NUnit'
           testResultsFiles: '$(System.DefaultWorkingDirectory)\arm_ttk_test_results\*-armttk.xml'
 
-  - job: docker_images_tests2
-    displayName: Docker images min contract tests for
+  - job: docker_images_tests
+    condition: not(eq(variables['docker_tests'], false))
+    displayName: Docker images min contract tests
     pool:
       vmImage: 'ubuntu-16.04'
     steps:
@@ -94,31 +95,4 @@ jobs:
           run docker image ls gabrielstar/crux:0.0.1
 
 
-  - job: docker_images_tests
-    displayName: Docker images min contract tests for
-    pool:
-      vmImage: 'ubuntu-16.04'
-    timeoutInMinutes: 5
-    strategy:
-      matrix:
-        jmeter-master:
-          containerImage: 'gabrielstar/crux-master:0.0.1'
-        jmeter-slave:
-          containerImage: 'gabrielstar/crux-slave:0.0.1'
 
-#    services:
-#      jmeter-image:
-#        image: $[ variables['containerImage'] ]
-#        volumes:
-#          - /home/vsts/work/1/s/:/bats
-
-    container: $[ variables['containerImage'] ]
-    steps:
-      - checkout: crux
-        displayName: CRUX clone
-
-      - bash: |
-          groovy -v
-          ls /
-          ls crux
-        displayName: Check groovy version
