@@ -80,4 +80,19 @@ jobs:
           testResultsFormat: 'NUnit'
           testResultsFiles: '$(System.DefaultWorkingDirectory)\arm_ttk_test_results\*-armttk.xml'
 
+  - job: docker_images_tests
+    displayName: Docker images tests
+    pool:
+      vmImage: 'ubuntu-latest'
+    timeoutInMinutes: 5
+    strategy:
+      matrix:
+        master:
+          containerImage: 'gabrielstar/crux-master'
+        slave:
+          containerImage: 'gabrielstar/crux-slave'
 
+    steps:
+      - bash: |
+          groovy -v
+        displayName: Check groovy version
