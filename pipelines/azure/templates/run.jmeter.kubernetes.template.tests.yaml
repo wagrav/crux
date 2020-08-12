@@ -94,8 +94,12 @@ jobs:
         slave:
           containerImage: 'gabrielstar/crux-slave:0.0.1'
 
-    container: $[ variables['containerImage'] ]
+    container:
+      image: $[ variables['containerImage'] ]
+      options: -v "$(System.DefaultWorkingDirectory)"/:/bats
+
     steps:
       - bash: |
           groovy -v
+          ls /bats
         displayName: Check groovy version
