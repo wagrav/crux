@@ -93,6 +93,10 @@ jobs:
     steps:
       - checkout: crux
         displayName: CRUX clone
+      - template: test_steps/test_step.install_bats.yaml
+      - template: test_steps/test_step.run_bats.yaml
+      - bash: |
+          ls -alh
       - bash: |
           docker run --shm-size=2g gabrielstar/crux-master:0.0.1 chromedriver --version
 
