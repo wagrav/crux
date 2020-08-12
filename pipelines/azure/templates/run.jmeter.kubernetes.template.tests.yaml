@@ -92,10 +92,12 @@ jobs:
         displayName: CRUX clone
       - template: test_steps/test_step.install_bats.yaml
       - template: test_steps/test_step.run_docker_bats.yaml
-      - bash: |
-          ls -alh
-      - bash: |
-          docker run --shm-size=2g gabrielstar/crux-master:0.0.1 chromedriver --version
+      - task: PublishTestResults@2
+        displayName: Publish Framework BATS Tests Results
+        inputs:
+          failTaskOnFailedTests: true
+          testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+          testResultsFiles: '**/TestReport-*.xml'
 
 
 
