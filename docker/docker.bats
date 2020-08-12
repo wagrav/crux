@@ -41,6 +41,7 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
 @test "IT: Chrome 83.0.4103.6 is installed" {
   run docker run $run_opts $test_image_name google-chrome --version
   #Then it is successful
+  echo $output
   assert_output --partial "Google Chrome 83.0.4103.61"
 }
 
