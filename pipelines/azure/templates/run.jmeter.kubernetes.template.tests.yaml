@@ -4,7 +4,7 @@
 jobs:
   - job: bats_tests
     condition: not(eq(variables['bats_tests'], false))
-    displayName: BASH modules tests
+    displayName: Modules - tests - bats
     pool:
       vmImage: 'ubuntu-latest'
     timeoutInMinutes: 5
@@ -25,7 +25,7 @@ jobs:
 
   - job: arm_and_pester_tests
     condition: not(eq(variables['pester_tests'], false))
-    displayName: Powershell modules and ARM tests
+    displayName: Modules - tests - arm/pester
     timeoutInMinutes: 5
     pool:
       vmImage: 'windows-latest'
@@ -79,7 +79,7 @@ jobs:
 
   - job: docker_images_tests
     condition: not(eq(variables['docker_tests'], false))
-    displayName: Docker images min contract tests
+    displayName: Docker - test
     pool:
       vmImage: 'ubuntu-16.04'
     steps:
@@ -91,7 +91,7 @@ jobs:
 
 
   - job: publish_docker_images
-    displayName: Publish New Docker Images
+    displayName: Docker - publish
     dependsOn: # you can only publish if docker tests are fine
     - docker_images_tests
     condition: and(succeeded(),eq(variables['docker_build_and_push'], true)) # we push only if explicitely specified by user
