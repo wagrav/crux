@@ -98,10 +98,7 @@ jobs:
     #- bats_tests
     condition: and(succeeded(),eq(variables['docker_build_and_push'], true)) # we push only if explicitely specified by user
     variables: #push as latest if no tag specified
-      ${{ if variables['docker_tag'] }}:
-        crux.tag: $(docker_tag)
-      ${{ if not(variables['docker_tag']) }}:
-        crux.tag: latest
+      crux.tag: $[coalesce(variables['docker_tag'], 'latest')]
     steps:
       - checkout: crux
         displayName: CRUX clone
