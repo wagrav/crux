@@ -12,7 +12,7 @@ jobs:
         parameters:
           mode: ${{ parameters.mode }}
 
-    displayName: JMeter Tests
+    displayName: JMeter pipeline - test
     pool:
       vmImage: 'ubuntu-latest'
     steps:
