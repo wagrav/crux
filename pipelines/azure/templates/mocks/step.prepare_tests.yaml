@@ -4,5 +4,5 @@ steps:
       cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
       #mock set-up for tests
       mkdir -p $(mock_dir)
-    displayName: PREPARE tests
+    displayName: PREPARE tests (mocked)
     condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
