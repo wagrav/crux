@@ -92,10 +92,8 @@ jobs:
 
   - job: publish_docker_images
     displayName: Publish New Docker Images
-    #dependsOn: # you can only publish if all tests are fine
-    #- docker_images_tests
-    #- arm_and_pester_tests
-    #- bats_tests
+    dependsOn: # you can only publish if docker tests are fine
+    - docker_images_tests
     condition: and(succeeded(),eq(variables['docker_build_and_push'], true)) # we push only if explicitely specified by user
     variables: #push as latest if no tag specified
       crux.tag: $[coalesce(variables['docker_tag'], 'latest')]
@@ -108,10 +106,26 @@ jobs:
           command: login
           containerRegistry: cruxDockerHubServiceConnection
       - task: Docker@2
-        displayName: Build and Push
+        displayName: Build and Push - base
         inputs:
           command: buildAndPush
           repository: gabrielstar/crux-base
           Dockerfile: "**/Dockerfile"
           tags: |
             $(crux.tag)
+      - task: Docker@2
+          displayName: Build and Push - master
+          inputs:
+            command: buildAndPush
+            repository: gabrielstar/crux-master
+            Dockerfile: "**/Dockerfile-master"
+            tags: |
+              $(crux.tag)
+      - task: Docker@2
+          displayName: Build and Push - slave
+          inputs:
+            command: buildAndPush
+            repository: gabrielstar/crux-slave
+            Dockerfile: "**/Dockerfile-master"
+            tags: |
+              $(crux.tag)
