@@ -24,6 +24,10 @@ setup_file(){
 teardown_file(){
   docker stop mockserver
 }
+@test "All E2E tests use Mock Server or STS as AUT" {
+  #only use localhost:9191 (sts) or localhost:1080 (mock server) as AUT for e2e feature tests
+  assert_success
+}
 
 @test "Mock server is running" {
   run curl -X PUT "http://localhost:1080/status" -H  "accept: application/json"
