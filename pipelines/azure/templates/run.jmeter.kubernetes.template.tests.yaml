@@ -91,6 +91,7 @@ jobs:
 
 
   - job: publish_docker_images
+    displayName: Publish New Docker Images
     #dependsOn: # you can only publish if all tests are fine
     #- docker_images_tests
     #- arm_and_pester_tests
@@ -102,6 +103,8 @@ jobs:
       ${{ if not(variables['docker_tag']) }}:
         crux.tag: latest
     steps:
+      - checkout: crux
+        displayName: CRUX clone
       - task: Docker@2
         displayName: Login to Dockerhub
         inputs:
