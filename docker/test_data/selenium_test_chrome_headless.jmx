@@ -51,10 +51,10 @@
         <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="Selenium scenario with steps" enabled="true">
           <stringProp name="WebDriverSampler.script">WDS.sampleResult.sampleStart()
 WDS.sampleResult.subSampleStart(&apos;Open Google Main Page&apos;)
-WDS.browser.get(&apos;http://google.com&apos;)
+WDS.browser.get(&apos;http://localhost:1080&apos;)
 WDS.sampleResult.subSampleEnd(true)
 WDS.sampleResult.subSampleStart(&apos;Open Bing Main Page&apos;)
-WDS.browser.get(&apos;http://bing.com&apos;)
+WDS.browser.get(&apos;http://localhost:1080&apos;)
 WDS.sampleResult.subSampleEnd(true)
 WDS.sampleResult.sampleEnd()</stringProp>
           <stringProp name="WebDriverSampler.parameters"></stringProp>

@@ -11,7 +11,28 @@ jmeter_test_successful_output="Err:     0 (0.00%)"
 
 # setup_file does not work well for this, so I build docker image in first test as an ugly but stable work-around
 # whover knows how to fix it, you get a beer. Rememeber this case is equivalent of setup_file.
+#These tests shoudl be independent of external services so we spin mock-server as adocker container for tests
 
+setup_file(){
+  docker stop mockserver ||:
+  docker run --name mockserver -d --rm -p 1080:1080 mockserver/mockserver:mockserver-5.11.1 #sets a service for tests
+  until curl -X PUT "http://localhost:1080/status" -H  "accept: application/json"; do sleep 1;done #wait for service to be available
+  #all requests return HTTP 200
+  curl -X PUT "http://localhost:1080/expectation" -H  "Content-Type: application/json" -d "{\"httpRequest\":{\"method\":\"GET\",\"path\":\"/.*\"},\"httpResponse\":{\"statusCode\":200,\"reasonPhrase\":\"I am mocking all the stuff\"}}"
+}
+
+teardown_file(){
+  docker stop mockserver
+}
+
+@test "Mock server is running" {
+  run curl -X PUT "http://localhost:1080/status" -H  "accept: application/json"
+  assert_output --partial 5.11.1
+}
+@test "Mock server returns 200 for any GET call" {
+  run curl -v -X GET "http://localhost:1080/i_do_not_exist" -H  "accept: application/json"
+  assert_output --partial "HTTP/1.1 200"
+}
 @test "E2E: JMeter Test works fine with Simple Table Server " {
   local test_scenario=test_table_server.jmx
   local cmd_start_sts="screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/simple-table-server.sh -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=/test "
