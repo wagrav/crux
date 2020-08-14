@@ -89,7 +89,7 @@ jobs:
       - template: test_steps/test_step.run_docker_bats.yaml
       - template: test_steps/test_step.publish_bats_results.yaml
 
-- template: build/build_and_push_docker.yaml
+  - template: build/build_and_push_docker.yaml
 #  - job: publish_docker_images
 #    displayName: Docker - publish
 #    dependsOn: # you can only publish if docker tests are fine
