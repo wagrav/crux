@@ -11,7 +11,8 @@ jobs:
       - template: default.variables.yaml
         parameters:
           mode: ${{ parameters.mode }}
-
+      crux.steps: ['step.crux_clone.yaml',
+                   'step.tests_clone.yaml']
     displayName: JMeter pipeline - test
     pool:
       vmImage: 'ubuntu-latest'
@@ -20,8 +21,7 @@ jobs:
       - template: insert_step.yaml
         parameters:
           mode: mocks
-          param: ['step.crux_clone.yaml',
-                  'step.tests_clone.yaml']
+          param: $(crux.steps)
 #    - ${{ if eq(parameters.mode, 'tests') }}:
 #        - template: mocks/step.crux_clone.yaml
 #
