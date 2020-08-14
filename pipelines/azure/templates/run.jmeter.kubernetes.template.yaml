@@ -19,8 +19,9 @@ jobs:
     - ${{ if eq(parameters.mode, 'tests') }}:
       - template: insert_step.yaml
         parameters:
-          param: ['mocks/step.crux_clone.yaml',
-                  'mocks/step.tests_clone.yaml']
+          mode: mocks
+          param: ['step.crux_clone.yaml',
+                  'step.tests_clone.yaml']
 #    - ${{ if eq(parameters.mode, 'tests') }}:
 #        - template: mocks/step.crux_clone.yaml
 #

@@ -1,5 +1,6 @@
 parameters:
   param: []
+  mode: steps # steps/mock
 steps:
   - ${{ each template in parameters.param }}:
-    - template: ${{ template }}
+    - template: ${{ parameters.mode }}/${{ template }}
