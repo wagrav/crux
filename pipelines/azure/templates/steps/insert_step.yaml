@@ -2,4 +2,4 @@ parameters:
   param: []
 steps:
   - $ {{ each template in parameters.param }}
-    - template: $ {{ template }}
+  - template: $ {{ template }}
