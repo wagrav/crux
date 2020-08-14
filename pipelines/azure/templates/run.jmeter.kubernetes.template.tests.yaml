@@ -89,43 +89,43 @@ jobs:
       - template: test_steps/test_step.run_docker_bats.yaml
       - template: test_steps/test_step.publish_bats_results.yaml
 
-
-  - job: publish_docker_images
-    displayName: Docker - publish
-    dependsOn: # you can only publish if docker tests are fine
-    - docker_images_tests
-    condition: and(succeeded(),eq(variables['docker_build_and_push'], true)) # we push only if explicitely specified by user
-    variables: #push as latest if no tag specified
-      crux.tag: $[coalesce(variables['docker_tag'], 'latest')]
-    steps:
-      - checkout: crux
-        displayName: CRUX clone
-      - task: Docker@2
-        displayName: Login to Dockerhub
-        inputs:
-          command: login
-          containerRegistry: cruxDockerHubServiceConnection
-      - task: Docker@2
-        displayName: Build and Push - base
-        inputs:
-          command: buildAndPush
-          repository: gabrielstar/crux-base
-          Dockerfile: "**/Dockerfile"
-          tags: |
-            $(crux.tag)
-      - task: Docker@2
-        displayName: Build and Push - master
-        inputs:
-          command: buildAndPush
-          repository: gabrielstar/crux-master
-          Dockerfile: "**/Dockerfile-master"
-          tags: |
-            $(crux.tag)
-      - task: Docker@2
-        displayName: Build and Push - slave
-        inputs:
-          command: buildAndPush
-          repository: gabrielstar/crux-slave
-          Dockerfile: "**/Dockerfile-master"
-          tags: |
-            $(crux.tag)
+- template: build/build_and_push_docker.yaml
+#  - job: publish_docker_images
+#    displayName: Docker - publish
+#    dependsOn: # you can only publish if docker tests are fine
+#    - docker_images_tests
+#    condition: and(succeeded(),eq(variables['docker_build_and_push'], true)) # we push only if explicitely specified by user
+#    variables: #push as latest if no tag specified
+#      crux.tag: $[coalesce(variables['docker_tag'], 'latest')]
+#    steps:
+#      - checkout: crux
+#        displayName: CRUX clone
+#      - task: Docker@2
+#        displayName: Login to Dockerhub
+#        inputs:
+#          command: login
+#          containerRegistry: cruxDockerHubServiceConnection
+#      - task: Docker@2
+#        displayName: Build and Push - base
+#        inputs:
+#          command: buildAndPush
+#          repository: gabrielstar/crux-base
+#          Dockerfile: "**/Dockerfile"
+#          tags: |
+#            $(crux.tag)
+#      - task: Docker@2
+#        displayName: Build and Push - master
+#        inputs:
+#          command: buildAndPush
+#          repository: gabrielstar/crux-master
+#          Dockerfile: "**/Dockerfile-master"
+#          tags: |
+#            $(crux.tag)
+#      - task: Docker@2
+#        displayName: Build and Push - slave
+#        inputs:
+#          command: buildAndPush
+#          repository: gabrielstar/crux-slave
+#          Dockerfile: "**/Dockerfile-master"
+#          tags: |
+#            $(crux.tag)
