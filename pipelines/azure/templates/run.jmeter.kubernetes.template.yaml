@@ -17,7 +17,7 @@ jobs:
       vmImage: 'ubuntu-latest'
     steps:
     - ${{ if eq(parameters.mode, 'tests') }}:
-      - template: insert_step.yaml
+      - template: steps/insert_step.yaml
         parameters:
           param: ['mocks/step.archive_jmeter_errors.yaml']
 #    - ${{ if eq(parameters.mode, 'tests') }}:
