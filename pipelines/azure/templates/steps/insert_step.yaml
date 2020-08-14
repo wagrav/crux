@@ -1,5 +1,5 @@
 parameters:
   param: []
 steps:
-$ {{ each template in parameters.param }}
-- template: $ {{ template }}
+  - ${{ each template in parameters.param }}:
+    - template: ${{ template }}
