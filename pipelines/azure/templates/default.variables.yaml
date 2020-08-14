@@ -5,8 +5,9 @@ parameters:
     default: jmeter
 
 variables:
-  crux.steps: ['step.crux_clone.yaml',
-               'step.tests_clone.yaml']
+  crux.steps:
+    - 'step.crux_clone.yaml'
+    - 'step.tests_clone.yaml'
   scale_down_replicas: 0
   scale_up_replicas_master: 1
   service: jmeter-slaves
