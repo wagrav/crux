@@ -1,80 +1,6 @@
 #This pipeline is supposed to execute without external resources such as kubernetes cluster or an arm connection
 #Therefore it only handles UT and IT tests
 jobs:
-  - job: bats_tests
-    condition: not(eq(variables['bats_tests'], false))
-    displayName: Modules - tests - bats
-    pool:
-      vmImage: 'ubuntu-latest'
-    timeoutInMinutes: 5
-    steps:
-      - checkout: crux
-        displayName: CRUX clone
-
-      - template: tests/jobs/steps/test_step.install_bats.yaml
-
-      - bash: |
-          PATH=/home/vsts/bin:$PATH && \
-          PATH=$HOME/bin:$PATH && \
-          PATH=/home/vsts/.local/bin:$PATH && \
-          cd $(System.DefaultWorkingDirectory)/modules/bats && bash run_all_tests.sh
-        displayName: Run tests
-
-      - template: tests/jobs/steps/test_step.publish_bats_results.yaml
-
-  - job: arm_and_pester_tests
-    condition: not(eq(variables['pester_tests'], false))
-    displayName: Modules - tests - arm/pester
-    timeoutInMinutes: 5
-    pool:
-      vmImage: 'windows-latest'
-    steps:
-      - checkout: crux
-        displayName: CRUX clone
-
-      - powershell: |
-            New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\arm_ttk_test_results
-            New-Item -ItemType Directory -Force -Path $(System.DefaultWorkingDirectory)\modules\pester\results
-        displayName: Prepare
-
-      - task: PowerShell@2
-        displayName: Run Pester tests with Coverage
-        inputs:
-          arguments: 'azure'
-          filePath: '$(System.DefaultWorkingDirectory)\modules\pester\RunAllTests.ps1'
-          pwsh: true
-
-      - task: PublishTestResults@2
-        displayName: Publish Pester tests
-        inputs:
-          testResultsFormat: 'NUnit'
-          testResultsFiles: '$(System.DefaultWorkingDirectory)/modules/pester/results/*pesterTEST.xml'
-          failTaskOnFailedTests: true
-
-      - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8'
-        displayName: 'Install ReportGenerator tool'
-
-      - script: 'reportgenerator -reports:"$(System.DefaultWorkingDirectory)/modules/pester/results/*pesterCoverageTEST.xml" -targetdir:"$(System.DefaultWorkingDirectory)/modules/pester/results/" -reporttypes:HtmlInline_AzurePipelines'
-        displayName: 'Create reports'
-
-      - task: PublishCodeCoverageResults@1
-        displayName: Publish Pester Code Coverage
-        inputs:
-          codeCoverageTool: 'JaCoCo'
-          summaryFileLocation: '$(System.DefaultWorkingDirectory)/modules/pester/results/*pesterCoverageTEST.xml'
-          reportDirectory: "$(System.DefaultWorkingDirectory)/modules/pester/results/"
-
-      - task: RunARMTTKTests@1
-        displayName: Run ARM TTK tests
-        inputs:
-          templatelocation: '$(System.DefaultWorkingDirectory)\pipelines\azure\arm\k8.json'
-          resultLocation: '$(System.DefaultWorkingDirectory)\arm_ttk_test_results'
-
-      - task: PublishTestResults@2
-        displayName: Publish ARM TTK tests
-        inputs:
-          testResultsFormat: 'NUnit'
-          testResultsFiles: '$(System.DefaultWorkingDirectory)\arm_ttk_test_results\*-armttk.xml'
 
 #  - job: docker_images_tests
 #    condition: not(eq(variables['docker_tests'], false))
@@ -87,44 +13,7 @@ jobs:
 #      - template: test_steps/test_step.install_bats.yaml
 #      - template: test_steps/test_step.run_docker_bats.yaml
 #      - template: test_steps/test_step.publish_bats_results.yaml
+  - template: tests/jobs/run_bats_modules_tests.yaml
+  - template: tests/jobs/run_pester_modules_tests.yaml
   - template: tests/jobs/test_docker_images.yaml
   - template: build/jobs/build_and_push_docker.yaml
-#  - job: publish_docker_images
-#    displayName: Docker - publish
-#    dependsOn: # you can only publish if docker tests are fine
-#    - docker_images_tests
-#    condition: and(succeeded(),eq(variables['docker_build_and_push'], true)) # we push only if explicitely specified by user
-#    variables: #push as latest if no tag specified
-#      crux.tag: $[coalesce(variables['docker_tag'], 'latest')]
-#    steps:
-#      - checkout: crux
-#        displayName: CRUX clone
-#      - task: Docker@2
-#        displayName: Login to Dockerhub
-#        inputs:
-#          command: login
-#          containerRegistry: cruxDockerHubServiceConnection
-#      - task: Docker@2
-#        displayName: Build and Push - base
-#        inputs:
-#          command: buildAndPush
-#          repository: gabrielstar/crux-base
-#          Dockerfile: "**/Dockerfile"
-#          tags: |
-#            $(crux.tag)
-#      - task: Docker@2
-#        displayName: Build and Push - master
-#        inputs:
-#          command: buildAndPush
-#          repository: gabrielstar/crux-master
-#          Dockerfile: "**/Dockerfile-master"
-#          tags: |
-#            $(crux.tag)
-#      - task: Docker@2
-#        displayName: Build and Push - slave
-#        inputs:
-#          command: buildAndPush
-#          repository: gabrielstar/crux-slave
-#          Dockerfile: "**/Dockerfile-master"
-#          tags: |
-#            $(crux.tag)
