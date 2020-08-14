@@ -4,6 +4,7 @@ parameters:
     type: string
     default: jmeter
   - name: crux_steps
+    type: object
     default:  ['step.crux_clone.yaml',
               'step.tests_clone.yaml']
 jobs:
