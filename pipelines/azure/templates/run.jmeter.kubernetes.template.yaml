@@ -3,7 +3,7 @@ parameters:
     displayName: 'Which template to use ?'
     type: string
     default: jmeter
-  - crux_steps:
+  - name: crux_steps
     default:  ['step.crux_clone.yaml',
               'step.tests_clone.yaml']
 jobs:
@@ -21,8 +21,8 @@ jobs:
     - ${{ if eq(parameters.mode, 'tests') }}:
       - template: insert_step.yaml
         parameters:
-          mode: mocks
-          param: ${{ parameters.crux_steps }}
+          source_folder: mocks
+          step_list: ${{ parameters.crux_steps }}
 #    - ${{ if eq(parameters.mode, 'tests') }}:
 #        - template: mocks/step.crux_clone.yaml
 #
