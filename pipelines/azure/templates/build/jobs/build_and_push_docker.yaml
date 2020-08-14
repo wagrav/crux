@@ -14,17 +14,17 @@ jobs:
         inputs:
           command: login
           containerRegistry: cruxDockerHubServiceConnection
-      - template: build_and_push_step.yaml
+      - template: steps/build_and_push_step.yaml
         parameters:
           Dockerfile: Dockerfile
           repository: gabrielstar/crux-base
           tag: $(crux.tag)
-      - template: build_and_push_step.yaml
+      - template: steps/build_and_push_step.yaml
         parameters:
           Dockerfile: Dockerfile-master
           repository: gabrielstar/crux-master
           tag: $(crux.tag)
-      - template: build_and_push_step.yaml
+      - template: steps/build_and_push_step.yaml
         parameters:
           Dockerfile: Dockerfile-slave
           repository: gabrielstar/crux-slave

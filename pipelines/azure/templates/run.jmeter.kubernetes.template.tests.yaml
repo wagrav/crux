@@ -1,6 +1,5 @@
 #This pipeline is supposed to execute without external resources such as kubernetes cluster or an arm connection
 #Therefore it only handles UT and IT tests
-
 jobs:
   - job: bats_tests
     condition: not(eq(variables['bats_tests'], false))
@@ -12,7 +11,7 @@ jobs:
       - checkout: crux
         displayName: CRUX clone
 
-      - template: test_steps/test_step.install_bats.yaml
+      - template: tests/jobs/steps/test_step.install_bats.yaml
 
       - bash: |
           PATH=/home/vsts/bin:$PATH && \
@@ -21,7 +20,7 @@ jobs:
           cd $(System.DefaultWorkingDirectory)/modules/bats && bash run_all_tests.sh
         displayName: Run tests
 
-      - template: test_steps/test_step.publish_bats_results.yaml
+      - template: tests/jobs/steps/test_step.publish_bats_results.yaml
 
   - job: arm_and_pester_tests
     condition: not(eq(variables['pester_tests'], false))
@@ -77,19 +76,19 @@ jobs:
           testResultsFormat: 'NUnit'
           testResultsFiles: '$(System.DefaultWorkingDirectory)\arm_ttk_test_results\*-armttk.xml'
 
-  - job: docker_images_tests
-    condition: not(eq(variables['docker_tests'], false))
-    displayName: Docker - test
-    pool:
-      vmImage: 'ubuntu-16.04'
-    steps:
-      - checkout: crux
-        displayName: CRUX clone
-      - template: test_steps/test_step.install_bats.yaml
-      - template: test_steps/test_step.run_docker_bats.yaml
-      - template: test_steps/test_step.publish_bats_results.yaml
-
-  - template: build/build_and_push_docker.yaml
+#  - job: docker_images_tests
+#    condition: not(eq(variables['docker_tests'], false))
+#    displayName: Docker - test
+#    pool:
+#      vmImage: 'ubuntu-16.04'
+#    steps:
+#      - checkout: crux
+#        displayName: CRUX clone
+#      - template: test_steps/test_step.install_bats.yaml
+#      - template: test_steps/test_step.run_docker_bats.yaml
+#      - template: test_steps/test_step.publish_bats_results.yaml
+  - template: tests/jobs/test_docker_images.yaml
+  - template: build/jobs/build_and_push_docker.yaml
 #  - job: publish_docker_images
 #    displayName: Docker - publish
 #    dependsOn: # you can only publish if docker tests are fine
