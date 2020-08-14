@@ -1,18 +1,6 @@
 #This pipeline is supposed to execute without external resources such as kubernetes cluster or an arm connection
 #Therefore it only handles UT and IT tests
 jobs:
-
-#  - job: docker_images_tests
-#    condition: not(eq(variables['docker_tests'], false))
-#    displayName: Docker - test
-#    pool:
-#      vmImage: 'ubuntu-16.04'
-#    steps:
-#      - checkout: crux
-#        displayName: CRUX clone
-#      - template: test_steps/test_step.install_bats.yaml
-#      - template: test_steps/test_step.run_docker_bats.yaml
-#      - template: test_steps/test_step.publish_bats_results.yaml
   - template: tests/jobs/run_bats_modules_tests.yaml
   - template: tests/jobs/run_pester_modules_tests.yaml
   - template: tests/jobs/test_docker_images.yaml

@@ -16,86 +16,88 @@ jobs:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.crux_clone.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.crux_clone.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.tests_clone.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.tests_clone.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.prepare_tests.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.prepare_tests.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.create_cluster.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.create_cluster.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.configure_cluster.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.configure_cluster.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.deploy_to_cluster.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.deploy_to_cluster.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.jmeter_tests.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.jmeter_tests.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.archive_jmeter_report.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.archive_jmeter_report.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.archive_jmeter_results.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.archive_jmeter_results.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.archive_jmeter_log.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.archive_jmeter_log.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.archive_jmeter_errors.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.archive_jmeter_errors.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.junit.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.junit.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.junit_publish.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.junit_publish.yaml
-
-    - ${{ if eq(parameters.mode, 'tests') }}:
-        - template: mocks/step.delete_cluster.yaml
-
-    - ${{ if not(eq(parameters.mode, 'tests')) }}:
-        - template: steps/step.delete_cluster.yaml
+      ${{ each mock in mocks/*.yaml}}:
+      - template: mocks/{{mock}}
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.crux_clone.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.crux_clone.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.tests_clone.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.tests_clone.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.prepare_tests.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.prepare_tests.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.create_cluster.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.create_cluster.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.configure_cluster.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.configure_cluster.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.deploy_to_cluster.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.deploy_to_cluster.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.jmeter_tests.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.jmeter_tests.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.archive_jmeter_report.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.archive_jmeter_report.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.archive_jmeter_results.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.archive_jmeter_results.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.archive_jmeter_log.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.archive_jmeter_log.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.archive_jmeter_errors.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.archive_jmeter_errors.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.junit.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.junit.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.junit_publish.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.junit_publish.yaml
+#
+#    - ${{ if eq(parameters.mode, 'tests') }}:
+#        - template: mocks/step.delete_cluster.yaml
+#
+#    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+#        - template: steps/step.delete_cluster.yaml
