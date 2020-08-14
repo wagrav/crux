@@ -17,7 +17,8 @@ jobs:
       vmImage: 'ubuntu-latest'
     steps:
       ${{ each mock in mocks/*.yaml}}:
-      - template: mocks/{{mock}}
+        valueFile: $filename
+        - template: mocks/{{mock}}
 #    - ${{ if eq(parameters.mode, 'tests') }}:
 #        - template: mocks/step.crux_clone.yaml
 #
