@@ -3,7 +3,9 @@ parameters:
     displayName: 'Which template to use ?'
     type: string
     default: jmeter
-
+  - crux.steps:
+    default:  ['step.crux_clone.yaml',
+              'step.tests_clone.yaml']
 jobs:
   - job: JMeter_Tests
     condition: not(eq(variables['jmeter_tests'], false))
