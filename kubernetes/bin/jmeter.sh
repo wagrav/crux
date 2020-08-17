@@ -32,7 +32,11 @@ getPods(){
         pods=$(kubectl get po -n $tenant | grep jmeter- | awk '{print $1}' | xargs)
         IFS=' ' read -r -a pods_array <<<"$pods"
 }
-
+cleanPods(){
+    for pod in "${pods_array[@]}"; do
+        kubectl exec -ti -n $tenant $pod -- rm -Rf "$test_dir/*"
+    done
+}
 copyDataToPods(){
   for pod in "${pods_array[@]}"; do
         folder_basename=$(echo "${data_dir##*/}")
@@ -45,7 +49,7 @@ copyDataToPods(){
   done
 }
 copyTestData(){
-    getPods && copyDataToPods
+    getPods && cleanPods && copyDataToPods
 }
 copyTestFilesToMasterPod() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
