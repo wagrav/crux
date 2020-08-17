@@ -1,6 +1,6 @@
 #CREDIT: This is taken from https://github.com/markhobson/docker-maven-chrome/blob/master/jdk-8/Dockerfile
 #Chrome as headless browser
-FROM markhobson/maven-chrome
+FROM markhobson/maven-chrome@sha256:4920ac5cf3d6061fcd994ce5da5bb557280fc43da953afabbb8b6804bfd2869e
 
 #adding groovy and pythion support
 
