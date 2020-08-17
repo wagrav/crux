@@ -9,10 +9,10 @@ wait_for_pod() {
   sleep_time_s=$4
 
   until [ "$service_replicas" == "$service_replicas_number/$service_replicas_number" ]; do
-    printf "\n\tWait for service $service to scale to $service_replicas_number for $sleep_time_s seconds"
+    printf "\nWait for service $service to scale to $service_replicas_number for $sleep_time_s seconds"
     sleep $sleep_time_s
     service_replicas=$(kubectl -n $service_namespace get all | grep deployment.apps/$service | awk '{print $2}')
-    printf "\n\tService $service_name pods ready: $service_replicas\n"
+    printf "\nService $service_name pods ready: $service_replicas\n"
   done
 }
 

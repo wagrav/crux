@@ -38,6 +38,12 @@ cleanPods(){
         kubectl exec -ti -n $tenant $pod -- bash -c "rm -Rf $test_dir/*"
     done
 }
+lsPods(){
+    for pod in "${pods_array[@]}"; do
+        echo "$test_dir on $pod"
+        kubectl exec -ti -n $tenant $pod -- ls "/$test_dir/"
+    done
+}
 copyDataToPods(){
   for pod in "${pods_array[@]}"; do
         folder_basename=$(echo "${data_dir##*/}")
@@ -46,14 +52,12 @@ copyDataToPods(){
         echo "Unpacking data on pod : $pod to $test_dir folder"
         kubectl exec -ti -n $tenant $pod -- bash -c "cp -r $test_dir/$folder_basename/* $test_dir/" #unpack to /test
         echo "Pod $pod contents at $test_dir:"
-        kubectl exec -ti -n $tenant $pod -- ls "/$test_dir/"
+
   done
 }
 
 copyTestFilesToMasterPod() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
-  kubectl cp "$root_dir/$data_file" -n $tenant "$master_pod:/$test_dir/"
-
 }
 cleanMasterPod() {
   kubectl exec -ti -n $tenant $master_pod -- rm -Rf "$tmp"
@@ -62,7 +66,6 @@ cleanMasterPod() {
 }
 runTest() {
   printf "\t\n Jmeter user args $user_args"
-  kubectl exec -ti -n $tenant $master_pod -- cat /test/bing.jmx
   kubectl exec -ti -n $tenant $master_pod -- /bin/bash /load_test $test_name " $report_args $user_args "
 }
 copyTestResultsToLocal() {
@@ -81,6 +84,7 @@ cleanPods
 copyDataToPods
 copyTestFilesToMasterPod
 cleanMasterPod
+lsPods
 runTest
 copyTestResultsToLocal
 
