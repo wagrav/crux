@@ -36,6 +36,7 @@ copyDataToPods(){
   for pod in "${pods_array[@]}"; do
         echo "Copying contents of data dir to pod : $pod"
         kubectl cp  "$root_dir/$data_dir" -n $tenant "$pod:$test_dir/"
+        echo "Unpackign data on pod : $pod"
         kubectl exec -ti -n $tenant $pod -- bash -c "cp -r $test_dir/$data_dir_relative/* $test_dir/" #unpack to /test
         echo "Pod contents at /$test_dir:"
         kubectl exec -ti -n $tenant $pod -- ls "/$test_dir/"
