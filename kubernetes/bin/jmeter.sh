@@ -29,7 +29,7 @@ prepareEnv() {
   mkdir -p $local_report_dir
 }
 getPods(){
-        pods=$(kubectl get po -n $tenant | grep jmeter- | awk '{print $1}' | xargs)
+        pods=$(kubectl get po -n $tenant --field-selector 'status.phase==Running' | grep jmeter- | awk '{print $1}' | xargs)
         IFS=' ' read -r -a pods_array <<<"$pods"
 }
 cleanPods(){
