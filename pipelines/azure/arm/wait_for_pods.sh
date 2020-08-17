@@ -12,7 +12,7 @@ wait_for_pod() {
     printf "\n\tWait for service $service to scale to $service_replicas_number for $sleep_time_s seconds"
     sleep $sleep_time_s
     service_replicas=$(kubectl -n $service_namespace get all | grep deployment.apps/$service | awk '{print $2}')
-    printf "\n\tService $service_name pods ready: $service_replicas"
+    printf "\n\tService $service_name pods ready: $service_replicas\n"
   done
 }
 
