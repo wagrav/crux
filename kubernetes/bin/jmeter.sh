@@ -20,30 +20,41 @@ function setVARS() {
   test_name="$(basename "$root_dir/$jmx")"
 }
 
-prepareEnv(){
+prepareEnv() {
   #delete evicted pods first
   kubectl get pods --all-namespaces --field-selector 'status.phase==Failed' -o json | kubectl delete -f -
   master_pod=$(kubectl get po -n $tenant | grep Running | grep jmeter-master | awk '{print $1}')
   #create necessary dirs
   mkdir -p $local_report_dir
 }
-
-copyTestFilesToMasterPod(){
+getPods(){
+        pods=$(kubectl get po -n $tenant | grep jmeter- | awk '{print $1}' | xargs)
+        IFS=' ' read -r -a pods_array <<<"$pods"
+}
+copyDataToPods(){
+  for pod in "${pods_array[@]}"; do
+        echo "Copying contents of data dir to pod : $pod"
+        kubectl cp  "$root_dir/$data_dir" -n $tenant "$pod:/$test_dir/"
+        kubectl exec -ti -n $tenant $pod -- bash -c "cp -r /$test_dir/$data_dir/* /$test_dir/" #unpack to /test
+        echo "Pod contents at /$test_dir:"
+        kubectl exec -ti -n $tenant $pod -- ls "/$test_dir/"
+  done
+}
+copyTestFilesToMasterPod() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
   kubectl cp "$root_dir/$data_file" -n $tenant "$master_pod:/$test_dir/"
-  kubectl cp -r "$root_dir/$data_dir/*" -n $tenant "$master_pod:/$test_dir/"
-  #kubectl exec -ti -n $tenant $master_pod -- ls "$test_dir/"
+  getPods && copyDataToPods
 }
-cleanMasterPod(){
+cleanMasterPod() {
   kubectl exec -ti -n $tenant $master_pod -- rm -Rf "$tmp"
   kubectl exec -ti -n $tenant $master_pod -- mkdir -p "$tmp/$report_dir"
   kubectl exec -ti -n $tenant $master_pod -- touch "$test_dir/errors.xml"
 }
-runTest(){
+runTest() {
   printf "\t\n Jmeter user args $user_args"
   kubectl exec -ti -n $tenant $master_pod -- /bin/bash /load_test $test_name " $report_args $user_args "
 }
-copyTestResultsToLocal(){
+copyTestResultsToLocal() {
   kubectl cp "$tenant/$master_pod:$tmp/$report_dir" "$local_report_dir/"
   kubectl cp "$tenant/$master_pod:$tmp/results.csv" "$working_dir/../tmp/results.csv"
   kubectl cp "$tenant/$master_pod:/test/jmeter.log" "$working_dir/../tmp/jmeter.log"
@@ -51,13 +62,18 @@ copyTestResultsToLocal(){
   head -n10 "$working_dir/../tmp/results.csv"
 }
 
-setVARS "$1" "$2" "$3" "$4"
-prepareEnv
-copyTestFilesToMasterPod
-cleanMasterPod
-runTest
-copyTestResultsToLocal
+run_tests() {
+  setVARS "$1" "$2" "$3" "$4"
+  prepareEnv
+  copyTestFilesToMasterPod
+  cleanMasterPod
+  runTest
+  copyTestResultsToLocal
+}
 
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  run_tests "$@"
+fi
 
 #USEFUL COMMANDS FOR TROUBLESHOOTING
 #enter master pod
