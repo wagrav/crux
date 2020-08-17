@@ -23,7 +23,7 @@ function setVARS() {
 
 prepareEnv() {
   #delete evicted pods first
-  kubectl get pods --all-namespaces --field-selector 'status.phase==Failed' -o json | kubectl delete -f -
+  kubectl get pods -n $tenant --field-selector 'status.phase==Failed' -o json | kubectl delete -f -
   master_pod=$(kubectl get po -n $tenant | grep Running | grep jmeter-master | awk '{print $1}')
   #create necessary dirs
   mkdir -p $local_report_dir
@@ -32,6 +32,7 @@ getPods(){
         pods=$(kubectl get po -n $tenant | grep jmeter- | awk '{print $1}' | xargs)
         IFS=' ' read -r -a pods_array <<<"$pods"
 }
+
 copyDataToPods(){
   for pod in "${pods_array[@]}"; do
         folder_basename=$(echo "${data_dir##*/}")
