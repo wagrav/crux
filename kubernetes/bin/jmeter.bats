@@ -9,8 +9,7 @@ function setVARS() {
   tenant="$1"
   jmx="$2"
   data_file="$3"
-  data_dir="$4"
-  user_args=$5
+  user_args=$4
   root_dir=$working_dir/../../
   local_report_dir=$working_dir/../tmp/report
   report_dir=report
@@ -31,7 +30,6 @@ prepareEnv(){
 copyTestFilesToMasterPod(){
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
   kubectl cp "$root_dir/$data_file" -n $tenant "$master_pod:/$test_dir/"
-  kubectl cp -r "$root_dir/$data_dir/*" -n $tenant "$master_pod:/$test_dir/"
   #kubectl exec -ti -n $tenant $master_pod -- ls "$test_dir/"
 }
 cleanMasterPod(){
