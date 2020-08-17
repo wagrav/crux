@@ -34,7 +34,8 @@ getPods(){
 }
 cleanPods(){
     for pod in "${pods_array[@]}"; do
-        kubectl exec -ti -n $tenant $pod -- rm -Rf "$test_dir/*"
+        echo "Cleaning on $pod"
+        kubectl exec -ti -n $tenant $pod -- bash -c "rm -Rf $test_dir/*"
     done
 }
 copyDataToPods(){
@@ -48,9 +49,7 @@ copyDataToPods(){
         kubectl exec -ti -n $tenant $pod -- ls "/$test_dir/"
   done
 }
-copyTestData(){
-    getPods && cleanPods && copyDataToPods
-}
+
 copyTestFilesToMasterPod() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
   kubectl cp "$root_dir/$data_file" -n $tenant "$master_pod:/$test_dir/"
@@ -77,8 +76,10 @@ copyTestResultsToLocal() {
 
 setVARS "$1" "$2" "$3" "$4" "$5" "$6"
 prepareEnv
+getPods
+cleanPods
+copyDataToPods
 copyTestFilesToMasterPod
-copyTestData
 cleanMasterPod
 runTest
 copyTestResultsToLocal
