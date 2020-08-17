@@ -40,7 +40,7 @@ data:
     runJMeterTest(){
       local jmx=$1
       shift 1
-      local fixed_args="-Gsts=$ip -Gchromedriver=/usr/bin/chromedriver -Gtest_dir=/$test_dir -q /$test_dir/user.properties -Dserver.rmi.ssl.disable=true"
+      local fixed_args="-Gsts=$ip -Gchromedriver=/usr/bin/chromedriver -q /$test_dir/user.properties -Dserver.rmi.ssl.disable=true"
       sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t /$test_dir/$jmx $@ $fixed_args -R $(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')
 
     }
