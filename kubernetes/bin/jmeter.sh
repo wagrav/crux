@@ -10,7 +10,8 @@ function setVARS() {
   jmx="$2"
   data_file="$3"
   data_dir="$4"
-  user_args=$5
+  data_dir_relative="$5"
+  user_args=$6
   root_dir=$working_dir/../../
   local_report_dir=$working_dir/../tmp/report
   report_dir=report
@@ -35,7 +36,7 @@ copyDataToPods(){
   for pod in "${pods_array[@]}"; do
         echo "Copying contents of data dir to pod : $pod"
         kubectl cp  "$root_dir/$data_dir" -n $tenant "$pod:$test_dir/"
-        kubectl exec -ti -n $tenant $pod -- bash -c "cp -r $test_dir/$data_dir/* $test_dir/" #unpack to /test
+        kubectl exec -ti -n $tenant $pod -- bash -c "cp -r $test_dir/$data_dir_relative/* $test_dir/" #unpack to /test
         echo "Pod contents at /$test_dir:"
         kubectl exec -ti -n $tenant $pod -- ls "/$test_dir/"
   done
