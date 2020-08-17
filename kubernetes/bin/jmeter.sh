@@ -65,7 +65,7 @@ cleanMasterPod() {
   kubectl exec -ti -n $tenant $master_pod -- touch "$test_dir/errors.xml"
 }
 runTest() {
-  printf "\t\n Jmeter user args $user_args"
+  printf "\t\n Jmeter user args $user_args \n"
   kubectl exec -ti -n $tenant $master_pod -- /bin/bash /load_test $test_name " $report_args $user_args "
 }
 copyTestResultsToLocal() {
