@@ -66,18 +66,13 @@ copyTestResultsToLocal() {
   head -n10 "$working_dir/../tmp/results.csv"
 }
 
-run_tests() {
-  setVARS "$1" "$2" "$3" "$4"
-  prepareEnv
-  copyTestFilesToMasterPod
-  cleanMasterPod
-  runTest
-  copyTestResultsToLocal
-}
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  run_tests "$@"
-fi
+setVARS "$1" "$2" "$3" "$4" "$5" "$6"
+prepareEnv
+copyTestFilesToMasterPod
+cleanMasterPod
+runTest
+copyTestResultsToLocal
 
 #USEFUL COMMANDS FOR TROUBLESHOOTING
 #enter master pod
