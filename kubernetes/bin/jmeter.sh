@@ -34,7 +34,7 @@ getPods(){
 }
 copyDataToPods(){
   for pod in "${pods_array[@]}"; do
-        folder_basename=$(echo ${data_dir##*/})
+        folder_basename=$(echo "${data_dir##*/}")
         echo "Copying contents of repository $folder_basename directory to pod : $pod"
         kubectl cp  "$root_dir/$data_dir" -n $tenant "$pod:$test_dir/"
         echo "Unpacking data on pod : $pod to $test_dir folder"
