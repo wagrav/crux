@@ -59,6 +59,7 @@ cleanMasterPod() {
 }
 runTest() {
   printf "\t\n Jmeter user args $user_args"
+  kubectl exec -ti -n $tenant $master_pod -- cat /test/bing.jmx
   kubectl exec -ti -n $tenant $master_pod -- /bin/bash /load_test $test_name " $report_args $user_args "
 }
 copyTestResultsToLocal() {
