@@ -34,20 +34,22 @@ getPods(){
 }
 copyDataToPods(){
   for pod in "${pods_array[@]}"; do
-        echo "Copying contents of data dir to pod : $pod"
-        echo "$root_dir/$data_dir -n $tenant $pod:$test_dir/"
+        folder_basename=$(echo ${data_dir##*/})
+        echo "Copying contents of repository $folder_basename directory to pod : $pod"
         kubectl cp  "$root_dir/$data_dir" -n $tenant "$pod:$test_dir/"
-        echo "Unpacking data on pod : $pod"
-        echo "cp -r $test_dir/$data_dir_relative/* $test_dir/"
-        kubectl exec -ti -n $tenant $pod -- bash -c "cp -r $test_dir/test_data/* $test_dir/" #unpack to /test
-        echo "Pod contents at $test_dir:"
+        echo "Unpacking data on pod : $pod to $test_dir folder"
+        kubectl exec -ti -n $tenant $pod -- bash -c "cp -r $test_dir/$folder_basename/* $test_dir/" #unpack to /test
+        echo "Pod $pod contents at $test_dir:"
         kubectl exec -ti -n $tenant $pod -- ls "/$test_dir/"
   done
+}
+copyTestData(){
+    getPods && copyDataToPods
 }
 copyTestFilesToMasterPod() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
   kubectl cp "$root_dir/$data_file" -n $tenant "$master_pod:/$test_dir/"
-  getPods && copyDataToPods
+
 }
 cleanMasterPod() {
   kubectl exec -ti -n $tenant $master_pod -- rm -Rf "$tmp"
@@ -70,6 +72,7 @@ copyTestResultsToLocal() {
 setVARS "$1" "$2" "$3" "$4" "$5" "$6"
 prepareEnv
 copyTestFilesToMasterPod
+copyTestData
 cleanMasterPod
 runTest
 copyTestResultsToLocal
