@@ -4,4 +4,4 @@ steps:
     displayName: Archive Server Logs
     inputs:
       path: $(server_logs_dir)
-      artifact: jmeter.log
+      artifact: jmeter_servers_logs
