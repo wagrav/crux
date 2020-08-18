@@ -13,6 +13,7 @@ function setVARS() {
   user_args="$5"
   root_dir=$working_dir/../../
   local_report_dir=$working_dir/../tmp/report
+  server_logs_dir=$working_dir/../tmp/server_logs
   report_dir=report
   test_dir=/test
   tmp=/tmp
@@ -25,7 +26,11 @@ prepareEnv() {
   kubectl get pods -n $tenant --field-selector 'status.phase==Failed' -o json | kubectl delete -f -
   master_pod=$(kubectl get po -n $tenant | grep Running | grep jmeter-master | awk '{print $1}')
   #create necessary dirs
-  mkdir -p $local_report_dir
+  mkdir -p "$local_report_dir" "$server_logs_dir"
+}
+getSlavePods() {
+  slave_pods=$(kubectl get po -n $tenant --field-selector 'status.phase==Running' | grep jmeter-slave | awk '{print $1}' | xargs)
+  IFS=' ' read -r -a slave_pods_array <<<"$pods"
 }
 getPods() {
   pods=$(kubectl get po -n $tenant --field-selector 'status.phase==Running' | grep jmeter- | awk '{print $1}' | xargs)
@@ -35,6 +40,12 @@ cleanPods() {
   for pod in "${pods_array[@]}"; do
     echo "Cleaning on $pod"
     kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*"
+  done
+}
+getServerLogs() {
+  for pod in "${slave_pods_array[@]}"; do
+    echo "Getting jmeter-server.log on $pod"
+    kubectl cp "$tenant/$pod:/test/jmeter-server.log" "$server_logs_dir/$pod-jmeter-server.log"
   done
 }
 lsPods() {
@@ -77,6 +88,7 @@ run_main() {
   setVARS "$1" "$2" "$3" "$4" "$5"
   prepareEnv
   getPods
+  getSlavePods
   cleanPods
   copyDataToPods
   copyTestFilesToMasterPod
@@ -84,6 +96,7 @@ run_main() {
   lsPods
   runTest
   copyTestResultsToLocal
+  getServerLogs
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
