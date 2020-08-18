@@ -35,13 +35,13 @@ getPods(){
 cleanPods(){
     for pod in "${pods_array[@]}"; do
         echo "Cleaning on $pod"
-        kubectl exec -ti -n $tenant $pod -- bash -c "rm -Rf $test_dir/*"
+        kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*"
     done
 }
 lsPods(){
     for pod in "${pods_array[@]}"; do
         echo "$test_dir on $pod"
-        kubectl exec -ti -n $tenant $pod -- ls "/$test_dir/"
+        kubectl exec -i -n $tenant $pod -- ls "/$test_dir/"
     done
 }
 copyDataToPods(){
@@ -50,9 +50,7 @@ copyDataToPods(){
         echo "Copying contents of repository $folder_basename directory to pod : $pod"
         kubectl cp  "$root_dir/$data_dir" -n $tenant "$pod:$test_dir/"
         echo "Unpacking data on pod : $pod to $test_dir folder"
-        kubectl exec -ti -n $tenant $pod -- bash -c "cp -r $test_dir/$folder_basename/* $test_dir/" #unpack to /test
-        echo "Pod $pod contents at $test_dir:"
-
+        kubectl exec -i -n $tenant $pod -- bash -c "cp -r $test_dir/$folder_basename/* $test_dir/" #unpack to /test
   done
 }
 
@@ -60,13 +58,13 @@ copyTestFilesToMasterPod() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
 }
 cleanMasterPod() {
-  kubectl exec -ti -n $tenant $master_pod -- rm -Rf "$tmp"
-  kubectl exec -ti -n $tenant $master_pod -- mkdir -p "$tmp/$report_dir"
-  kubectl exec -ti -n $tenant $master_pod -- touch "$test_dir/errors.xml"
+  kubectl exec -i -n $tenant $master_pod -- rm -Rf "$tmp"
+  kubectl exec -i -n $tenant $master_pod -- mkdir -p "$tmp/$report_dir"
+  kubectl exec -i -n $tenant $master_pod -- touch "$test_dir/errors.xml"
 }
 runTest() {
   printf "\t\n Jmeter user args $user_args \n"
-  kubectl exec -ti -n $tenant $master_pod -- /bin/bash /load_test $test_name " $report_args $user_args "
+  kubectl exec -i -n $tenant $master_pod -- /bin/bash /load_test $test_name " $report_args $user_args "
 }
 copyTestResultsToLocal() {
   kubectl cp "$tenant/$master_pod:$tmp/$report_dir" "$local_report_dir/"
