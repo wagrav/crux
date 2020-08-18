@@ -8,10 +8,9 @@ function setVARS() {
   #Get namesapce variable
   tenant="$1"
   jmx="$2"
-  data_file="$3"
-  data_dir="$4"
-  data_dir_relative="$5"
-  user_args=$6
+  data_dir="$3"
+  data_dir_relative="$4"
+  user_args="$5"
   root_dir=$working_dir/../../
   local_report_dir=$working_dir/../tmp/report
   report_dir=report
@@ -75,7 +74,7 @@ copyTestResultsToLocal() {
 }
 
 
-setVARS "$1" "$2" "$3" "$4" "$5" "$6"
+setVARS "$1" "$2" "$3" "$4" "$5"
 prepareEnv
 getPods
 cleanPods
