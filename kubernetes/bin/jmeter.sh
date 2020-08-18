@@ -46,6 +46,7 @@ cleanPods() {
   done
 }
 getServerLogs() {
+  echo "Archiving server logs"
   for pod in "${slave_pods_array[@]}"; do
     echo "Getting jmeter-server.log on $pod"
     kubectl cp "$tenant/$pod:/test/jmeter-server.log" "$server_logs_dir/$pod-jmeter-server.log"
