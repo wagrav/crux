@@ -39,7 +39,10 @@ getPods() {
 cleanPods() {
   for pod in "${pods_array[@]}"; do
     echo "Cleaning on $pod"
-    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*"
+    #we only clean test data, jmeter-server.log needs to stay
+    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.csv"
+    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.py"
+    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.jmx"
   done
 }
 getServerLogs() {
