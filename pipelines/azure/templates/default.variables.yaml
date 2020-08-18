@@ -36,6 +36,7 @@ variables:
     mock_dir: mocked/kubernetes/tmp
     report_dir: $(mock_dir)/report
     results: $(mock_dir)/results.csv
+    server_logs_dir: $(mock_dir)/server_logs
     log: $(mock_dir)/jmeter.log
     errors: $(mock_dir)/errors.xml
     thresholds_file: $(mock_dir)/thresholds.properties
