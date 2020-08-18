@@ -29,6 +29,8 @@ variables:
       deploy_to_cluster: false
     ${{ if ne(True,variables['delete_cluster']) }}:
       delete_cluster: false
+    ${{ if ne(True,variables['docker_build_and_push']) }}:
+      docker_build_and_push: false
     #changing paths for mock to avoid clash with real tests
     mock_dir: mocked/kubernetes/tmp
     report_dir: $(mock_dir)/report
@@ -40,33 +42,11 @@ variables:
 
 
   ${{ if eq(parameters.mode,'jmeter') }}:
-    crux_clone: true
-    tests_clone: true
-    prepare_tests: true
-    create_cluster: false
-    configure_cluster: true
-    deploy_to_cluster: true
-    delete_cluster: false
-    jmeter_tests: true
-    archive_jmeter_report: true
-    archive_results_file: true
-    archive_log: true
-    archive_errors: true
-    evaluate_as_junit_tests: true
-    publish_junit_results: true
+    ${{ if ne(True,variables['create_cluster']) }}:
+      create_cluster: false
+    ${{ if ne(True,variables['delete_cluster']) }}:
+      delete_cluster: false
 
   ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
-    crux_clone: true
-    tests_clone: true
-    prepare_tests: true
-    create_cluster: true
-    configure_cluster: false
-    deploy_to_cluster: true
-    delete_cluster: true
-    jmeter_tests: true
-    archive_jmeter_report: true
-    archive_results_file: true
-    archive_log: true
-    archive_errors: true
-    evaluate_as_junit_tests: true
-    publish_junit_results: true
+    ${{ if ne(True,variables['configure_cluster']) }}:
+      configure_cluster: false
