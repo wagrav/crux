@@ -27,29 +27,29 @@ prepareEnv() {
   #create necessary dirs
   mkdir -p $local_report_dir
 }
-getPods(){
-        pods=$(kubectl get po -n $tenant --field-selector 'status.phase==Running' | grep jmeter- | awk '{print $1}' | xargs)
-        IFS=' ' read -r -a pods_array <<<"$pods"
+getPods() {
+  pods=$(kubectl get po -n $tenant --field-selector 'status.phase==Running' | grep jmeter- | awk '{print $1}' | xargs)
+  IFS=' ' read -r -a pods_array <<<"$pods"
 }
-cleanPods(){
-    for pod in "${pods_array[@]}"; do
-        echo "Cleaning on $pod"
-        kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*"
-    done
-}
-lsPods(){
-    for pod in "${pods_array[@]}"; do
-        echo "$test_dir on $pod"
-        kubectl exec -i -n $tenant $pod -- ls "/$test_dir/"
-    done
-}
-copyDataToPods(){
+cleanPods() {
   for pod in "${pods_array[@]}"; do
-        folder_basename=$(echo "${data_dir##*/}")
-        echo "Copying contents of repository $folder_basename directory to pod : $pod"
-        kubectl cp  "$root_dir/$data_dir" -n $tenant "$pod:$test_dir/"
-        echo "Unpacking data on pod : $pod to $test_dir folder"
-        kubectl exec -i -n $tenant $pod -- bash -c "cp -r $test_dir/$folder_basename/* $test_dir/" #unpack to /test
+    echo "Cleaning on $pod"
+    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*"
+  done
+}
+lsPods() {
+  for pod in "${pods_array[@]}"; do
+    echo "$test_dir on $pod"
+    kubectl exec -i -n $tenant $pod -- ls "/$test_dir/"
+  done
+}
+copyDataToPods() {
+  for pod in "${pods_array[@]}"; do
+    folder_basename=$(echo "${data_dir##*/}")
+    echo "Copying contents of repository $folder_basename directory to pod : $pod"
+    kubectl cp "$root_dir/$data_dir" -n $tenant "$pod:$test_dir/"
+    echo "Unpacking data on pod : $pod to $test_dir folder"
+    kubectl exec -i -n $tenant $pod -- bash -c "cp -r $test_dir/$folder_basename/* $test_dir/" #unpack to /test
   done
 }
 
@@ -73,17 +73,22 @@ copyTestResultsToLocal() {
   head -n10 "$working_dir/../tmp/results.csv"
 }
 
+run_main() {
+  setVARS "$1" "$2" "$3" "$4" "$5"
+  prepareEnv
+  getPods
+  cleanPods
+  copyDataToPods
+  copyTestFilesToMasterPod
+  cleanMasterPod
+  lsPods
+  runTest
+  copyTestResultsToLocal
+}
 
-setVARS "$1" "$2" "$3" "$4" "$5"
-prepareEnv
-getPods
-cleanPods
-copyDataToPods
-copyTestFilesToMasterPod
-cleanMasterPod
-lsPods
-runTest
-copyTestResultsToLocal
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  run_main "$@"
+fi
 
 #USEFUL COMMANDS FOR TROUBLESHOOTING
 #enter master pod
