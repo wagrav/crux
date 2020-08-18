@@ -58,6 +58,7 @@ lsPods() {
     kubectl exec -i -n $tenant $pod -- ls "/$test_dir/"
   done
 }
+
 copyDataToPods() {
   for pod in "${pods_array[@]}"; do
     folder_basename=$(echo "${data_dir##*/}")
