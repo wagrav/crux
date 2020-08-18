@@ -19,7 +19,7 @@ variables:
     reposRoot: repos
 
   ${{ if eq(parameters.mode,'tests') }}:
-    ${{ if not(variables['crux_clone']) }}:
+    ${{ if not(eq(variables['crux_clone'],false)) }}:
       crux_clone: true
     tests_clone: true
     prepare_tests: true
