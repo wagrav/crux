@@ -18,6 +18,7 @@ parameters:
                'step.archive_jmeter_results.yaml',
                'step.archive_jmeter_log.yaml',
                'step.archive_jmeter_errors.yaml',
+               'step.archive_jmeter_server_logs.yaml',
                'step.junit.yaml',
                'step.junit_publish.yaml',
                'step.delete_cluster.yaml'
