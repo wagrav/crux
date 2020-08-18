@@ -19,7 +19,7 @@ variables:
     reposRoot: repos
 
   ${{ if eq(parameters.mode,'tests') }}:
-    crux_clone: true
+    crux_clone: $[coalesce(variables['crux_clone'], true)]
     tests_clone: true
     prepare_tests: true
     create_cluster: false
