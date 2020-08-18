@@ -13,6 +13,7 @@ variables:
   k8conn: k8_$(Build.BuildID)
   ${{ if not(eq(parameters.mode,'tests')) }}:
     report_dir: kubernetes/tmp/report
+    server_logs_dir: kubernetes/tmp/server_logs
     results: kubernetes/tmp/results.csv
     log: kubernetes/tmp/jmeter.log
     errors: kubernetes/tmp/errors.xml

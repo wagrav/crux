@@ -30,7 +30,7 @@ prepareEnv() {
 }
 getSlavePods() {
   slave_pods=$(kubectl get po -n $tenant --field-selector 'status.phase==Running' | grep jmeter-slave | awk '{print $1}' | xargs)
-  IFS=' ' read -r -a slave_pods_array <<<"$pods"
+  IFS=' ' read -r -a slave_pods_array <<<"$slave_pods"
 }
 getPods() {
   pods=$(kubectl get po -n $tenant --field-selector 'status.phase==Running' | grep jmeter- | awk '{print $1}' | xargs)
