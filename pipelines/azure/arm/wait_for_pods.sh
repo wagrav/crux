@@ -41,11 +41,15 @@ wait_for_cluster_ready(){
   local scale_down_replicas=0
   local sleep_interval=20
 
-  #Deploy per defaults
-  kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
-  kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_svc.yaml
-  kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_configmap.yaml
-  kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_deploy_v16.yaml
+  #re-deploy per defaults
+  if kubectl get deployments | grep jmeter-master ; then
+    echo "Deployments are already present. Skipping new deploy. Use attach.to.existing.kubernetes.yaml if you want to redeploy"
+  else
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_svc.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_configmap.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_deploy_v16.yaml
+  fi
   #Wait till ready
   wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval "$service_master"
 
