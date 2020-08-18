@@ -72,35 +72,35 @@ teardown_file(){
   assert_output --partial "$jmeter_test_successful_output"
 }
 
-@test "IT: Chromedriver 84.0.4147.30 is installed " {
+@test "IT: Chromedriver 84 is installed " {
   run docker run $run_opts $test_image_name chromedriver --version
   #Then it is successful
-  assert_output --partial "ChromeDriver 84.0.4147.30"
+  assert_output --partial "ChromeDriver 84."
 }
 
-@test "IT: Chrome 84.0.4147.89 is installed" {
+@test "IT: Chrome 84 is installed" {
   run docker run $run_opts $test_image_name google-chrome --version
   #Then it is successful
   echo $output
-  assert_output --partial "Google Chrome 84.0.4147.89"
+  assert_output --partial "Google Chrome 84."
 }
 
-@test "IT: Python 2.7.17 is installed" {
+@test "IT: Python 2.7 is installed" {
   run docker run  $run_opts $test_image_name python --version
   #Then it is successful
-  assert_output --partial "Python 2.7.16"
+  assert_output --partial "Python 2.7."
 }
 
-@test "IT: Groovy 2.4.16 is installed" {
+@test "IT: Groovy 2.4 is installed" {
   run docker run $run_opts $test_image_name groovy --version
   #Then it is successful
-  assert_output --partial "Groovy Version: 2.4.16"
+  assert_output --partial "Groovy Version: 2.4."
 }
 
-@test "IT: OpenJDK 1.8.0_252 is installed" {
+@test "IT: OpenJDK 1.8 is installed" {
   run docker run $run_opts $test_image_name java -version
   #Then it is successful
-  assert_output --partial "1.8.0_252"
+  assert_output --partial "1.8."
 }
 
 @test "IT: Chrome Headless works fine when used in python script" {
