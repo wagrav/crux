@@ -8,10 +8,12 @@ function setVARS() {
   #Get namesapce variable
   tenant="$1"
   jmx="$2"
-  data_file="$3"
-  user_args=$4
+  data_dir="$3"
+  data_dir_relative="$4"
+  user_args="$5"
   root_dir=$working_dir/../../
   local_report_dir=$working_dir/../tmp/report
+  server_logs_dir=$working_dir/../tmp/server_logs
   report_dir=report
   test_dir=/test
   tmp=/tmp
@@ -19,29 +21,67 @@ function setVARS() {
   test_name="$(basename "$root_dir/$jmx")"
 }
 
-prepareEnv(){
+prepareEnv() {
   #delete evicted pods first
-  kubectl get pods --all-namespaces --field-selector 'status.phase==Failed' -o json | kubectl delete -f -
+  kubectl get pods -n $tenant --field-selector 'status.phase==Failed' -o json | kubectl delete -f -
   master_pod=$(kubectl get po -n $tenant | grep Running | grep jmeter-master | awk '{print $1}')
   #create necessary dirs
-  mkdir -p $local_report_dir
+  mkdir -p "$local_report_dir" "$server_logs_dir"
+}
+getSlavePods() {
+  slave_pods=$(kubectl get po -n $tenant --field-selector 'status.phase==Running' | grep jmeter-slave | awk '{print $1}' | xargs)
+  IFS=' ' read -r -a slave_pods_array <<<"$slave_pods"
+}
+getPods() {
+  pods=$(kubectl get po -n $tenant --field-selector 'status.phase==Running' | grep jmeter- | awk '{print $1}' | xargs)
+  IFS=' ' read -r -a pods_array <<<"$pods"
+}
+cleanPods() {
+  for pod in "${pods_array[@]}"; do
+    echo "Cleaning on $pod"
+    #we only clean test data, jmeter-server.log needs to stay
+    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.csv"
+    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.py"
+    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.jmx"
+  done
+}
+getServerLogs() {
+  echo "Archiving server logs"
+  for pod in "${slave_pods_array[@]}"; do
+    echo "Getting jmeter-server.log on $pod"
+    kubectl cp "$tenant/$pod:/test/jmeter-server.log" "$server_logs_dir/$pod-jmeter-server.log"
+  done
+}
+lsPods() {
+  for pod in "${pods_array[@]}"; do
+    echo "$test_dir on $pod"
+    kubectl exec -i -n $tenant $pod -- ls "/$test_dir/"
+  done
 }
 
-copyTestFilesToMasterPod(){
+copyDataToPods() {
+  for pod in "${pods_array[@]}"; do
+    folder_basename=$(echo "${data_dir##*/}")
+    echo "Copying contents of repository $folder_basename directory to pod : $pod"
+    kubectl cp "$root_dir/$data_dir" -n $tenant "$pod:$test_dir/"
+    echo "Unpacking data on pod : $pod to $test_dir folder"
+    kubectl exec -i -n $tenant $pod -- bash -c "cp -r $test_dir/$folder_basename/* $test_dir/" #unpack to /test
+  done
+}
+
+copyTestFilesToMasterPod() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
-  kubectl cp "$root_dir/$data_file" -n $tenant "$master_pod:/$test_dir/"
-  #kubectl exec -ti -n $tenant $master_pod -- ls "$test_dir/"
 }
-cleanMasterPod(){
-  kubectl exec -ti -n $tenant $master_pod -- rm -Rf "$tmp"
-  kubectl exec -ti -n $tenant $master_pod -- mkdir -p "$tmp/$report_dir"
-  kubectl exec -ti -n $tenant $master_pod -- touch "$test_dir/errors.xml"
+cleanMasterPod() {
+  kubectl exec -i -n $tenant $master_pod -- rm -Rf "$tmp"
+  kubectl exec -i -n $tenant $master_pod -- mkdir -p "$tmp/$report_dir"
+  kubectl exec -i -n $tenant $master_pod -- touch "$test_dir/errors.xml"
 }
-runTest(){
-  printf "\t\n Jmeter user args $user_args"
-  kubectl exec -ti -n $tenant $master_pod -- /bin/bash /load_test $test_name " $report_args $user_args "
+runTest() {
+  printf "\t\n Jmeter user args $user_args \n"
+  kubectl exec -i -n $tenant $master_pod -- /bin/bash /load_test $test_name " $report_args $user_args "
 }
-copyTestResultsToLocal(){
+copyTestResultsToLocal() {
   kubectl cp "$tenant/$master_pod:$tmp/$report_dir" "$local_report_dir/"
   kubectl cp "$tenant/$master_pod:$tmp/results.csv" "$working_dir/../tmp/results.csv"
   kubectl cp "$tenant/$master_pod:/test/jmeter.log" "$working_dir/../tmp/jmeter.log"
@@ -49,13 +89,24 @@ copyTestResultsToLocal(){
   head -n10 "$working_dir/../tmp/results.csv"
 }
 
-setVARS "$1" "$2" "$3" "$4"
-prepareEnv
-copyTestFilesToMasterPod
-cleanMasterPod
-runTest
-copyTestResultsToLocal
+run_main() {
+  setVARS "$1" "$2" "$3" "$4" "$5"
+  prepareEnv
+  getPods
+  getSlavePods
+  cleanPods
+  copyDataToPods
+  copyTestFilesToMasterPod
+  cleanMasterPod
+  lsPods
+  runTest
+  copyTestResultsToLocal
+  getServerLogs
+}
 
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  run_main "$@"
+fi
 
 #USEFUL COMMANDS FOR TROUBLESHOOTING
 #enter master pod

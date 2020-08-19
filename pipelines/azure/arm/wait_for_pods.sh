@@ -9,10 +9,10 @@ wait_for_pod() {
   sleep_time_s=$4
 
   until [ "$service_replicas" == "$service_replicas_number/$service_replicas_number" ]; do
-    printf "\n\tWait for service $service to scale to $service_replicas_number for $sleep_time_s seconds"
+    printf "\nWait for service $service to scale to $service_replicas_number for $sleep_time_s seconds"
     sleep $sleep_time_s
-    service_replicas=$(kubectl -n $service_namespace get all | grep pod/$service | awk '{print $2}')
-    printf "\n\tService $service_name pods ready: $service_replicas"
+    service_replicas=$(kubectl -n $service_namespace get all | grep deployment.apps/$service | awk '{print $2}')
+    printf "\nService $service_name pods ready: $service_replicas\n"
   done
 }
 
@@ -41,11 +41,15 @@ wait_for_cluster_ready(){
   local scale_down_replicas=0
   local sleep_interval=20
 
-  #Deploy per defaults
-  kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
-  kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_svc.yaml
-  kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_configmap.yaml
-  kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_deploy_v16.yaml
+  #re-deploy per defaults
+  if kubectl get deployments | grep jmeter-master ; then
+    echo "Deployments are already present. Skipping new deploy. Use attach.to.existing.kubernetes.yaml if you want to redeploy"
+  else
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_svc.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_configmap.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_deploy_v16.yaml
+  fi
   #Wait till ready
   wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval "$service_master"
 

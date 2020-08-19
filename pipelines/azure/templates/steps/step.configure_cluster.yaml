@@ -1,0 +1,8 @@
+steps:
+  - task: Kubernetes@1
+    displayName: Configure cluster
+    condition: and(succeeded(), not(eq(variables.configure_cluster, false)))
+    inputs:
+      command: login
+      connectionType: Kubernetes Service Connection
+      kubernetesServiceEndpoint: $(kubernetesServiceConnection)

@@ -1,0 +1,7 @@
+steps:
+  - task: ShellScript@2
+    displayName: Deploy services to cluster
+    condition: and(succeeded(), not(eq(variables.deploy_to_cluster, false)))
+    inputs:
+      scriptPath: $(armModulePath)/wait_for_pods.sh
+      args: $(System.DefaultWorkingDirectory) $(cluster_namespace) $(service-master) $(service) $(scale_up_replicas)

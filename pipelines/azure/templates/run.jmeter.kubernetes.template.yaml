@@ -4,109 +4,45 @@ parameters:
     type: string
     default: jmeter
 
+  - name: crux_steps
+    type: object
+    default:  [
+               'step.crux_clone.yaml',
+               'step.tests_clone.yaml',
+               'step.prepare_tests.yaml',
+               'step.create_cluster.yaml',
+               'step.configure_cluster.yaml',
+               'step.deploy_to_cluster.yaml',
+               'step.jmeter_tests.yaml',
+               'step.archive_jmeter_report.yaml',
+               'step.archive_jmeter_results.yaml',
+               'step.archive_jmeter_log.yaml',
+               'step.archive_jmeter_errors.yaml',
+               'step.archive_jmeter_server_logs.yaml',
+               'step.junit.yaml',
+               'step.junit_publish.yaml',
+               'step.delete_cluster.yaml'
+              ]
 jobs:
   - job: JMeter_Tests
+    condition: not(eq(variables['jmeter_tests'], false))
     variables:
       - template: default.variables.yaml
         parameters:
           mode: ${{ parameters.mode }}
 
-    displayName: JMeter Tests
+    displayName: JMeter pipeline - test
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - checkout: crux
-      displayName: CRUX clone
-      condition: and(succeeded(), not(eq(variables.crux_clone, false)))
+    - ${{ if eq(parameters.mode, 'tests') }}:
+      - template: insert_step.yaml
+        parameters:
+          source_folder: mocks
+          step_list: ${{ parameters.crux_steps }}
 
-    - checkout: tests
-      displayName: TESTS clone
-      condition: and(succeeded(), not(eq(variables.tests_clone, false)))
-
-    - bash: |
-        mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
-        cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
-      displayName: PREPARE tests
-      condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
-
-    - task: AzureCLI@2
-      condition: and(succeeded(), not(eq(variables.create_cluster, false)))
-      displayName: Create cluster
-      inputs:
-        azureSubscription: $(armServiceConnection)
-        scriptType: bash
-        scriptPath: $(armModulePath)/create_cluster_and_connection.sh
-        arguments: temp$(Build.BuildID) $(rgroup) $(armModulePath)/k8.json $(clusterNodeSize) $(clusterNodeNumber) perf_$(Build.BuildID)_ cname $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) $(armModulePath) skip
-
-    - task: Kubernetes@1
-      displayName: Configure cluster
-      condition: and(succeeded(), not(eq(variables.configure_cluster, false)))
-      inputs:
-        command: login
-        connectionType: Kubernetes Service Connection
-        kubernetesServiceEndpoint: $(kubernetesServiceConnection)
-
-    - task: ShellScript@2
-      displayName: Deploy services to cluster
-      condition: and(succeeded(), not(eq(variables.deploy_to_cluster, false)))
-      inputs:
-        scriptPath: $(armModulePath)/wait_for_pods.sh
-        args: $(System.DefaultWorkingDirectory) $(cluster_namespace) $(service-master) $(service) $(scale_up_replicas)
-
-    - task: ShellScript@2
-      displayName: JMeter tests
-      condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
-      inputs:
-        scriptPath: kubernetes/bin/jmeter.sh
-        args: $(cluster_namespace) $(reposRoot)/$(scenario) $(reposRoot)/$(data_file) "$(jmeter_args)"
-
-    - task: PublishPipelineArtifact@1
-      displayName: Archive JMeter Report
-      condition: not(eq(variables.archive_jmeter_report, false))
-      inputs:
-        path: $(report_dir)
-        artifact: JmeterReport
-
-    - task: PublishPipelineArtifact@1
-      condition: not(eq(variables.archive_results_file, false))
-      displayName: Archive Results file
-      inputs:
-        path: $(results)
-        artifact: results.csv
-
-    - task: PublishPipelineArtifact@1
-      condition: not(eq(variables.archive_log, false))
-      displayName: Archive Log
-      inputs:
-        path: $(log)
-        artifact: jmeter.log
-
-    - task: PublishPipelineArtifact@1
-      condition: not(eq(variables.archive_errors, false))
-      displayName: Archive Errors
-      inputs:
-        path: $(errors)
-        artifact: errors.xml
-
-    - task: ShellScript@2
-      displayName: Evaluate as JUNIT tests
-      condition: not(eq(variables.evaluate_as_junit_tests, false))
-      inputs:
-        scriptPath: modules/junit/evaluateTestResultsAsJunit.sh
-        args: $(System.DefaultWorkingDirectory)/$(report_dir)/statistics.json $(System.DefaultWorkingDirectory)/modules/junit/results $(System.DefaultWorkingDirectory)/modules/junit/templates $(System.DefaultWorkingDirectory)/$(reposRoot)/$(thresholds_file)
-
-    - task: PublishTestResults@2
-      displayName: Publish JUNIT results
-      condition: not(eq(variables.publish_junit_results, false))
-      inputs:
-        testResultsFiles: '**/*_TEST.xml'
-        failTaskOnFailedTests: true
-
-    - task: AzureCLI@2
-      displayName: Delete cluster
-      condition: and(succeeded(), not(eq(variables.delete_cluster, false)))
-      inputs:
-        azureSubscription: $(armServiceConnection)
-        scriptType: bash
-        scriptPath: $(armModulePath)/delete_cluster_and_connection.sh
-        arguments: $(armModulePath) $(cname) $(rgroup) $(devOpsOrg) $(devOpsProject) $(devOpsPatUser) $(devOpsPat) $(k8conn) skip
+    - ${{ if not(eq(parameters.mode, 'tests')) }}:
+        - template: insert_step.yaml
+          parameters:
+            source_folder: steps
+            step_list: ${{ parameters.crux_steps }}

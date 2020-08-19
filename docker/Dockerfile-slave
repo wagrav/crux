@@ -1,4 +1,4 @@
-FROM gabrielstar/jmeter-base:latest
+FROM gabrielstar/crux-base:latest
 MAINTAINER Gabriel Starczewski
 
 EXPOSE 1099 50000

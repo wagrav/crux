@@ -1,0 +1,4 @@
+steps:
+  - checkout: crux
+    displayName: CRUX clone
+    condition: and(succeeded(), not(eq(variables.crux_clone, false)))

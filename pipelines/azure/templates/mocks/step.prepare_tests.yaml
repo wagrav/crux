@@ -1,0 +1,8 @@
+steps:
+  - bash: |
+      mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
+      cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
+      #mock set-up for tests
+      mkdir -p $(mock_dir)
+    displayName: PREPARE tests (mocked)
+    condition: and(succeeded(), not(eq(variables.prepare_tests, false)))

@@ -1,0 +1,4 @@
+steps:
+  - checkout: tests
+    displayName: TESTS clone
+    condition: and(succeeded(), not(eq(variables.tests_clone, false)))
