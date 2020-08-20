@@ -7,12 +7,12 @@ wait_for_pod() {
   service=$2
   service_replicas_number=$3
   sleep_time_s=$4
-
-  until [ "$service_replicas" == "$service_replicas_number/$service_replicas_number" ]; do
-    printf "\nWait for service $service to scale to $service_replicas_number for $sleep_time_s seconds"
+  status="Terminating"
+  printf "\nWait for service $service pods to be in Running status with interval $sleep_interval"
+  until [ "$status" == "Running" ]; do
     sleep $sleep_time_s
-    service_replicas=$(kubectl -n $service_namespace get all | grep deployment.apps/$service | awk '{print $2}')
-    printf "\nService $service_name pods ready: $service_replicas\n"
+    status=$(kubectl -n $service_namespace get po | grep $service | awk '{print $3}' | sort | uniq) # this will display also old pods until they are gone
+    printf "\nService $service pods statuses: $(echo $status | xargs)"
   done
 }
 
@@ -39,7 +39,7 @@ wait_for_cluster_ready(){
 
   local scale_up_replicas_master=1
   local scale_down_replicas=0
-  local sleep_interval=20
+  local sleep_interval=5
 
   #re-deploy per defaults
   if kubectl get deployments | grep jmeter-master ; then
@@ -51,11 +51,13 @@ wait_for_cluster_ready(){
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_deploy_v16.yaml
   fi
   #Wait till ready
-  wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval "$service_master"
-
+  #wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval "$service_master"
+  echo "Rescaling down and up to assure clean test env "
+  echo "Scale to 0 "
   #Assure clean test env by scaling fresh
   kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath"/jmeter_master_deploy_v16.yaml
   kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
+  echo "Scale up master to $scale_up_replicas_master and slaves to $scale_up_replicas"
   kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas_master" -f "$rootPath"/jmeter_master_deploy_v16.yaml
   kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
 
