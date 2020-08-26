@@ -45,6 +45,7 @@ wait_for_cluster_ready(){
   if kubectl get deployments | grep jmeter-master ; then
     echo "Deployments are already present. Skipping new deploy. Use attach.to.existing.kubernetes.yaml if you want to redeploy"
   else
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume_sc.yaml
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume.yaml
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_svc.yaml

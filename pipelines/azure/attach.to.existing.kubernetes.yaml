@@ -43,7 +43,7 @@ jobs:
 
     - bash: |
         kubectl delete -n $(namespace) deployment/jmeter-slaves deployment/jmeter-master svc/jmeter-slaves-svc configmap/jmeter-load-test pvc/jmeter-shared-disk  ||:
-        kubectl delete sc/jmeter-shared-disk-sc ||:
+        kubectl delete sc/jmeter-shared-disk-sc ||: #this is not cluster-scoped resource hence dropping the namespace
       displayName: Delete existing deployment
 
     - bash: |

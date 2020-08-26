@@ -19,6 +19,7 @@ function setVARS() {
   tmp=/tmp
   report_args="-o $tmp/$report_dir -l $tmp/results.csv -e"
   test_name="$(basename "$root_dir/$jmx")"
+  shared_mount="/shared"
 }
 
 prepareEnv() {
@@ -56,6 +57,9 @@ lsPods() {
   for pod in "${pods_array[@]}"; do
     echo "$test_dir on $pod"
     kubectl exec -i -n $tenant $pod -- ls "/$test_dir/"
+
+    echo "$shared_mount on $pod"
+    kubectl exec -i -n $tenant $pod -- ls "/$shared_mount/"
   done
 }
 
@@ -69,6 +73,9 @@ copyDataToPods() {
   done
 }
 
+copyTestFilesToMasterShared() {
+  kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$shared_mount/$test_name"
+}
 copyTestFilesToMasterPod() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
 }
@@ -97,6 +104,7 @@ run_main() {
   cleanPods
   copyDataToPods
   copyTestFilesToMasterPod
+  copyTestFilesToMasterShared
   cleanMasterPod
   lsPods
   runTest
