@@ -42,10 +42,11 @@ jobs:
         kubernetesServiceEndpoint: ${{ parameters.kubernetesServiceConnection }}
 
     - bash: |
-        kubectl delete -n $(namespace) deployment/jmeter-slaves deployment/jmeter-master svc/jmeter-slaves-svc configmap/jmeter-load-test ||:
+        kubectl delete -n $(namespace) deployment/jmeter-slaves deployment/jmeter-master svc/jmeter-slaves-svc configmap/jmeter-load-test pvc/jmeter-shared-disk ||:
       displayName: Delete existing deployment
 
     - bash: |
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_shared_volume.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml

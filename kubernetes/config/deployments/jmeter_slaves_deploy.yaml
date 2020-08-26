@@ -18,6 +18,10 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
+
+        - name: jmeter-shared-disk
+          persistentVolumeClaim:
+            claimName: jmeter-shared-disk
       containers:
       - name: jmslave
         image: gabrielstar/crux-slave:0.0.1
@@ -28,3 +32,5 @@ spec:
         volumeMounts:
           - mountPath: /dev/shm
             name: dshm
+          - name: jmeter-shared-disk
+            mountPath: "/shared"
