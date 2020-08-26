@@ -18,7 +18,6 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-
         - name: jmeter-shared-disk
           persistentVolumeClaim:
             claimName: jmeter-shared-disk
