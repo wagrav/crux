@@ -46,6 +46,7 @@ jobs:
       displayName: Delete existing deployment
 
     - bash: |
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_shared_volume_sc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_shared_volume.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
