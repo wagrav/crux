@@ -36,7 +36,7 @@ data:
     }
     startSTS(){
       #for some reason nohup is no go perhaps SIGHUP is overwritten
-      screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/$sts_name -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=/$shared &
+      screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/$sts_name -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=/$shared_dir &
     }
     runJMeterTest(){
       local jmx=$1
