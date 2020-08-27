@@ -15,6 +15,7 @@ data:
       ip=$(hostname -i)
       sts_name=simple-table-server.sh
       test_dir=/test
+      shared_dir=/shared
     }
     waitForSTS() {
       http_code=666
@@ -35,7 +36,7 @@ data:
     }
     startSTS(){
       #for some reason nohup is no go perhaps SIGHUP is overwritten
-      screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/$sts_name -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=/$test_dir &
+      screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/$sts_name -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=/$shared &
     }
     runJMeterTest(){
       local jmx=$1

@@ -85,9 +85,7 @@ copyDataToPodsShared() {
 copyTestFilesToMasterShared() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$shared_mount/$test_name"
 }
-copyTestFilesToMasterPod() {
-  kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
-}
+
 cleanMasterPod() {
   kubectl exec -i -n $tenant $master_pod -- rm -Rf "$tmp"
   kubectl exec -i -n $tenant $master_pod -- mkdir -p "$tmp/$report_dir"
@@ -117,7 +115,6 @@ run_main() {
   copyDataToPods
   copyDataToPodsShared
   copyTestFilesToMasterPod
-  copyTestFilesToMasterShared
   cleanMasterPod
   lsPods
   runTest
