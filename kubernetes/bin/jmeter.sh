@@ -44,6 +44,7 @@ cleanPods() {
     kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.csv"
     kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.py"
     kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.jmx"
+    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $shared/*"
   done
 }
 #this should be sequential copy instead of shared drive because of IO
