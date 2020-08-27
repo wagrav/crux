@@ -46,6 +46,7 @@ cleanPods() {
     kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.jmx"
   done
 }
+#this should be sequential copy instead of shared drive because of IO
 getServerLogs() {
   echo "Archiving server logs"
   for pod in "${slave_pods_array[@]}"; do
@@ -73,6 +74,14 @@ copyDataToPods() {
   done
 }
 
+copyDataToPodsShared() {
+    folder_basename=$(echo "${data_dir##*/}")
+    echo "Copying contents of repository $folder_basename directory to pod : $master_pod"
+    kubectl cp "$root_dir/$data_dir" -n $tenant "$master_pod:$shared_mount/"
+    echo "Unpacking data on pod : $master_pod to $shared_mount folder"
+    kubectl exec -i -n $tenant $master_pod -- bash -c "cp -r $shared_mount/$folder_basename/* $shared_mount/" #unpack to /test
+}
+
 copyTestFilesToMasterShared() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$shared_mount/$test_name"
 }
@@ -97,12 +106,16 @@ copyTestResultsToLocal() {
 }
 
 run_main() {
+  #server logs need to be copied back instead of writing to a shared drive because of IO
+  #data for sts should be copied to /test (not shared)
+  #data for all e.g. CSV should be copied to /shared
   setVARS "$1" "$2" "$3" "$4" "$5"
   prepareEnv
   getPods
   getSlavePods
   cleanPods
   copyDataToPods
+  copyDataToPodsShared
   copyTestFilesToMasterPod
   copyTestFilesToMasterShared
   cleanMasterPod
