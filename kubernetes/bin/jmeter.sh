@@ -38,13 +38,13 @@ getPods() {
   IFS=' ' read -r -a pods_array <<<"$pods"
 }
 cleanPods() {
+  kubectl exec -i -n $tenant $master_pod -- bash -c "rm -Rf $shared_mount/*"
   for pod in "${pods_array[@]}"; do
     echo "Cleaning on $pod"
     #we only clean test data, jmeter-server.log needs to stay
     kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.csv"
     kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.py"
     kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $test_dir/*.jmx"
-    kubectl exec -i -n $tenant $pod -- bash -c "rm -Rf $shared/*"
   done
 }
 #this should be sequential copy instead of shared drive because of IO
