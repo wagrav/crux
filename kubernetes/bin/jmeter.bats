@@ -19,6 +19,7 @@ setFakeVARS(){
   report_dir=report_dir
   local_report_dir=local_report_dir
   working_dir=working_dir
+  shared_mount=shared_mount
 }
 
 @test "UT: copyTestResultsToLocal copies report, results.csv, errors.xml and jmeter.log from master pod to local drive" {
@@ -49,17 +50,15 @@ setFakeVARS(){
   assert_output --partial "exec -i -n tenant master_pod -- /bin/bash /load_test test_name  report_args user_args"
 }
 
-@test "UT: copyDataToPods copies data to all pods " {
+@test "UT: copyDataToPodsShared copies data to all pods " {
   kubectl(){
     echo "$@"
   }
   export -f kubectl
   # shellcheck disable=SC2030
-  pods_array=(slave1 master)
   setFakeVARS
-  run copyDataToPods
-  assert_output --partial "cp root_dir/data_dir -n tenant slave1:test_dir/"
-  assert_output --partial "cp root_dir/data_dir -n tenant master:test_dir/"
+  run copyDataToPodsShared
+  assert_output --partial "cp root_dir/data_dir -n tenant master_pod:shared_mount/"
 }
 
 @test "UT: getServerLogs archives all logs from slaves" {
@@ -123,6 +122,7 @@ setFakeVARS(){
   [ -n "$tmp" ]
   [ -n "$report_args" ]
   [ -n "$test_name" ]
+  [ -n "$shared_mount" ]
 
   unset pwd
 }
@@ -155,14 +155,14 @@ setFakeVARS(){
   getPods() { echo "__mock"; }
   getSlavePods() { echo "__mock"; }
   cleanPods(){ echo "__mock"; }
-  copyDataToPods(){ echo "__mock"; }
+  copyDataToPodsShared(){ echo "__mock"; }
   copyTestFilesToMasterPod(){ echo "__mock"; }
   cleanMasterPod(){ echo "__mock"; }
   lsPods(){ echo "__mock"; }
   runTest(){ echo "__mock"; }
   copyTestResultsToLocal(){ echo "__mock"; }
   getServerLogs(){ echo "__mock";}
-  export -f setVARS prepareEnv getPods getSlavePods cleanPods copyDataToPods copyTestFilesToMasterPod cleanMasterPod lsPods runTest copyTestResultsToLocal getServerLogs
+  export -f setVARS prepareEnv getPods getSlavePods cleanPods copyDataToPodsShared copyTestFilesToMasterPod cleanMasterPod lsPods runTest copyTestResultsToLocal getServerLogs
   run run_main
   CALL_NUMBER=12
   [ "$(echo "$output" | grep "__mock" | wc -l)" -eq $CALL_NUMBER ]

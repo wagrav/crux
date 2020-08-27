@@ -38,6 +38,7 @@ getPods() {
   IFS=' ' read -r -a pods_array <<<"$pods"
 }
 cleanPods() {
+  echo "Cleaning on $master_pod"
   kubectl exec -i -n $tenant $master_pod -- bash -c "rm -Rf $shared_mount/*"
   for pod in "${pods_array[@]}"; do
     echo "Cleaning on $pod"
@@ -58,23 +59,14 @@ getServerLogs() {
 lsPods() {
   for pod in "${pods_array[@]}"; do
     echo "$test_dir on $pod"
-    kubectl exec -i -n $tenant $pod -- ls -1 "/$test_dir/" |awk '$0="--"$0'
+    kubectl exec -i -n $tenant $pod -- ls -1 "/$test_dir/" |awk '$0="  --"$0'
 
     echo "$shared_mount on $pod"
-    kubectl exec -i -n $tenant $pod -- ls -1 "/$shared_mount/" |awk '$0="--"$0'
+    kubectl exec -i -n $tenant $pod -- ls -1 "/$shared_mount/" |awk '$0="  --"$0'
   done
 }
 
-copyDataToPods() {
-  for pod in "${pods_array[@]}"; do
-    folder_basename=$(echo "${data_dir##*/}")
-    echo "Copying contents of repository $folder_basename directory to pod : $pod"
-    kubectl cp "$root_dir/$data_dir" -n $tenant "$pod:$test_dir/"
-    echo "Unpacking data on pod : $pod to $test_dir folder"
-    kubectl exec -i -n $tenant $pod -- bash -c "cp -r $test_dir/$folder_basename/* $test_dir/" #unpack to /test
-  done
-}
-
+#sts and csv data should be copied to /shared which is a pvc mount
 copyDataToPodsShared() {
     folder_basename=$(echo "${data_dir##*/}")
     echo "Copying contents of repository $folder_basename directory to pod : $master_pod"
@@ -82,19 +74,22 @@ copyDataToPodsShared() {
     echo "Unpacking data on pod : $master_pod to $shared_mount folder"
     kubectl exec -i -n $tenant $master_pod -- bash -c "cp -r $shared_mount/$folder_basename/* $shared_mount/" #unpack to /test
 }
-
+#jmx files should land on /test at master pod
 copyTestFilesToMasterPod() {
   kubectl cp "$root_dir/$jmx" -n $tenant "$master_pod:/$test_dir/$test_name"
 }
+#clean previous run thins if necessary
 cleanMasterPod() {
   kubectl exec -i -n $tenant $master_pod -- rm -Rf "$tmp"
   kubectl exec -i -n $tenant $master_pod -- mkdir -p "$tmp/$report_dir"
   kubectl exec -i -n $tenant $master_pod -- touch "$test_dir/errors.xml"
 }
+#runs actual tests
 runTest() {
   printf "\t\n Jmeter user args $user_args \n"
   kubectl exec -i -n $tenant $master_pod -- /bin/bash /load_test $test_name " $report_args $user_args "
 }
+#copy artifacts from master jmeter
 copyTestResultsToLocal() {
   kubectl cp "$tenant/$master_pod:$tmp/$report_dir" "$local_report_dir/"
   kubectl cp "$tenant/$master_pod:$tmp/results.csv" "$working_dir/../tmp/results.csv"
@@ -112,7 +107,6 @@ run_main() {
   getPods
   getSlavePods
   cleanPods
-  #copyDataToPods
   copyDataToPodsShared
   copyTestFilesToMasterPod
   cleanMasterPod
