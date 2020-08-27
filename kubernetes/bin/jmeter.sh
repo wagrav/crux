@@ -58,10 +58,10 @@ getServerLogs() {
 lsPods() {
   for pod in "${pods_array[@]}"; do
     echo "$test_dir on $pod"
-    kubectl exec -i -n $tenant $pod -- ls "/$test_dir/"
+    kubectl exec -i -n $tenant $pod -- ls -1 "/$test_dir/" |awk '$0="--"$0'
 
     echo "$shared_mount on $pod"
-    kubectl exec -i -n $tenant $pod -- ls "/$shared_mount/"
+    kubectl exec -i -n $tenant $pod -- ls -1 "/$shared_mount/" |awk '$0="--"$0'
   done
 }
 
