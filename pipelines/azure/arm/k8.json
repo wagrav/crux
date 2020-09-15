@@ -54,6 +54,15 @@
       },
       "properties": {
         "dnsPrefix" : "performance",
+        "networkProfile": {
+          "loadBalancerSku": "standard",
+          "loadBalancerProfile": {
+            "managedOutboundIPs": {
+              "count": 5
+            },
+            "allocatedOutboundPorts": 30000
+          }
+        },
         "agentPoolProfiles": [
           {
             "name": "agentpool",
