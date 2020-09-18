@@ -6,9 +6,14 @@ Describe "Data Conversion tests" {
     BeforeAll {
 
     }
-    AfterAll {
+    AfterEach {
         Write-Host "Cleaning temporary test data"
-        #Remove-Item  "$PSScriptRoot\$script:testDir\data.json"
+        try
+        {
+            Remove-Item  "$PSScriptRoot\$script:testDir\data.json"
+        }catch{
+
+        }
     }
     Context 'Jmeter-CSV-Results-To-JSON ' {
         It "Jmeter-CSV-Results-To-JSON Should produce JSON file"  {
