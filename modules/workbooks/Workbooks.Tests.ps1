@@ -8,11 +8,14 @@ Describe "Data Conversion tests" {
     }
     AfterEach {
         Write-Host "Cleaning temporary test data"
-        try
+        Try
         {
-            Remove-Item  "$PSScriptRoot\$script:testDir\data.json"
-        }catch{
-
+            if (Test-Path "$PSScriptRoot\$script:testDir\data.json") {
+                Remove-Item  "$PSScriptRoot\$script:testDir\data.json"
+            }
+        }
+        Catch [System.Management.Automation.ItemNotFoundException]{
+            ;
         }
     }
     Context 'Jmeter-CSV-Results-To-JSON ' {
@@ -26,9 +29,10 @@ Describe "Data Conversion tests" {
             $actual =  Get-Content  -Path "$PSScriptRoot\$script:testDir\data.json"
             $actual = $actual.replace(' ','')
             $expected = $expected.replace(' ','')
-            Write-Host $actual
-            Write-Host $expected
             "$actual" | Should -Be "$expected"
+        }
+        It "Jmeter-CSV-Results-To-JSON Should not throw exception when file not found"  {
+            {Jmeter-CSV-Results-To-JSON "$PSScriptRoot\$script:testDir\idonotexists.csv" "$PSScriptRoot\$script:testDir\data.json"} | Should -Not -Throw
         }
     }
 }
