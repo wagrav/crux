@@ -9,5 +9,4 @@ Function Jmeter-CSV-Results-To-JSON($FilePathCSV, $FilePathJSON)
         "Terminating"
     }
 }
-
-Export-ModuleMember -Function Jmeter-CSV-Results-To-JSON
+Jmeter-CSV-Results-To-JSON $PSScriptRoot\datas.csv $PSScriptRoot\data.json

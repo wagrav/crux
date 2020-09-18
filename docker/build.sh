@@ -18,5 +18,5 @@ function push(){
 }
 #sh build.sh jmeter-chrome-selenium
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  buildAll gabrielstar crux 0.0.1 && push gabrielstar crux 0.0.1
+  buildAll gabrielstar crux latest && push gabrielstar crux latest
 fi
