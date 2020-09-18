@@ -24,9 +24,11 @@ Describe "Data Conversion tests" {
             Jmeter-CSV-Results-To-JSON "$PSScriptRoot\$script:testDir\data.csv" "$PSScriptRoot\$script:testDir\data.json"
             $expected = Get-Content  -Path "$PSScriptRoot\$script:testDir\data_expected_output.json"
             $actual =  Get-Content  -Path "$PSScriptRoot\$script:testDir\data.json"
+            $actual = $actual.replace(' ','')
+            $expected = $expected.replace(' ','')
             Write-Host $actual
             Write-Host $expected
-            "$actual".Trim() | Should -Be "$expected".Trim()
+            "$actual" | Should -Be "$expected"
         }
     }
 }
