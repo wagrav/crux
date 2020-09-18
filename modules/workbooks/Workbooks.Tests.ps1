@@ -10,7 +10,7 @@ Describe "Data Conversion tests" {
         Write-Host "Cleaning temporary test data"
         try
         {
-            Remove-Item  "$PSScriptRoot\$script:testDir\data.json"
+            #Remove-Item  "$PSScriptRoot\$script:testDir\data.json"
         }catch{
 
         }
@@ -22,9 +22,9 @@ Describe "Data Conversion tests" {
         }
         It "Jmeter-CSV-Results-To-JSON Should produce valid output"  {
             Jmeter-CSV-Results-To-JSON "$PSScriptRoot\$script:testDir\data.csv" "$PSScriptRoot\$script:testDir\data.json"
-            $expected = Get-Content -Path "$PSScriptRoot\$script:testDir\data_expected_output.json"
-            $actual = Get-Content -Path "$PSScriptRoot\$script:testDir\data.json"
-            $actual | Should -Be $expected
+            $expected = Get-FileHash  -Path "$PSScriptRoot\$script:testDir\data_expected_output.json" | Select-Object Hash
+            $actual =  Get-FileHash  -Path "$PSScriptRoot\$script:testDir\data.json" | Select-Object Hash
+            "$actual" | Should -Match "$expected"
         }
     }
 }
