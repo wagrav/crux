@@ -10,7 +10,7 @@ Describe "Data Conversion tests" {
         Write-Host "Cleaning temporary test data"
         try
         {
-            #Remove-Item  "$PSScriptRoot\$script:testDir\data.json"
+            Remove-Item  "$PSScriptRoot\$script:testDir\data.json"
         }catch{
 
         }
