@@ -22,9 +22,11 @@ Describe "Data Conversion tests" {
         }
         It "Jmeter-CSV-Results-To-JSON Should produce valid output"  {
             Jmeter-CSV-Results-To-JSON "$PSScriptRoot\$script:testDir\data.csv" "$PSScriptRoot\$script:testDir\data.json"
-            $expected = Get-FileHash  -Path "$PSScriptRoot\$script:testDir\data_expected_output.json" | Select-Object Hash
-            $actual =  Get-FileHash  -Path "$PSScriptRoot\$script:testDir\data.json" | Select-Object Hash
-            "$actual" | Should -Match "$expected"
+            $expected = Get-Content  -Path "$PSScriptRoot\$script:testDir\data_expected_output.json"
+            $actual =  Get-Content  -Path "$PSScriptRoot\$script:testDir\data.json"
+            Write-Host $actual
+            Write-Host $expected
+            "$actual".Trim() | Should -Be "$expected".Trim()
         }
     }
 }
