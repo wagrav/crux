@@ -1,35 +1,5 @@
-# Replace with your Workspace ID
-$CustomerId = "5cdf4a28-f1bf-4e59-ad01-2498e37059e9"
-
-# Replace with your Primary Key
-$SharedKey = "2tROkttxLKAPZA/7WkEx4P+0GOhZ7BkWzIp0OublY/h6I8x4/iL3R2aNWFx7YAT6bAHR4OKpt8ujAN7a1cL7lg=="
-
-# Specify the name of the record type that you'll be creating
-$LogType = "MyRecordType2"
-
-# You can use an optional field to specify the timestamp from the data. If the time field is not specified, Azure Monitor assumes the time is the message ingestion time
-$TimeStampField = ""
-
-
-# Create two records with the same set of properties to create
-$json = @"
-[{  "StringValue": "MyString1",
-    "NumberValue": 44,
-    "BooleanValue": true,
-    "DateValue": "2019-09-12T20:00:00.625Z",
-    "GUIDValue": "9909ED01-A74C-4874-8ABF-D2678E3AE23D"
-},
-{   "StringValue": "MyString2",
-    "NumberValue": 45,
-    "BooleanValue": false,
-    "DateValue": "2019-09-12T20:00:00.625Z",
-    "GUIDValue": "8809ED01-A74C-4874-8ABF-D2678E3AE23D"
-}]
-"@
-
-
 # Create the function to create the authorization signature
-Function Build-Signature ($customerId, $sharedKey, $date, $contentLength, $method, $contentType, $resource)
+Function BuildSignature ($customerId, $sharedKey, $date, $contentLength, $method, $contentType, $resource)
 {
     $xHeaders = "x-ms-date:" + $date
     $stringToHash = $method + "`n" + $contentLength + "`n" + $contentType + "`n" + $xHeaders + "`n" + $resource
@@ -44,17 +14,15 @@ Function Build-Signature ($customerId, $sharedKey, $date, $contentLength, $metho
     $authorization = 'SharedKey {0}:{1}' -f $customerId,$encodedHash
     return $authorization
 }
-
-
 # Create the function to create and post the request
-Function Post-LogAnalyticsData($customerId, $sharedKey, $body, $logType)
+Function PostLogAnalyticsData($customerId, $sharedKey, $body, $logType)
 {
     $method = "POST"
     $contentType = "application/json"
     $resource = "/api/logs"
     $rfc1123date = [DateTime]::UtcNow.ToString("r")
     $contentLength = $body.Length
-    $signature = Build-Signature `
+    $signature = BuildSignature `
         -customerId $customerId `
         -sharedKey $sharedKey `
         -date $rfc1123date `
@@ -76,5 +44,4 @@ Function Post-LogAnalyticsData($customerId, $sharedKey, $body, $logType)
 
 }
 
-# Submit the data to the API endpoint
-Post-LogAnalyticsData -customerId $customerId -sharedKey $sharedKey -body ([System.Text.Encoding]::UTF8.GetBytes($json)) -logType $logType
+Export-ModuleMember -Function *
