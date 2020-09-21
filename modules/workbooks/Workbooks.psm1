@@ -18,6 +18,7 @@ Function LoadProperties($propertiesFilePath){
     return $properties
 }
 Function SendRawDataToLogAnalytics($propertiesFilePath, $jsonFilePath){
+
     $properties = LoadProperties -propertiesFilePath $propertiesFilePath
     $body = Get-Content -Path $jsonFilePath -ErrorAction Stop
     $statusCode = PostLogAnalyticsData -customerId $properties."workbooks.workbooksID" `
