@@ -70,9 +70,9 @@ InModuleScope Workbooks{
             Mock LoadProperties { return "" }
         }
         BeforeEach {
-            $statusCode = SendRawDataToLogAnalytics `
-                                        -propertiesFilePath "$PSScriptRoot\test_data\workbooks.e2e.properties" `
-                                        -jsonFilePath "$PSScriptRoot\test_data\data_expected_output.json"
+            SendRawDataToLogAnalytics `
+                                -propertiesFilePath "$PSScriptRoot\test_data\workbooks.e2e.properties" `
+                                -jsonFilePath "$PSScriptRoot\test_data\data_expected_output.json"
         }
         Context 'When I run SendRawDataToLogAnalytics' {
             It "should run PostLogAnalyticsData once exactly" {
