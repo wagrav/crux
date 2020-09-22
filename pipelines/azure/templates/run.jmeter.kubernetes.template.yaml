@@ -22,6 +22,7 @@ parameters:
                'step.junit.yaml',
                'step.junit_publish.yaml',
                'step.delete_cluster.yaml'
+               'step.workbooks_upload.yaml'
               ]
 jobs:
   - job: JMeter_Tests

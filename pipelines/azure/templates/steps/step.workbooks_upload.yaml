@@ -1,0 +1,7 @@
+steps:
+  - task: PowerShell@2
+    displayName: Workbooks upload
+    inputs:
+      arguments: '-propertiesPath -$(System.DefaultWorkingDirectory)/$(reposRoot)/$(workbooks_file) -filePathCSV $(results)'
+      filePath: '$(System.DefaultWorkingDirectory)\modules\workbooks\Workbooks.ps1'
+      pwsh: true
