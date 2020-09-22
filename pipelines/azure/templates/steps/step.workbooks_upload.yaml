@@ -8,4 +8,5 @@ steps:
       filePath: 'modules\workbooks\Workbooks.ps1'
       pwsh: true
   - bash: |
+      ls -alh /home/vsts/work/1/s/modules/workbooks/test_data/results.json
       cat /home/vsts/work/1/s/modules/workbooks/test_data/results.json
