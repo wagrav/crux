@@ -4,7 +4,7 @@ $env=$args[0]
 "script root: $PSScriptRoot"
 "retrieve available modules"
 
-Invoke-Pester -Script "$PSScriptRoot\..\workbooks\Workbooks.Tests.ps1" -PassThru -CodeCoverageOutputFile $PSScriptRoot\results\workbook-pesterCoverageTEST.xml -CodeCoverage "$PSScriptRoot\..\workbooks\*.psm1"  -OutputFile $PSScriptRoot\results\workbook-pesterTEST.xml -OutputFormat 'NUnitXML'
+Invoke-Pester -Script "$PSScriptRoot\..\workbooks\*.Tests.ps1" -PassThru -CodeCoverageOutputFile $PSScriptRoot\results\workbook-pesterCoverageTEST.xml -CodeCoverage "$PSScriptRoot\..\workbooks\*.psm1"  -OutputFile $PSScriptRoot\results\workbook-pesterTEST.xml -OutputFormat 'NUnitXML'
 
 
 
