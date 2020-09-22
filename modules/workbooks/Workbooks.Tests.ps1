@@ -54,7 +54,7 @@ Describe "Workbook tests" {
     Context 'When I send real data to Log Analytics' {
         It "should return HTTP OK" {
             $statusCode = SendRawDataToLogAnalytics -propertiesFilePath "$PSScriptRoot\$script:testDir\workbooks.e2e.properties" `
-                                       -jsonFilePath "$PSScriptRoot\$script:testDir\data_expected_output.json"
+                                       -filePathJSON "$PSScriptRoot\$script:testDir\data_expected_output.json"
             $statusCode | Should -Be 200
         }
     }
@@ -63,7 +63,7 @@ Describe "Workbook tests" {
 }
 
 InModuleScope Workbooks{
-    Describe "Workbook tests" {
+    Describe "SendRawDataToLogAnalytics tests" {
         BeforeAll {
             Mock PostLogAnalyticsData
             Mock Get-Content { return "" }
@@ -72,7 +72,7 @@ InModuleScope Workbooks{
         BeforeEach {
             SendRawDataToLogAnalytics `
                                 -propertiesFilePath "$PSScriptRoot\test_data\workbooks.e2e.properties" `
-                                -jsonFilePath "$PSScriptRoot\test_data\data_expected_output.json"
+                                -filePathJSON "$PSScriptRoot\test_data\data_expected_output.json"
         }
         Context 'When I run SendRawDataToLogAnalytics' {
             It "should run PostLogAnalyticsData once exactly" {
@@ -87,6 +87,45 @@ InModuleScope Workbooks{
                     Times = 1
                 }
                 Assert-MockCalled @assertParams
+            }
+        }
+    }
+    Describe "SendDataToLogAnalytics tests" {
+        BeforeAll {
+            Mock JmeterCSVResultsToJSON
+            Mock SendRawDataToLogAnalytics
+            Mock LoadProperties
+        }
+        BeforeEach {
+            SendDataToLogAnalytics
+        }
+        Context 'When I run SendDataToLogAnalytics' {
+            It "should run all functions" {
+                Should -InvokeVerifiable
+            }
+            It "should run JmeterCSVResultsToJSON once exactly" {
+                Should -Invoke JmeterCSVResultsToJSON -Times 1 -Exactly
+            }
+            It "should run SendRawDataToLogAnalytics once exactly" {
+                Should -Invoke SendRawDataToLogAnalytics -Times 1 -Exactly
+            }
+        }
+    }
+
+    Describe "SendDataToLogAnalytics tests" {
+        BeforeAll {
+            Mock JmeterCSVResultsToJSON { throw [System.IO.FileNotFoundException] "Dummy Exception"  }
+            Mock SendRawDataToLogAnalytics
+            Mock LoadProperties
+            Mock Write-Host
+        }
+        Context 'When I run SendDataToLogAnalytics and error is thrown by JmeterCSVResultsToJSON' {
+            It "should return status 999" {
+                $status =  SendDataToLogAnalytics
+                $status |  Should -Be 999
+            }
+            It "should not throw exception" {
+                { SendDataToLogAnalytics } | Should -Not -Throw
             }
         }
     }
