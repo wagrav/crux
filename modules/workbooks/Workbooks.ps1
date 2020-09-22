@@ -9,7 +9,7 @@ Function sendJMeterDataToLogAnalytics($propertiesPath, $filePathCSV)
 {
     $status = 999
     $filePathJSON = "$PSScriptRoot/test_data/results.json"
-
+    Write-Host "filePathJSON : $filePathJSON"
     try
     {
         $status = SendDataToLogAnalytics `
