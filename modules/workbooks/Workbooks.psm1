@@ -4,8 +4,8 @@ Function JmeterCSVResultsToJSON($filePathCSV, $filePathJSON)
 {
     try
     {
-        $x = Get-Content -Path $filePathCSV -ErrorAction Stop
-        $x = $x | ConvertFrom-Csv | ConvertTo-Json | Out-File -Encoding UTF8 $filePathJSON
+        $csv = Get-Content -Path $filePathCSV -ErrorAction Stop
+        $csv = $csv | ConvertFrom-Csv | ConvertTo-Json | Out-File -Encoding UTF8 $filePathJSON
     }catch [System.Management.Automation.ItemNotFoundException] {
         "IO Error while rading/writing file: {0},{1}" -f $filePathCSV, $filePathJSON
         "Terminating"

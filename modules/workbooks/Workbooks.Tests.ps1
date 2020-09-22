@@ -1,40 +1,46 @@
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
-$script:testDir = 'test_data'
+$script:testDir = "$PSScriptRoot\test_data"
 
-Describe "Workbook tests" {
+Function GetFullPath {
+    Param(
+        [string] $Path
+    )
+    return $Path.Replace('TestDrive:', (Get-PSDrive TestDrive).Root)
+}
+
+
+Describe "Workbook tests"  {
     BeforeAll {
         Write-Host "Running with powershell version" $PSVersionTable.PSVersion
+        Copy-Item "$testDir\data*" -Destination "$TestDrive"
+        Copy-Item "$testDir\*.properties" -Destination "$TestDrive"
+        Write-Host "Test Data copied to TestDrive:\ at: $(GetFullPath -Path 'TestDrive:\')"
+        Write-Host "TestDrive contents: $(Get-ChildItem -Path $TestDrive)"
+
     }
-    Context 'When I try to convert non-existing file' {
-        JmeterCSVResultsToJSON "$PSScriptRoot\$script:testDir\data.csv" "$PSScriptRoot\$script:testDir\data.json"
+
+    Context -Name 'When I try to convert non-existing file'{
+        $csv = "$TestDrive\data.csv"
+        $json = "$TestDrive\data.json"
+
+        JmeterCSVResultsToJSON "$csv" "$json"
+
         It "should not throw exception"  {
-            { JmeterCSVResultsToJSON "$PSScriptRoot\$script:testDir\idonotexists.csv" "$PSScriptRoot\$script:testDir\data.json" } | Should -Not -Throw
+            { JmeterCSVResultsToJSON "$TestDrive\idonotexists.csv" "$TestDrive\data.json" } | Should -Not -Throw
         }
+
     }
+    #perhaps we can remove that after migrating to TestDrive
     Context 'When I convert JMETER CSV results' {
-        AfterAll {
-            Try
-            {
-                if (Test-Path "$PSScriptRoot\$script:testDir\data.json")
-                {
-                    Write-Host "Cleaning temporary test data"
-                    Remove-Item  "$PSScriptRoot\$script:testDir\data.json"
-                }
-            }
-            Catch [System.Management.Automation.ItemNotFoundException]
-            {
-                ;
-            }
+        BeforeAll {
+            JmeterCSVResultsToJSON "$TestDrive\data.csv" "$TestDrive\data.json"
         }
-
-        JmeterCSVResultsToJSON "$PSScriptRoot\$script:testDir\data.csv" "$PSScriptRoot\$script:testDir\data.json"
-
         It "should produce JSON file"  {
-            "$PSScriptRoot\$script:testDir\data.json" | Should -Exist
+            "$TestDrive\data.json" | Should -Exist
         }
         It "should produce valid output in JSON file"  {
-            $expected = Get-Content  -Path "$PSScriptRoot\$script:testDir\data_expected_output.json"
-            $actual = Get-Content  -Path "$PSScriptRoot\$script:testDir\data.json"
+            $expected = Get-Content  -Path "$TestDrive\data_expected_output.json"
+            $actual = Get-Content  -Path "$TestDrive\data.json"
             $actual = $actual.replace(' ', '')
             $expected = $expected.replace(' ', '')
             "$actual" | Should -Be "$expected"
@@ -43,7 +49,7 @@ Describe "Workbook tests" {
     }
     Context 'When I load properties' {
         It "should be loaded all properties with correct values" {
-            $properties = LoadProperties "$PSScriptRoot\$script:testDir\workbooks.properties"
+            $properties = LoadProperties "$TestDrive\workbooks.properties"
             $properties | Should -Not -BeNullOrEmpty
             $properties."workbooks.enabled" | Should -Be 1
             $properties."workbooks.workbooksID" | Should -Be testID
@@ -53,8 +59,8 @@ Describe "Workbook tests" {
     }
     Context 'When I send real data to Log Analytics' {
         It "should return HTTP OK" {
-            $statusCode = SendRawDataToLogAnalytics -propertiesFilePath "$PSScriptRoot\$script:testDir\workbooks.e2e.properties" `
-                                       -filePathJSON "$PSScriptRoot\$script:testDir\data_expected_output.json"
+            $statusCode = SendRawDataToLogAnalytics -propertiesFilePath "$TestDrive\workbooks.e2e.properties" `
+                                       -filePathJSON "$TestDrive\data_expected_output.json"
             $statusCode | Should -Be 200
         }
     }
@@ -68,11 +74,13 @@ InModuleScope Workbooks{
             Mock PostLogAnalyticsData
             Mock Get-Content { return "" }
             Mock LoadProperties { return "" }
+            Copy-Item "$testDir\data_expected*" -Destination "$TestDrive"
+            Copy-Item "$testDir\*.properties" -Destination "$TestDrive"
         }
         BeforeEach {
             SendRawDataToLogAnalytics `
-                                -propertiesFilePath "$PSScriptRoot\test_data\workbooks.e2e.properties" `
-                                -filePathJSON "$PSScriptRoot\test_data\data_expected_output.json"
+                                -propertiesFilePath "$TestDrive\workbooks.e2e.properties" `
+                                -filePathJSON "$TestDrive\data_expected_output.json"
         }
         Context 'When I run SendRawDataToLogAnalytics' {
             It "should run PostLogAnalyticsData once exactly" {
