@@ -21,7 +21,6 @@ Function SendRawDataToLogAnalytics($propertiesFilePath, $filePathJSON){
 
     $properties = LoadProperties -propertiesFilePath $propertiesFilePath
     $body = Get-Content -Path $filePathJSON
-    Write-Host "Body:$body"
     $statusCode = PostLogAnalyticsData -customerId $properties."workbooks.workbooksID" `
                             -sharedKey $properties."workbooks.sharedKey" `
                             -body ([System.Text.Encoding]::UTF8.GetBytes($body)) `
