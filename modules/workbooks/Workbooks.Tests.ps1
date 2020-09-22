@@ -1,10 +1,11 @@
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
 $script:testDir = "$PSScriptRoot\test_data"
 
+<#
+    These are tests Module without mocks. We uset TestDrive not to leave side effects
 
-
-
-Describe "Workbook tests"  {
+ #>
+Describe "Workbook Module tests without Mocks"  {
     BeforeAll {
         Function GetFullPath {
             Param(
@@ -68,7 +69,10 @@ Describe "Workbook tests"  {
 
 
 }
+<#
+    These are modules tests so we use specific scope
 
+#>
 InModuleScope Workbooks{
     Describe "SendRawDataToLogAnalytics tests" {
         BeforeAll {
@@ -136,6 +140,33 @@ InModuleScope Workbooks{
             It "should not throw exception" {
                 { SendDataToLogAnalytics } | Should -Not -Throw
             }
+        }
+    }
+}
+
+<#
+    These are script tests, we mock only functions in script
+#>
+Describe 'Workbooks script tests' {
+    BeforeAll {
+        . $PSScriptRoot\Workbooks.ps1
+    }
+    Context 'When script is run' {
+        BeforeAll {
+            Mock sendJMeterDataToLogAnalytics
+        }
+        It 'Should run sendJMeterDataToLogAnalytics function once exactly' {
+            run
+            Should -Invoke sendJMeterDataToLogAnalytics -Times 1 -Exactly
+        }
+    }
+    Context 'When sendJMeterDataToLogAnalytics is run' {
+        BeforeAll {
+            Mock SendDataToLogAnalytics
+        }
+        It 'Should run SendDataToLogAnalytics function once exactly' {
+            run
+            Should -Invoke SendDataToLogAnalytics -Times 1 -Exactly
         }
     }
 }
