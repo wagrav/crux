@@ -16,10 +16,10 @@ Function sendJMeterDataToLogAnalytics($propertiesPath, $filePathCSV)
                         -propertiesFilePath "$propertiesPath" `
                         -filePathCSV "$filePathCSV" `
                         -filePathJSON "$filePathJSON"
+        Write-Host " - Data sent with HTTP status $status"
     }catch {
         Write-Host $_
     } finally {
-        Write-Host " - Data sent with HTTP status $status"
         Write-Host " - propertiesPath $propertiesPath"
         Write-Host " - filePathJSON $filePathJSON"
     }
