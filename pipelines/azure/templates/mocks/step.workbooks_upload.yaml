@@ -2,8 +2,8 @@ steps:
   - task: PowerShell@2
     displayName: Workbooks upload
     inputs:
-      arguments:
-        -propertiesPath $(System.DefaultWorkingDirectory)/$(reposRoot)/$(workbooks_file)
-        -filePathCSV $(results)
+      arguments: > # Use this to avoid newline characters in multiline string
+        -propertiesPath "$(System.DefaultWorkingDirectory)/$(reposRoot)/$(workbooks_file)"
+        -filePathCSV "$(results)"
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true

@@ -14,6 +14,7 @@ parameters:
                'step.configure_cluster.yaml',
                'step.deploy_to_cluster.yaml',
                'step.jmeter_tests.yaml',
+               'step.workbooks_upload.yaml',
                'step.archive_jmeter_report.yaml',
                'step.archive_jmeter_results.yaml',
                'step.archive_jmeter_log.yaml',
@@ -21,8 +22,7 @@ parameters:
                'step.archive_jmeter_server_logs.yaml',
                'step.junit.yaml',
                'step.junit_publish.yaml',
-               'step.delete_cluster.yaml',
-               'step.workbooks_upload.yaml'
+               'step.delete_cluster.yaml'
               ]
 jobs:
   - job: JMeter_Tests
