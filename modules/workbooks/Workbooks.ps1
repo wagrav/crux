@@ -24,6 +24,9 @@ Function sendJMeterDataToLogAnalytics($propertiesPath, $filePathCSV)
     return $status
 }
 Function run(){
+    Write-Host "propertiesPath $propertiesPath"
+    Write-Host "filePathCSV $filePathCSV"
+
     $status = sendJMeterDataToLogAnalytics `
                             -propertiesPath "$propertiesPath" `
                             -filePathCSV "$filePathCSV"
