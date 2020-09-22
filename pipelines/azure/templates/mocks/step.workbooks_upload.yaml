@@ -1,12 +1,9 @@
 steps:
-  - bash: |
-      pwd
-      ls modules
-      ls modules/workbooks
-
   - task: PowerShell@2
     displayName: Workbooks upload
     inputs:
-      arguments: '-propertiesPath -$(System.DefaultWorkingDirectory)/$(reposRoot)/$(workbooks_file) -filePathCSV $(results)'
+      arguments:
+        -propertiesPath $(System.DefaultWorkingDirectory)/$(reposRoot)/$(workbooks_file)
+        -filePathCSV $(results)
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true
