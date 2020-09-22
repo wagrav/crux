@@ -8,18 +8,20 @@ Import-Module $PSScriptRoot\Workbooks.psm1 -Force
 Function sendJMeterDataToLogAnalytics($propertiesPath, $filePathCSV)
 {
     $status = 999
+    $filePathJSON = "$PSScriptRoot/test_data/results.json"
+
     try
     {
         $status = SendDataToLogAnalytics `
                         -propertiesFilePath "$propertiesPath" `
                         -filePathCSV "$filePathCSV" `
-                        -filePathJSON "$PSScriptRoot\test_data\results.json"
+                        -filePathJSON "$filePathJSON"
     }catch {
         Write-Host $_
     } finally {
         Write-Host " - Data sent with HTTP status $status"
         Write-Host " - propertiesPath $propertiesPath"
-        Write-Host " - jsonFilePath $jsonFilePath"
+        Write-Host " - filePathJSON $filePathJSON"
     }
     return $status
 }
