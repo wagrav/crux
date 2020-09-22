@@ -1,16 +1,17 @@
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
 $script:testDir = "$PSScriptRoot\test_data"
 
-Function GetFullPath {
-    Param(
-        [string] $Path
-    )
-    return $Path.Replace('TestDrive:', (Get-PSDrive TestDrive).Root)
-}
+
 
 
 Describe "Workbook tests"  {
     BeforeAll {
+        Function GetFullPath {
+            Param(
+                [string] $Path
+            )
+            return $Path.Replace('TestDrive:', (Get-PSDrive TestDrive).Root)
+        }
         Write-Host "Running with powershell version" $PSVersionTable.PSVersion
         Copy-Item "$testDir\data*" -Destination "$TestDrive"
         Copy-Item "$testDir\*.properties" -Destination "$TestDrive"
