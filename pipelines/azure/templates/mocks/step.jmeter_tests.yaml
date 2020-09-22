@@ -8,5 +8,6 @@ steps:
       cp pipelines/azure/templates/mocks/test_data/statistics.json $(report_dir)/
       cp pipelines/azure/templates/mocks/test_data/thresholds.properties $(thresholds_file)
       cp pipelines/azure/templates/mocks/test_data/workbooks.e2e.properties $(workbooks_file)
+      ls -alh $(mock_dir)
     condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
     displayName: JMeter tests (mocked)
