@@ -7,3 +7,5 @@ steps:
         -filePathCSV $(results)
       filePath: 'modules\workbooks\Workbooks.ps1'
       pwsh: true
+  - bash: |
+      cat /home/vsts/work/1/s/modules/workbooks/test_data/results.json
