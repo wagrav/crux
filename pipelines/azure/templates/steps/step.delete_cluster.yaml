@@ -1,7 +1,7 @@
 steps:
   - task: AzureCLI@2
     displayName: Delete cluster
-    condition: and(succeeded(), not(eq(variables.delete_cluster, false)))
+    condition:  not(eq(variables.delete_cluster, false))
     inputs:
       azureSubscription: $(armServiceConnection)
       scriptType: bash
