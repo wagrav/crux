@@ -4,5 +4,8 @@ steps:
       cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
       #mock set-up for tests
       mkdir -p $(mock_dir)
+      #loading properties from crux.properties
+      cp pipelines/azure/templates/mocks/test_data/crux.properties $(crux_file)
+      cat $(crux_file)
     displayName: PREPARE tests (mocked)
     condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
