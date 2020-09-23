@@ -11,8 +11,8 @@ steps:
       cp -R pipelines/azure/templates/mocks/test_data/results.csv $(results)
       ls -alh $(mock_dir)
 
-      echo "module.junit.enabled:$(module.junit.enabled)x"
-      echo "module.workbooks.enabled:  $(module.junit.enabled)"
+      echo "module.junit.enabled:$(module.junit.enabled)"
+      echo "module.workbooks.enabled:$(module.junit.enabled)"
 
     condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
     displayName: JMeter tests (mocked)
