@@ -21,6 +21,7 @@ Describe "Workbook Module tests without Mocks"  {
 
     }
 
+
     Context -Name 'When I try to convert non-existing file'{
         $csv = "$TestDrive\data.csv"
         $json = "$TestDrive\data.json"
@@ -29,6 +30,20 @@ Describe "Workbook Module tests without Mocks"  {
 
         It "should not throw exception"  {
             { JmeterCSVResultsToJSON "$TestDrive\idonotexists.csv" "$TestDrive\data.json" } | Should -Not -Throw
+        }
+
+    }
+
+    Context -Name 'When I try to convert non-existing file'{
+        BeforeAll { #sometimes $TestDrive is only available in Pester Blocks
+            $csv = "$TestDrive\data_file.csv"
+            $csvWithNewHeader = "$TestDrive\out_data_file.json"
+            AddColumnToCSV "$csv" "$csvWithNewHeader" 'newHeader' 'newValue'
+        }
+
+        It "should not throw exception"  {
+            $expected = Get-Content  -Path "$csvWithNewHeader"
+            $expected | Should -Be @('"header1","header2","header3","newHeader"', '"1","2","3","newValue"', '"1","2","3","newValue"', '"1","2","3","newValue"')
         }
 
     }

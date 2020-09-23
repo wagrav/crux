@@ -28,6 +28,13 @@ Function SendRawDataToLogAnalytics($propertiesFilePath, $filePathJSON){
     return $statusCode
 }
 
+Function AddColumnToCSV($filePathCSV, $outFilePathCSV, $columnHeader, $columnFieldsValue){
+    Write-Host "AddColumnToCSV: $columnHeader $columnFieldsValue"
+    Import-Csv $filePathCSV |
+            Select-Object *,@{Name=$columnHeader;Expression={"$columnFieldsValue"}} |
+            Export-Csv "$outFilePathCSV" -NoTypeInformation
+}
+
 Function SendDataToLogAnalytics($propertiesFilePath, $filePathCSV, $filePathJSON){
     $status = 999
     try
