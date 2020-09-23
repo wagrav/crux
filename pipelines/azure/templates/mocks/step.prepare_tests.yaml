@@ -13,7 +13,7 @@ steps:
       echo "-- Parsing crux.propeties"
       cp pipelines/azure/templates/mocks/test_data/crux.properties $(crux_file)
       cat $(crux_file)
-      awk -F= '{print "echo ##vso[task.setvariable variable="$1"]"$2}' $(crux_file)
+      awk -F= '{print "echo ##vso[task.setvariable variable="$1"]"$2}' $(crux_file) >> vars.sh && bash vars.sh
       echo "module.junit.enabled: " $(module.junit.enabled)
       echo "module.workbooks.enabled: " $(module.junit.enabled)
 
