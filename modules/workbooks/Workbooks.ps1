@@ -33,5 +33,9 @@ Function run(){
     $status = sendJMeterDataToLogAnalytics `
                             -propertiesPath "$propertiesPath" `
                             -filePathCSV "$filePathCSV"
+
+    if ("$status" -ne "200"){
+        Write-Error "Data has not been uploaded $status" -ErrorAction Stop
+    }
 }
 run

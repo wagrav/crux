@@ -53,7 +53,6 @@ Describe "Workbook Module tests without Mocks"  {
         It "should be loaded all properties with correct values" {
             $properties = LoadProperties "$TestDrive\workbooks.properties"
             $properties | Should -Not -BeNullOrEmpty
-            $properties."workbooks.enabled" | Should -Be 1
             $properties."workbooks.workbooksID" | Should -Be testID
             $properties."workbooks.sharedkey" | Should -Be testKey
             $properties."workbooks.logType" | Should -Be testType
@@ -151,22 +150,31 @@ Describe 'Workbooks script tests' {
     BeforeAll {
         . $PSScriptRoot\Workbooks.ps1
     }
-    Context 'When script is run' {
+    Context 'When script is run and data is uploaded' {
         BeforeAll {
-            Mock sendJMeterDataToLogAnalytics
+            Mock sendJMeterDataToLogAnalytics { return "200" }
         }
         It 'Should run sendJMeterDataToLogAnalytics function once exactly' {
             run
             Should -Invoke sendJMeterDataToLogAnalytics -Times 1 -Exactly
         }
     }
-    Context 'When sendJMeterDataToLogAnalytics is run' {
+    Context 'When sendJMeterDataToLogAnalytics is run and data is uploaded'{
         BeforeAll {
-            Mock SendDataToLogAnalytics
+            Mock SendDataToLogAnalytics { return "200" }
         }
         It 'Should run SendDataToLogAnalytics function once exactly' {
             run
             Should -Invoke SendDataToLogAnalytics -Times 1 -Exactly
+        }
+    }
+    Context 'When sendJMeterDataToLogAnalytics fails to upload data' {
+        BeforeAll {
+            Mock SendDataToLogAnalytics { return "503" }
+        }
+        It 'Should exit with error' {
+            { run } | Should -Throw
+
         }
     }
 }
