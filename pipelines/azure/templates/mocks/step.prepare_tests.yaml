@@ -1,13 +1,13 @@
 steps:
   - bash: |
-      echo "Unpacking crux and test repo to correct folders"
+      echo "-- Unpacking crux and test repo to correct folders in $(reposRoot)"
       mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)
       cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
       #mock set-up for tests
-      echo "Creating mock dir"
+      echo "-- Creating mock dir"
       mkdir -p $(mock_dir)
       #loading properties from crux.properties
-      echo "Parsing crux.propeties"
+      echo "-- Parsing crux.propeties"
       cp pipelines/azure/templates/mocks/test_data/crux.properties $(crux_file)
       cat $(crux_file)
     displayName: PREPARE tests (mocked)

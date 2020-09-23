@@ -42,7 +42,7 @@ variables:
     thresholds_file: $(mock_dir)/thresholds.properties
     workbooks_file: $(mock_dir)/workbooks.properties
     crux_file: $(mock_dir)/crux.properties
-    reposRoot: ""
+    reposRoot: "repos"
 
 
   ${{ if eq(parameters.mode,'jmeter') }}:
