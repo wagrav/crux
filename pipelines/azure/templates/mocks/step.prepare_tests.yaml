@@ -14,7 +14,6 @@ steps:
       cp pipelines/azure/templates/mocks/test_data/crux.properties $(crux_file)
       cat $(crux_file)
       awk -F= '{system("echo ##vso[task.setvariable variable=$1]"$2)}' $(crux_file)
-      env | sort
 
     displayName: PREPARE tests (mocked)
     condition: and(succeeded(), not(eq(variables.prepare_tests, false)))

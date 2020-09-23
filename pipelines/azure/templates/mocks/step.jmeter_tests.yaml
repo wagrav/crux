@@ -10,5 +10,6 @@ steps:
       cp pipelines/azure/templates/mocks/test_data/workbooks.e2e.properties $(workbooks_file)
       cp -R pipelines/azure/templates/mocks/test_data/results.csv $(results)
       ls -alh $(mock_dir)
+       env | sort
     condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
     displayName: JMeter tests (mocked)
