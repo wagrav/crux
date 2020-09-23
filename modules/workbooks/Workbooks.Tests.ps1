@@ -168,12 +168,23 @@ Describe 'Workbooks script tests' {
             Should -Invoke SendDataToLogAnalytics -Times 1 -Exactly
         }
     }
-    Context 'When sendJMeterDataToLogAnalytics fails to upload data' {
+    Context 'When SendDataToLogAnalytics fails to upload data' {
         BeforeAll {
             Mock SendDataToLogAnalytics { return "503" }
         }
         It 'Should exit with error' {
             { run } | Should -Throw
+
+        }
+    }
+    Context 'When script is run in dry-run' {
+        BeforeAll {
+            . $PSScriptRoot\Workbooks.ps1 -dryRun $true -Force
+            Mock sendJMeterDataToLogAnalytics { return "200" }
+        }
+        It 'Should not execute SendDataToLogAnalytics' {
+            run
+            Should -Not -Invoke sendJMeterDataToLogAnalytics -Times 1 -Exactly
 
         }
     }

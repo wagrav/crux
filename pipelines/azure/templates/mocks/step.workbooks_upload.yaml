@@ -6,5 +6,6 @@ steps:
       arguments: > # Use this to avoid newline characters in multiline string
         -propertiesPath "$(System.DefaultWorkingDirectory)/$(reposRoot)/$(workbooks_file)"
         -filePathCSV "$(results)"
+        -dryRun $true
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true

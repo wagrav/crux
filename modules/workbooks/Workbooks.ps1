@@ -1,6 +1,7 @@
 param(
       $propertiesPath="$PSScriptRoot\test_data\workbooks.e2e.properties",
-      $filePathCSV="$PSScriptRoot\test_data\data.csv"
+      $filePathCSV="$PSScriptRoot\test_data\data.csv",
+      $dryRun=$false
 )
 
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
@@ -30,10 +31,14 @@ Function run(){
     Write-Host "propertiesPath $propertiesPath"
     Write-Host "filePathCSV $filePathCSV"
 
-    $status = sendJMeterDataToLogAnalytics `
+    If( -Not $dryRun)
+    {
+        $status = sendJMeterDataToLogAnalytics `
                             -propertiesPath "$propertiesPath" `
                             -filePathCSV "$filePathCSV"
-
+    }else{
+        $status=200
+    }
     if ("$status" -ne "200"){
         Write-Error "Data has not been uploaded $status" -ErrorAction Stop
     }
