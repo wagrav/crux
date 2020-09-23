@@ -38,6 +38,7 @@ Function run(){
                             -filePathCSV "$filePathCSV"
     }else{
         $status=200
+        Write-Host "Data Upload Mocked"
     }
     if ("$status" -ne "200"){
         Write-Error "Data has not been uploaded $status" -ErrorAction Stop
