@@ -199,7 +199,7 @@ Describe 'Workbooks script tests' {
         }
         It 'Should not execute SendDataToLogAnalytics' {
             run
-            Should -Not -Invoke sendJMeterDataToLogAnalytics -Times 1 -Exactly
+            Should -Not -Invoke sendJMeterDataToLogAnalytics
 
         }
     }
