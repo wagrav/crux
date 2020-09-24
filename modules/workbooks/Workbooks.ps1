@@ -50,8 +50,10 @@ Function addMetaDataToCSV($filePathCSV, $outFilePathCSV ){
     Copy-Item $inputTempFile -Destination $outFilePathCSV
 }
 Function run(){
-    Write-Host "propertiesPath $propertiesPath"
-    Write-Host "filePathCSV $filePathCSV"
+    Write-Host "Used properties: propertiesPath $propertiesPath"
+    $props = Get-Content -Path $propertiesPath
+    Write-Host "$props"
+    Write-Host "Results to upload: filePathCSV $filePathCSV"
     Set-Variable AZURE_POST_LIMIT -option Constant -value 30
     addMetaDataToCSV -filePathCSV $filePathCSV -outFilePathCSV $outFilePathCSV
     $sizeMB = ((Get-Item $outFilePathCSV).length/1MB)
