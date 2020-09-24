@@ -223,4 +223,19 @@ Describe 'Workbooks script tests' {
             { run } | Should -Throw "File size exceeds limit of 30 Megs:*"
         }
     }
+    Context -Name 'When I add multiple columns to CSV file'{
+        BeforeAll { #sometimes $TestDrive is only available in Pester Blocks
+            . $PSScriptRoot\Workbooks.ps1 -dryRun $true -jmeterArgs 'args' -buildId 'id' -pipelineId 'pid' -buildStatus 'status' -Force
+            Copy-Item "$testDir\data*" -Destination "$TestDrive"
+            $csv = "$TestDrive\data_file.csv"
+            $csvWithNewColumns = "$TestDrive\out_data_file.json"
+            addMetaDataToCSV -filePathCSV "$csv" -outFilePathCSV "$csvWithNewColumns"
+        }
+
+        It "should all columns appear in new file"  {
+            $expected = Get-Content  -Path "$csvWithNewColumns"
+            $expected | Should -Be @('"header1","header2","header3","jmeterArgs","buildId","pipelineId","buildStatus"', '"1","2","3","args","id","pid","status"', '"1","2","3","args","id","pid","status"', '"1","2","3","args","id","pid","status"')
+        }
+
+    }
 }
