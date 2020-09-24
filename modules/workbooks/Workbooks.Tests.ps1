@@ -196,11 +196,31 @@ Describe 'Workbooks script tests' {
         BeforeAll {
             . $PSScriptRoot\Workbooks.ps1 -dryRun $true -Force
             Mock sendJMeterDataToLogAnalytics { return "200" }
+            Mock addMetaDataToCSV
         }
         It 'Should not execute SendDataToLogAnalytics' {
             run
             Should -Invoke sendJMeterDataToLogAnalytics -Times 0 -Exactly
 
+        }
+        It 'Should  execute addMetaDataToCSV' {
+            run
+            Should -Invoke addMetaDataToCSV -Times 1 -Exactly
+
+        }
+    }
+    Context 'When CSV size is exceeded' {
+
+        BeforeAll {
+            Set-Variable AZURE_POST_LIMIT_EXCEEDED -option Constant -value 40000000
+            . $PSScriptRoot\Workbooks.ps1 -dryRun $true -Force
+            Mock `
+                -CommandName Get-Item `
+                -MockWith { [PSCustomObject]@{ length = "$AZURE_POST_LIMIT_EXCEEDED" } }
+            Mock addMetaDataToCSV
+        }
+        It 'Should throw file size exceeded error' {
+            { run } | Should -Throw "File size exceeds limit of 30 Megs:*"
         }
     }
 }

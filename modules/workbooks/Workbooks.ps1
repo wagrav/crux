@@ -43,7 +43,7 @@ Function addMetaDataToCSV($filePathCSV, $outFilePathCSV ){
         pipelineId = $pipelineId
     }
     foreach ($h in $hash.GetEnumerator()) {
-        Write-Host "$($h.Name): $($h.Value)"
+        #Write-Host "$($h.Name): $($h.Value)"
         AddColumnToCSV -filePathCSV $inputTempFile -outFilePathCSV $outputTempFile -columnHeader "$($h.Name)" -columnFieldsValue "$($h.Value)"
         Copy-Item -Path $outputTempFile -Destination $inputTempFile
     }
@@ -53,13 +53,15 @@ Function run(){
     Write-Host "propertiesPath $propertiesPath"
     Write-Host "filePathCSV $filePathCSV"
     Set-Variable AZURE_POST_LIMIT -option Constant -value 30
+    addMetaDataToCSV -filePathCSV $filePathCSV -outFilePathCSV $outFilePathCSV
+    $sizeMB = ((Get-Item $outFilePathCSV).length/1MB)
+
+    If ($sizeMB -gt $AZURE_POST_LIMIT){
+        Write-Error "File size exceeds limit of 30 Megs: $sizeMB Megs" -ErrorAction Stop
+    }
     If( -Not $dryRun)
     {
-        addMetaDataToCSV -filePathCSV $filePathCSV -outFilePathCSV $outFilePathCSV
-        $sizeMB = ((Get-Item $outFilePathCSV).length/1MB)
-        If ($sizeMB -gt $AZURE_POST_LIMIT){
-            Write-Error "File size exceeds limit of 30 Megs: $sizeMB Megs" -ErrorAction Stop
-        }
+        Write-Host "Uploading file with size $sizeMB MB"
         $status = sendJMeterDataToLogAnalytics `
                             -propertiesPath "$propertiesPath" `
                             -filePathCSV "$outFilePathCSV"

@@ -7,7 +7,7 @@ steps:
         -propertiesPath "$(System.DefaultWorkingDirectory)/$(reposRoot)/$(workbooks_file)"
         -filePathCSV "$(results)"
         -jmeterArgs="$(jmeter_args)"
-        -buildId="$(BuildID)"
+        -buildId="$(Build.BuildId)"
         -buildStatus="$(Agent.JobStatus)"
         -pipelineId="$(System.DefinitionId)"
       filePath: 'modules/workbooks/Workbooks.ps1'

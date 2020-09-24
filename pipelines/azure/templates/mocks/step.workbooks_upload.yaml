@@ -8,7 +8,7 @@ steps:
         -filePathCSV "$(results)"
         -dryRun $true
         -jmeterArgs="$(jmeter_args)"
-        -buildId="$(BuildID)"
+        -buildId="$(Build.BuildId)"
         -buildStatus="$(Agent.JobStatus)"
         -pipelineId="$(System.DefinitionId)"
       filePath: 'modules/workbooks/Workbooks.ps1'
