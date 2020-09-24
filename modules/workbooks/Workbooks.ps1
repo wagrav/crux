@@ -32,27 +32,34 @@ Function sendJMeterDataToLogAnalytics($propertiesPath, $filePathCSV)
     }
     return $status
 }
+Function addMetaDataToCSV($filePathCSV, $outFilePathCSV ){
+    $inputTempFile = New-TemporaryFile
+    $outputTempFile = New-TemporaryFile
+    Copy-Item -Path $filePathCSV -Destination $inputTempFile
+    $hash = @{
+        jmeterArgs = $jmeterArgs
+        buildId = $buildId
+        buildStatus = $buildStatus
+        pipelineId = $pipelineId
+    }
+    foreach ($h in $hash.GetEnumerator()) {
+        Write-Host "$($h.Name): $($h.Value)"
+        AddColumnToCSV -filePathCSV $inputTempFile -outFilePathCSV $outputTempFile -columnHeader "$($h.Name)" -columnFieldsValue "$($h.Value)"
+        Copy-Item -Path $outputTempFile -Destination $inputTempFile
+    }
+    Copy-Item $inputTempFile -Destination $outFilePathCSV
+}
 Function run(){
     Write-Host "propertiesPath $propertiesPath"
     Write-Host "filePathCSV $filePathCSV"
 
     If( -Not $dryRun)
     {
-        $inputTempFile = New-TemporaryFile
-        $outputTempFile = New-TemporaryFile
-        Copy-Item -Path $filePathCSV -Destination $inputTempFile
-        $hash = @{
-            jmeterArgs = $jmeterArgs
-            buildId = $buildId
-            buildStatus = $buildStatus
-            pipelineId = $pipelineId
+        addMetaDataToCSV -filePathCSV $filePathCSV -outFilePathCSV $outFilePathCSV
+        $sizeMB = ((Get-Item $outFilePathCSV).length/1MB)
+        If ($sizeMB -gt 30){
+            Write-Error "File size exceeds limit of 30 Megs: $sizeMB Megs" -ErrorAction Stop
         }
-        foreach ($h in $hash.GetEnumerator()) {
-            Write-Host "$($h.Name): $($h.Value)"
-            AddColumnToCSV -filePathCSV $inputTempFile -outFilePathCSV $outputTempFile -columnHeader "$($h.Name)" -columnFieldsValue "$($h.Value)"
-            Copy-Item -Path $outputTempFile -Destination $inputTempFile
-        }
-        Copy-Item $inputTempFile -Destination $outFilePathCSV
         $status = sendJMeterDataToLogAnalytics `
                             -propertiesPath "$propertiesPath" `
                             -filePathCSV "$outFilePathCSV"
