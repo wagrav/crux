@@ -10,5 +10,6 @@ steps:
         -jmeterArgs="$(jmeter_args)"
         -buildId="$(BuildID)"
         -buildStatus="$(Agent.JobStatus)"
+        -pipelineId="$(System.DefinitionId)"
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true

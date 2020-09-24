@@ -37,11 +37,20 @@ Function run(){
 
     If( -Not $dryRun)
     {
-        $TempFile = New-TemporaryFile
-        $TempFile2 = New-TemporaryFile
-        AddColumnToCSV -filePathCSV $filePathCSV -outFilePathCSV $TempFile -columnHeader 'jmeterArgs' -columnFieldsValue "$jmeterArgs"
-        AddColumnToCSV -filePathCSV $TempFile -outFilePathCSV "$TempFile2"-columnHeader 'buildId' -columnFieldsValue "$buildId"
-        AddColumnToCSV -filePathCSV $TempFile2 -outFilePathCSV "$outFilePathCSV"-columnHeader 'buildStatus' -columnFieldsValue "$buildStatus"
+        $inputTempFile = New-TemporaryFile
+        $outputTempFile = New-TemporaryFile
+        Copy-Item -Path $filePathCSV -Destination $inputTempFile
+        $hash = @{
+            jmeterArgs = $jmeterArgs
+            buildId = $buildId
+            buildStatus = $buildStatus
+        }
+        foreach ($h in $hash.GetEnumerator()) {
+            Write-Host "$($h.Name): $($h.Value)"
+            AddColumnToCSV -filePathCSV $inputTempFile -outFilePathCSV $outputTempFile -columnHeader "$($h.Name)" -columnFieldsValue "$($h.Value)"
+            Copy-Item -Path $outputTempFile -Destination $inputTempFile
+        }
+        Copy-Item $inputTempFile -Destination $outFilePathCSV
         $status = sendJMeterDataToLogAnalytics `
                             -propertiesPath "$propertiesPath" `
                             -filePathCSV "$outFilePathCSV"
