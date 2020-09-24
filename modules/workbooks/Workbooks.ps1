@@ -52,12 +52,12 @@ Function addMetaDataToCSV($filePathCSV, $outFilePathCSV ){
 Function run(){
     Write-Host "propertiesPath $propertiesPath"
     Write-Host "filePathCSV $filePathCSV"
-
+    Set-Variable AZURE_POST_LIMIT -option Constant -value 30
     If( -Not $dryRun)
     {
         addMetaDataToCSV -filePathCSV $filePathCSV -outFilePathCSV $outFilePathCSV
         $sizeMB = ((Get-Item $outFilePathCSV).length/1MB)
-        If ($sizeMB -gt 30){
+        If ($sizeMB -gt $AZURE_POST_LIMIT){
             Write-Error "File size exceeds limit of 30 Megs: $sizeMB Megs" -ErrorAction Stop
         }
         $status = sendJMeterDataToLogAnalytics `
