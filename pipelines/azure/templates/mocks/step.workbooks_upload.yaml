@@ -7,5 +7,8 @@ steps:
         -propertiesPath "$(System.DefaultWorkingDirectory)/$(reposRoot)/$(workbooks_file)"
         -filePathCSV "$(results)"
         -dryRun $true
+        -jmeterArgs="$(jmeter_args)"
+        -buildId="$(BuildID)"
+        -buildStatus="$(Agent.JobStatus)"
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true

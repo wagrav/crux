@@ -4,7 +4,8 @@ param(
       $outFilePathCSV="$PSScriptRoot\test_data\out_data.csv",
       $dryRun=$false,
       $jmeterArgs = 'dummy args',
-      $buildId = 'local'
+      $buildId = 'local',
+      $buildStatus = 'unknown'
 )
 
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
@@ -37,8 +38,10 @@ Function run(){
     If( -Not $dryRun)
     {
         $TempFile = New-TemporaryFile
+        $TempFile2 = New-TemporaryFile
         AddColumnToCSV -filePathCSV $filePathCSV -outFilePathCSV $TempFile -columnHeader 'jmeterArgs' -columnFieldsValue "$jmeterArgs"
-        AddColumnToCSV -filePathCSV $TempFile -outFilePathCSV "$outFilePathCSV"-columnHeader 'buildId' -columnFieldsValue "$buildId"
+        AddColumnToCSV -filePathCSV $TempFile -outFilePathCSV "$TempFile2"-columnHeader 'buildId' -columnFieldsValue "$buildId"
+        AddColumnToCSV -filePathCSV $TempFile2 -outFilePathCSV "$outFilePathCSV"-columnHeader 'buildStatus' -columnFieldsValue "$buildStatus"
         $status = sendJMeterDataToLogAnalytics `
                             -propertiesPath "$propertiesPath" `
                             -filePathCSV "$outFilePathCSV"
