@@ -5,7 +5,8 @@ param(
       $dryRun=$false,
       $jmeterArgs = 'dummy args',
       $buildId = 'local',
-      $buildStatus = 'unknown'
+      $buildStatus = 'unknown',
+      $pipelineId = 'local'
 )
 
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
@@ -44,6 +45,7 @@ Function run(){
             jmeterArgs = $jmeterArgs
             buildId = $buildId
             buildStatus = $buildStatus
+            pipelineId = $pipelineId
         }
         foreach ($h in $hash.GetEnumerator()) {
             Write-Host "$($h.Name): $($h.Value)"
