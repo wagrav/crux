@@ -30,6 +30,9 @@ The "run" pipeline which is where your tests happen is easily extensible with Az
 
 ## Setup
 
+### Pre-requisites
+
+A valid Azure subscription with storage provisioning enabled.
 
 In the first step you need to create a k8 cluster if you do not have one already. Cluster for Jmeter should run no other services.
 In the seconds step you create a kubernetes service connection to your cluster in your DevOps. 
