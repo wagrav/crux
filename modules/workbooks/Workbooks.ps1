@@ -36,7 +36,7 @@ Function addMetaDataToCSV($filePathCSV, $outFilePathCSV ){
     $inputTempFile = New-TemporaryFile
     $outputTempFile = New-TemporaryFile
     Copy-Item -Path $filePathCSV -Destination $inputTempFile
-    $hash = @{
+    $hash = [ordered]@{
         jmeterArgs = $jmeterArgs
         buildId = $buildId
         buildStatus = $buildStatus

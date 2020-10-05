@@ -234,7 +234,7 @@ Describe 'Workbooks script tests' {
 
         It "should all columns appear in new file"  {
             $expected = Get-Content  -Path "$csvWithNewColumns"
-            $expected | Should -Be @('"header1","header2","header3","jmeterArgs","buildId","pipelineId","buildStatus"', '"1","2","3","args","id","pid","status"', '"1","2","3","args","id","pid","status"', '"1","2","3","args","id","pid","status"')
+            $expected | Should -Be @('"header1","header2","header3","jmeterArgs","buildId","buildStatus","pipelineId"', '"1","2","3","args","id","status","pid"', '"1","2","3","args","id","status","pid"', '"1","2","3","args","id","status","pid"')
         }
 
     }
