@@ -19,7 +19,7 @@ create_cluster_and_connection() {
   local pat=${11}
   local connection_name=${12}
   local path=${13}
-  local skipConnectionCreation=${13}
+  local skipConnectionCreation=${14}
 
 
   source "$path"/create_cluster.sh
