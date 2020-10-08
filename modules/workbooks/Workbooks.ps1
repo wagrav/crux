@@ -11,16 +11,16 @@ param(
 
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
 
-function SendJMeterDataToLogAnalytics($PropertiesPath, $FilePathCSV)
+function Send-JMeterDataToLogAnalytics($PropertiesPath, $FilePathCSV)
 {
     $status = 999
     $filePathJSON = "$PSScriptRoot/test_data/results.json"
     try
     {
-        $status = SendDataToLogAnalytics `
-                        -propertiesFilePath "$PropertiesPath" `
-                        -filePathCSV "$FilePathCSV" `
-                        -filePathJSON "$filePathJSON"
+        $status = Send-DataToLogAnalytics `
+                        -PropertiesFilePath "$PropertiesPath" `
+                        -FilePathCSV "$FilePathCSV" `
+                        -FilePathJSON "$filePathJSON"
 
     }catch {
         Write-Host $_
@@ -32,7 +32,7 @@ function SendJMeterDataToLogAnalytics($PropertiesPath, $FilePathCSV)
     }
     return $status
 }
-function AddMetaDataToCSV($FilePathCSV, $OutFilePathCSV ){
+function Add-MetaDataToCSV($FilePathCSV, $OutFilePathCSV ){
     $inputTempFile = New-TemporaryFile
     $outputTempFile = New-TemporaryFile
     Copy-Item -Path $FilePathCSV -Destination $inputTempFile
@@ -44,18 +44,18 @@ function AddMetaDataToCSV($FilePathCSV, $OutFilePathCSV ){
     }
     foreach ($h in $hash.GetEnumerator()) {
         #Write-Host "$($h.Name): $($h.Value)"
-        AddColumnToCSV -filePathCSV $inputTempFile -outFilePathCSV $outputTempFile -columnHeader "$($h.Name)" -columnFieldsValue "$($h.Value)"
+        Add-ColumnToCSV -filePathCSV $inputTempFile -outFilePathCSV $outputTempFile -columnHeader "$($h.Name)" -columnFieldsValue "$($h.Value)"
         Copy-Item -Path $outputTempFile -Destination $inputTempFile
     }
     Copy-Item $inputTempFile -Destination $OutFilePathCSV
 }
-function RunScript(){
+function Start-Script(){
     Write-Host "Used properties: propertiesPath $PropertiesPath"
     $props = Get-Content -Path $PropertiesPath
     Write-Host "$props"
     Write-Host "Results to upload: filePathCSV $FilePathCSV"
     Set-Variable AZURE_POST_LIMIT -option Constant -value 30
-    AddMetaDataToCSV -filePathCSV $FilePathCSV -outFilePathCSV $OutFilePathCSV
+    Add-MetaDataToCSV -filePathCSV $FilePathCSV -outFilePathCSV $OutFilePathCSV
     $sizeMB = ((Get-Item $OutFilePathCSV).length/1MB)
 
     if ($sizeMB -gt $AZURE_POST_LIMIT){
@@ -64,7 +64,7 @@ function RunScript(){
     if( -Not $DryRun)
     {
         Write-Host "Uploading file with size $sizeMB MB"
-        $status = SendJMeterDataToLogAnalytics `
+        $status = Send-JMeterDataToLogAnalytics `
                             -propertiesPath "$PropertiesPath" `
                             -filePathCSV "$OutFilePathCSV"
     }else{
@@ -75,4 +75,4 @@ function RunScript(){
         Write-Error "Data has not been uploaded $status" -ErrorAction Stop
     }
 }
-RunScript
+Start-Script

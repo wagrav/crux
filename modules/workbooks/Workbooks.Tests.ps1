@@ -26,10 +26,10 @@ Describe "Workbook Module tests without Mocks"  {
         $csv = "$TestDrive\data.csv"
         $json = "$TestDrive\data.json"
 
-        ConvertJmeterCSVResultsToJSON "$csv" "$json"
+        Convert-JmeterCSVResultsToJSON "$csv" "$json"
 
         It "should not throw exception"  {
-            { ConvertJmeterCSVResultsToJSON "$TestDrive\idonotexists.csv" "$TestDrive\data.json" } | Should -Not -Throw
+            { Convert-JmeterCSVResultsToJSON "$TestDrive\idonotexists.csv" "$TestDrive\data.json" } | Should -Not -Throw
         }
 
     }
@@ -38,7 +38,7 @@ Describe "Workbook Module tests without Mocks"  {
         BeforeAll { #sometimes $TestDrive is only available in Pester Blocks
             $csv = "$TestDrive\data_file.csv"
             $csvWithNewHeader = "$TestDrive\out_data_file.json"
-            AddColumnToCSV "$csv" "$csvWithNewHeader" 'newHeader' 'newValue'
+            Add-ColumnToCSV "$csv" "$csvWithNewHeader" 'newHeader' 'newValue'
         }
 
         It "should not throw exception"  {
@@ -50,7 +50,7 @@ Describe "Workbook Module tests without Mocks"  {
     #perhaps we can remove that after migrating to TestDrive
     Context 'When I convert JMETER CSV results' {
         BeforeAll {
-            ConvertJmeterCSVResultsToJSON "$TestDrive\data.csv" "$TestDrive\data.json"
+            Convert-JmeterCSVResultsToJSON "$TestDrive\data.csv" "$TestDrive\data.json"
         }
         It "should produce JSON file"  {
             "$TestDrive\data.json" | Should -Exist
@@ -66,7 +66,7 @@ Describe "Workbook Module tests without Mocks"  {
     }
     Context 'When I load properties' {
         It "should be loaded all properties with correct values" {
-            $properties = LoadProperties "$TestDrive\workbooks.properties"
+            $properties = Read-Properties "$TestDrive\workbooks.properties"
             $properties | Should -Not -BeNullOrEmpty
             $properties."workbooks.workbooksID" | Should -Be testID
             $properties."workbooks.sharedkey" | Should -Be testKey
@@ -75,7 +75,7 @@ Describe "Workbook Module tests without Mocks"  {
     }
     Context 'When I send real data to Log Analytics' {
         It "should return HTTP OK" {
-            $statusCode = SendRawDataToLogAnalytics -PropertiesFilePath "$TestDrive\workbooks.e2e.properties" `
+            $statusCode = Send-RawDataToLogAnalytics -PropertiesFilePath "$TestDrive\workbooks.e2e.properties" `
                                        -FilePathJSON "$TestDrive\data_expected_output.json"
             $statusCode | Should -Be 200
         }
@@ -88,28 +88,28 @@ Describe "Workbook Module tests without Mocks"  {
 
 #>
 InModuleScope Workbooks{
-    Describe "SendRawDataToLogAnalytics tests" {
+    Describe "Send-RawDataToLogAnalytics tests" {
         BeforeAll {
-            Mock PostLogAnalyticsData
+            Mock Send-LogAnalyticsData
             Mock Get-Content { return "" }
-            Mock LoadProperties { return "" }
+            Mock Read-Properties { return "" }
             Copy-Item "$testDir\data_expected*" -Destination "$TestDrive"
             Copy-Item "$testDir\*.properties" -Destination "$TestDrive"
         }
         BeforeEach {
-            SendRawDataToLogAnalytics `
+            Send-RawDataToLogAnalytics `
                                 -PropertiesFilePath "$TestDrive\workbooks.e2e.properties" `
                                 -FilePathJSON "$TestDrive\data_expected_output.json"
         }
-        Context 'When I run SendRawDataToLogAnalytics' {
-            It "should run PostLogAnalyticsData once exactly" {
+        Context 'When I run Send-RawDataToLogAnalytics' {
+            It "should run Send-LogAnalyticsData once exactly" {
                 Assert-VerifiableMock
-                Assert-MockCalled PostLogAnalyticsData -Times 1
+                Assert-MockCalled Send-LogAnalyticsData -Times 1
             }
-            It "should run LoadProperties once exactly" {
+            It "should run Read-Properties once exactly" {
                 Assert-VerifiableMock
                 $assertparams = @{
-                    CommandName = 'LoadProperties'
+                    CommandName = 'Read-Properties'
                     Exactly = $true
                     Times = 1
                 }
@@ -117,42 +117,42 @@ InModuleScope Workbooks{
             }
         }
     }
-    Describe "SendDataToLogAnalytics tests" {
+    Describe "Send-DataToLogAnalytics tests" {
         BeforeAll {
-            Mock ConvertJmeterCSVResultsToJSON
-            Mock SendRawDataToLogAnalytics
-            Mock LoadProperties
+            Mock Convert-JmeterCSVResultsToJSON
+            Mock Send-RawDataToLogAnalytics
+            Mock Read-Properties
         }
         BeforeEach {
-            SendDataToLogAnalytics
+            Send-DataToLogAnalytics
         }
-        Context 'When I run SendDataToLogAnalytics' {
+        Context 'When I run Send-DataToLogAnalytics' {
             It "should run all functions" {
                 Should -InvokeVerifiable
             }
-            It "should run ConvertJmeterCSVResultsToJSON once exactly" {
-                Should -Invoke ConvertJmeterCSVResultsToJSON -Times 1 -Exactly
+            It "should run Convert-JmeterCSVResultsToJSON once exactly" {
+                Should -Invoke Convert-JmeterCSVResultsToJSON -Times 1 -Exactly
             }
-            It "should run SendRawDataToLogAnalytics once exactly" {
-                Should -Invoke SendRawDataToLogAnalytics -Times 1 -Exactly
+            It "should run Send-RawDataToLogAnalytics once exactly" {
+                Should -Invoke Send-RawDataToLogAnalytics -Times 1 -Exactly
             }
         }
     }
 
-    Describe "SendDataToLogAnalytics tests" {
+    Describe "Send-DataToLogAnalytics tests" {
         BeforeAll {
-            Mock ConvertJmeterCSVResultsToJSON { throw [System.IO.FileNotFoundException] "Dummy Exception"  }
-            Mock SendRawDataToLogAnalytics
-            Mock LoadProperties
+            Mock Convert-JmeterCSVResultsToJSON { throw [System.IO.FileNotFoundException] "Dummy Exception"  }
+            Mock Send-RawDataToLogAnalytics
+            Mock Read-Properties
             Mock Write-Host
         }
-        Context 'When I run SendDataToLogAnalytics and error is thrown by ConvertJmeterCSVResultsToJSON' {
+        Context 'When I run Send-DataToLogAnalytics and error is thrown by Convert-JmeterCSVResultsToJSON' {
             It "should return status 999" {
-                $status =  SendDataToLogAnalytics
+                $status =  Send-DataToLogAnalytics
                 $status |  Should -Be 999
             }
             It "should not throw exception" {
-                { SendDataToLogAnalytics } | Should -Not -Throw
+                { Send-DataToLogAnalytics } | Should -Not -Throw
             }
         }
     }
@@ -163,49 +163,49 @@ InModuleScope Workbooks{
 #>
 Describe 'Workbooks script tests' {
     BeforeAll {
-        . $PSScriptRoot\Workbooks.ps1
+        . $PSScriptRoot\Workbooks.ps1 -Force
     }
     Context 'When script is run and data is uploaded' {
         BeforeAll {
-            Mock SendJMeterDataToLogAnalytics { return "200" }
+            Mock Send-JMeterDataToLogAnalytics { return "200" }
         }
-        It 'Should run SendJMeterDataToLogAnalytics function once exactly' {
-            RunScript
-            Should -Invoke SendJMeterDataToLogAnalytics -Times 1 -Exactly
-        }
-    }
-    Context 'When SendJMeterDataToLogAnalytics is run and data is uploaded'{
-        BeforeAll {
-            Mock SendDataToLogAnalytics { return "200" }
-        }
-        It 'Should run SendDataToLogAnalytics function once exactly' {
-            RunScript
-            Should -Invoke SendDataToLogAnalytics -Times 1 -Exactly
+        It 'Should run Send-JMeterDataToLogAnalytics function once exactly' {
+            Start-Script
+            Should -Invoke Send-JMeterDataToLogAnalytics -Times 1 -Exactly
         }
     }
-    Context 'When SendDataToLogAnalytics fails to upload data' {
+    Context 'When Send-JMeterDataToLogAnalytics is run and data is uploaded'{
         BeforeAll {
-            Mock SendDataToLogAnalytics { return "503" }
+            Mock Send-DataToLogAnalytics { return "200" }
+        }
+        It 'Should run Send-DataToLogAnalytics function once exactly' {
+            Start-Script
+            Should -Invoke Send-DataToLogAnalytics -Times 1 -Exactly
+        }
+    }
+    Context 'When Send-DataToLogAnalytics fails to upload data' {
+        BeforeAll {
+            Mock Send-DataToLogAnalytics { return "503" }
         }
         It 'Should exit with error' {
-            { RunScript } | Should -Throw
+            { Start-Script } | Should -Throw
 
         }
     }
     Context 'When script is run in dry-run' {
         BeforeAll {
             . $PSScriptRoot\Workbooks.ps1 -DryRun $true -Force
-            Mock SendJMeterDataToLogAnalytics { return "200" }
-            Mock AddMetaDataToCSV
+            Mock Send-JMeterDataToLogAnalytics { return "200" }
+            Mock Add-MetaDataToCSV
         }
-        It 'Should not execute SendDataToLogAnalytics' {
-            RunScript
-            Should -Invoke SendJMeterDataToLogAnalytics -Times 0 -Exactly
+        It 'Should not execute Send-DataToLogAnalytics' {
+            Start-Script
+            Should -Invoke Send-JMeterDataToLogAnalytics -Times 0 -Exactly
 
         }
-        It 'Should  execute AddMetaDataToCSV' {
-            RunScript
-            Should -Invoke AddMetaDataToCSV -Times 1 -Exactly
+        It 'Should  execute Add-MetaDataToCSV' {
+            Start-Script
+            Should -Invoke Add-MetaDataToCSV -Times 1 -Exactly
 
         }
     }
@@ -217,10 +217,10 @@ Describe 'Workbooks script tests' {
             Mock `
                 -CommandName Get-Item `
                 -MockWith { [PSCustomObject]@{ length = "$AZURE_POST_LIMIT_EXCEEDED" } }
-            Mock AddMetaDataToCSV
+            Mock Add-MetaDataToCSV
         }
         It 'Should throw file size exceeded error' {
-            { RunScript } | Should -Throw "File size exceeds limit of 30 Megs:*"
+            { Start-Script } | Should -Throw "File size exceeds limit of 30 Megs:*"
         }
     }
     Context -Name 'When I add multiple columns to CSV file'{
@@ -229,7 +229,7 @@ Describe 'Workbooks script tests' {
             Copy-Item "$testDir\data*" -Destination "$TestDrive"
             $csv = "$TestDrive\data_file.csv"
             $csvWithNewColumns = "$TestDrive\out_data_file.json"
-            AddMetaDataToCSV -FilePathCSV "$csv" -OutFilePathCSV "$csvWithNewColumns"
+            Add-MetaDataToCSV -FilePathCSV "$csv" -OutFilePathCSV "$csvWithNewColumns"
         }
 
         It "should all columns appear in new file"  {

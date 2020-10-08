@@ -1,6 +1,6 @@
 Import-Module $PSScriptRoot\Azure.psm1
 
-function ConvertJmeterCSVResultsToJSON($FilePathCSV, $FilePathJSON)
+function Convert-JmeterCSVResultsToJSON($FilePathCSV, $FilePathJSON)
 {
     try
     {
@@ -14,24 +14,24 @@ function ConvertJmeterCSVResultsToJSON($FilePathCSV, $FilePathJSON)
     }
 }
 
-function LoadProperties($PropertiesFilePath)
+function Read-Properties($PropertiesFilePath)
 {
     $properties = ConvertFrom-StringData (Get-Content -Path $PropertiesFilePath -raw -ErrorAction Stop)
     return $properties
 }
-function SendRawDataToLogAnalytics($PropertiesFilePath, $FilePathJSON)
+function Send-RawDataToLogAnalytics($PropertiesFilePath, $FilePathJSON)
 {
 
-    $properties = LoadProperties -propertiesFilePath $PropertiesFilePath
+    $properties = Read-Properties -propertiesFilePath $PropertiesFilePath
     $body = Get-Content -Path $FilePathJSON
-    $statusCode = PostLogAnalyticsData -customerId $properties."workbooks.workbooksID" `
-                            -sharedKey $properties."workbooks.sharedKey" `
-                            -body ([System.Text.Encoding]::UTF8.GetBytes($body)) `
+    $statusCode = Send-LogAnalyticsData -CustomerId $properties."workbooks.workbooksID" `
+                            -SharedKey $properties."workbooks.sharedKey" `
+                            -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) `
                             -logType $properties."workbooks.logType"
     return $statusCode
 }
 
-function AddColumnToCSV($FilePathCSV, $OutFilePathCSV, $ColumnHeader, $ColumnFieldsValue)
+function Add-ColumnToCSV($FilePathCSV, $OutFilePathCSV, $ColumnHeader, $ColumnFieldsValue)
 {
     Write-Host "$ColumnHeader -> $ColumnFieldsValue"
     Import-Csv $FilePathCSV |
@@ -39,13 +39,13 @@ function AddColumnToCSV($FilePathCSV, $OutFilePathCSV, $ColumnHeader, $ColumnFie
             Export-Csv "$OutFilePathCSV" -NoTypeInformation
 }
 
-function SendDataToLogAnalytics($PropertiesFilePath, $FilePathCSV, $FilePathJSON)
+function Send-DataToLogAnalytics($PropertiesFilePath, $FilePathCSV, $FilePathJSON)
 {
     $status = 999
     try
     {
-        ConvertJmeterCSVResultsToJSON -filePathCSV $FilePathCSV -filePathJSON $FilePathJSON
-        $status = SendRawDataToLogAnalytics -propertiesFilePath $PropertiesFilePath -filePathJSON $FilePathJSON
+        Convert-JmeterCSVResultsToJSON -FilePathCSV $FilePathCSV -FilePathJSON $FilePathJSON
+        $status = Send-RawDataToLogAnalytics -PropertiesFilePath $PropertiesFilePath -FilePathJSON $FilePathJSON
     }
     catch
     {
