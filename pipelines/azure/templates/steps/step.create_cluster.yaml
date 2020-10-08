@@ -6,4 +6,4 @@ steps:
       azureSubscription: $(armServiceConnection)
       scriptType: bash
       scriptPath: $(armModulePath)/create_cluster_and_connection.sh
-      arguments: temp$(Build.BuildID) $(rgroup) $(armModulePath)/k8.json $(clusterNodeSize) $(clusterNodeNumber) perf_$(Build.BuildID)_ cname _devOpsOrg_ _devOpsProject_ _devOpsPatUser_ _devOpsPat_ _k8conn_ _armModulePath_ skip
+      arguments: temp$(Build.BuildID) $(rgroup) $(armModulePath)/k8.json $(clusterNodeSize) $(clusterNodeNumber) perf_$(Build.BuildID)_ cname _devOpsOrg_ _devOpsProject_ _devOpsPatUser_ _devOpsPat_ _k8conn_ $(armModulePath) skip
