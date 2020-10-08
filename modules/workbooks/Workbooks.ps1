@@ -1,25 +1,25 @@
 param(
-      $propertiesPath="$PSScriptRoot\test_data\workbooks.e2e.properties",
-      $filePathCSV="$PSScriptRoot\test_data\data.csv",
-      $outFilePathCSV="$PSScriptRoot\test_data\out_data.csv",
-      $dryRun=$false,
-      $jmeterArgs = 'dummy args',
-      $buildId = 'local',
-      $buildStatus = 'unknown',
-      $pipelineId = 'local'
+      $PropertiesPath="$PSScriptRoot\test_data\workbooks.e2e.properties",
+      $FilePathCSV="$PSScriptRoot\test_data\data.csv",
+      $OutFilePathCSV="$PSScriptRoot\test_data\out_data.csv",
+      $DryRun=$false,
+      $JmeterArg = 'dummy args',
+      $BuildId = 'local',
+      $BuildStatus = 'unknown',
+      $PipelineId = 'local'
 )
 
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
 
-Function sendJMeterDataToLogAnalytics($propertiesPath, $filePathCSV)
+function SendJMeterDataToLogAnalytics($PropertiesPath, $FilePathCSV)
 {
     $status = 999
     $filePathJSON = "$PSScriptRoot/test_data/results.json"
     try
     {
         $status = SendDataToLogAnalytics `
-                        -propertiesFilePath "$propertiesPath" `
-                        -filePathCSV "$filePathCSV" `
+                        -propertiesFilePath "$PropertiesPath" `
+                        -filePathCSV "$FilePathCSV" `
                         -filePathJSON "$filePathJSON"
 
     }catch {
@@ -27,46 +27,46 @@ Function sendJMeterDataToLogAnalytics($propertiesPath, $filePathCSV)
     } finally {
         Write-Host ""
         Write-Host " - Data sent with HTTP status $status"
-        Write-Host " - propertiesPath $propertiesPath"
+        Write-Host " - propertiesPath $PropertiesPath"
         Write-Host " - filePathJSON $filePathJSON"
     }
     return $status
 }
-Function addMetaDataToCSV($filePathCSV, $outFilePathCSV ){
+function AddMetaDataToCSV($FilePathCSV, $OutFilePathCSV ){
     $inputTempFile = New-TemporaryFile
     $outputTempFile = New-TemporaryFile
-    Copy-Item -Path $filePathCSV -Destination $inputTempFile
+    Copy-Item -Path $FilePathCSV -Destination $inputTempFile
     $hash = [ordered]@{
-        jmeterArgs = $jmeterArgs
-        buildId = $buildId
-        buildStatus = $buildStatus
-        pipelineId = $pipelineId
+        jmeterArgs = $JmeterArg
+        buildId = $BuildId
+        buildStatus = $BuildStatus
+        pipelineId = $PipelineId
     }
     foreach ($h in $hash.GetEnumerator()) {
         #Write-Host "$($h.Name): $($h.Value)"
         AddColumnToCSV -filePathCSV $inputTempFile -outFilePathCSV $outputTempFile -columnHeader "$($h.Name)" -columnFieldsValue "$($h.Value)"
         Copy-Item -Path $outputTempFile -Destination $inputTempFile
     }
-    Copy-Item $inputTempFile -Destination $outFilePathCSV
+    Copy-Item $inputTempFile -Destination $OutFilePathCSV
 }
-Function run(){
-    Write-Host "Used properties: propertiesPath $propertiesPath"
-    $props = Get-Content -Path $propertiesPath
+function RunScript(){
+    Write-Host "Used properties: propertiesPath $PropertiesPath"
+    $props = Get-Content -Path $PropertiesPath
     Write-Host "$props"
-    Write-Host "Results to upload: filePathCSV $filePathCSV"
+    Write-Host "Results to upload: filePathCSV $FilePathCSV"
     Set-Variable AZURE_POST_LIMIT -option Constant -value 30
-    addMetaDataToCSV -filePathCSV $filePathCSV -outFilePathCSV $outFilePathCSV
-    $sizeMB = ((Get-Item $outFilePathCSV).length/1MB)
+    AddMetaDataToCSV -filePathCSV $FilePathCSV -outFilePathCSV $OutFilePathCSV
+    $sizeMB = ((Get-Item $OutFilePathCSV).length/1MB)
 
-    If ($sizeMB -gt $AZURE_POST_LIMIT){
+    if ($sizeMB -gt $AZURE_POST_LIMIT){
         Write-Error "File size exceeds limit of 30 Megs: $sizeMB Megs" -ErrorAction Stop
     }
-    If( -Not $dryRun)
+    if( -Not $DryRun)
     {
         Write-Host "Uploading file with size $sizeMB MB"
-        $status = sendJMeterDataToLogAnalytics `
-                            -propertiesPath "$propertiesPath" `
-                            -filePathCSV "$outFilePathCSV"
+        $status = SendJMeterDataToLogAnalytics `
+                            -propertiesPath "$PropertiesPath" `
+                            -filePathCSV "$OutFilePathCSV"
     }else{
         $status=200
         Write-Host "Data Upload Mocked"
@@ -75,4 +75,4 @@ Function run(){
         Write-Error "Data has not been uploaded $status" -ErrorAction Stop
     }
 }
-run
+RunScript
