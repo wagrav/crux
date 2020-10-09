@@ -49,6 +49,7 @@ jobs:
 
       - task: PublishTestResults@2
         displayName: Publish ARM TTK tests
+        condition: always()
         inputs:
           testResultsFormat: 'NUnit'
           testResultsFiles: '$(System.DefaultWorkingDirectory)\arm_ttk_test_results\*-armttk.xml'

@@ -4,7 +4,6 @@
   "parameters": {
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Cluster should be deployed as close to appliation as possible to increase resource usage efficiency"
       }
@@ -54,6 +53,15 @@
       },
       "properties": {
         "dnsPrefix" : "performance",
+        "networkProfile": {
+          "loadBalancerSku": "standard",
+          "loadBalancerProfile": {
+            "managedOutboundIPs": {
+              "count": 5
+            },
+            "allocatedOutboundPorts": 30000
+          }
+        },
         "agentPoolProfiles": [
           {
             "name": "agentpool",

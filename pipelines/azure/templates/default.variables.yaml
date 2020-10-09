@@ -40,6 +40,8 @@ variables:
     log: $(mock_dir)/jmeter.log
     errors: $(mock_dir)/errors.xml
     thresholds_file: $(mock_dir)/thresholds.properties
+    workbooks_file: $(mock_dir)/workbooks.properties
+    crux_file: $(mock_dir)/crux.properties
     reposRoot: ""
 
 

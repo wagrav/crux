@@ -46,3 +46,4 @@ RUN wget -q -O /jmeter/apache-jmeter-$JMETER_VERSION/lib/ext/jmeter.backendliste
 ENV JMETER_HOME /jmeter/apache-jmeter-$JMETER_VERSION/
 
 ENV PATH $JMETER_HOME/bin:$PATH
+ENV JVM_ARGS -Xms1G -Xmx4G

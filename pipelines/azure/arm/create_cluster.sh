@@ -8,7 +8,7 @@ create_cluster() {
   local cluster_name_prefix=$6
   local output_variable=$7
 
-  output=$(az deployment group create --name "$deployment_name" --resource-group "$resource_group" --template-file "$template_file" --parameters nodeSize="$node_size" nodeCount="$node_count" clusterNamePrefix="$cluster_name_prefix")
+  output=$(az deployment group create --name "$deployment_name" --resource-group "$resource_group" --template-file "$template_file" --parameters location="westeurope" nodeSize="$node_size" nodeCount="$node_count" clusterNamePrefix="$cluster_name_prefix")
   cluster_name=$(echo $output |jq -r '.properties.outputs.name.value')
   echo "Cluster name created: $cluster_name"
   echo "##vso[task.setvariable variable=$output_variable]${cluster_name}" #set in pipeline
