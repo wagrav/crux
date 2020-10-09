@@ -12,6 +12,7 @@ create_cluster_and_refresh_creds() {
   local node_count=$5
   local cluster_name_prefix=$6
   local output_variable=$7
+  local path=${8}
 
 
   source "$path"/create_cluster.sh
