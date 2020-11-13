@@ -31,8 +31,8 @@ parameters:
 jobs:
   - job: JMeter_Tests
     ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
-     pool:
-       vmImage: 'ubuntu-latest'
+       pool:
+         vmImage: 'ubuntu-latest'
     condition: not(eq(variables['jmeter_tests'], false))
     variables:
       - template: default.variables.yaml
