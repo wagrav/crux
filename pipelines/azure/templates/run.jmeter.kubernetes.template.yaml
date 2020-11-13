@@ -33,7 +33,7 @@ jobs:
     steps:
       - bash: |
           echo "Run mode selected:"  ${{ parameters.mode }}
-          echo "Pool:"  ${{ parameters.linux_pool2 }}
+          echo "Pool:"  ${{ parameters.linux_pool }}
       #build actual pipeline flow
   - job: JMeter_Tests
     displayName: JMeter pipeline - test
