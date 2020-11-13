@@ -28,9 +28,9 @@ jobs:
     - template: run.jmeter.kubernetes.template.yaml
       parameters:
         mode: ${{ parameters.mode }}
+        linux_pool: ${{ parameters.linux_pool }}
   - ${{ if eq(parameters.mode,'tests') }}:
     - template: run.jmeter.kubernetes.template.tests.yaml
     - template: run.jmeter.kubernetes.template.yaml
       parameters:
         mode: ${{ parameters.mode }}
-        linux_pool2: ${{ parameters.linux_pool }}

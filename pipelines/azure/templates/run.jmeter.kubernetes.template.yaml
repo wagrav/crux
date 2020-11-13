@@ -4,7 +4,7 @@ parameters:
     type: string
     default: jmeter
 
-  - name: linux_pool2
+  - name: linux_pool
     type: string
     default: microsoft_hosted
 
@@ -39,10 +39,10 @@ jobs:
     displayName: JMeter pipeline - test
 
     #choose pool
-    ${{ if eq(parameters.linux_pool2, 'microsoft_hosted') }}:
+    ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
        pool:
-         vmImage: 'ubuntu-latests'
-    ${{ if ne(parameters.linux_pool2, 'microsoft_hosted') }}:
+         vmImage: 'ubuntu-latest'
+    ${{ if ne(parameters.linux_pool, 'microsoft_hosted') }}:
         pool: ${{ parameters.linux_pool }}
 
     #init default variables
