@@ -26,7 +26,7 @@ parameters:
               ]
 jobs:
   - job: JMeter_Tests
-    timeoutInMinutes: variables['pipelines.job.timeoutInMinutes']
+    timeoutInMinutes: $(pipelines.job.timeoutInMinutes)
     condition: not(eq(variables['jmeter_tests'], false))
     variables:
       - template: default.variables.yaml
