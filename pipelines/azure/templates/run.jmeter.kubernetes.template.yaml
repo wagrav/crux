@@ -33,6 +33,9 @@ jobs:
     ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
        pool:
          vmImage: 'ubuntu-latest'
+    ${{ if ne(parameters.linux_pool, 'microsoft_hosted') }}:
+        pool: ${{ parameters.linux_pool }}
+
     condition: not(eq(variables['jmeter_tests'], false))
     variables:
       - template: default.variables.yaml
