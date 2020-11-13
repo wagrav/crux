@@ -29,12 +29,6 @@ parameters:
                'step.delete_cluster.yaml'
               ]
 jobs:
-  - job: debsug
-    steps:
-      - bash: |
-          echo "Run mode selected:"  ${{ parameters.mode }}
-          echo "Pool:"  ${{ parameters.linux_pool }}
-      #build actual pipeline flow
   - job: JMeter_Tests
     displayName: JMeter pipeline - test
 
@@ -51,6 +45,7 @@ jobs:
       - template: default.variables.yaml
         parameters:
           mode: ${{ parameters.mode }}
+
     #build pipeline flow
     steps:
     - ${{ if eq(parameters.mode, 'tests') }}:
