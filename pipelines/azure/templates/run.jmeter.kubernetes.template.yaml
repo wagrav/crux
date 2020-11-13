@@ -29,7 +29,7 @@ parameters:
                'step.delete_cluster.yaml'
               ]
 jobs:
-  - job: debug
+  - job: debsug
     steps:
       - bash: |
           echo "Run mode selected:"  ${{ parameters.mode }}
