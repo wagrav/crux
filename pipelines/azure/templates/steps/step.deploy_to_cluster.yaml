@@ -1,7 +1,6 @@
 steps:
   - task: ShellScript@2
     displayName: Deploy services to cluster
-    cancelTimeoutInMinutes: 0
     condition: and(succeeded(), not(eq(variables.deploy_to_cluster, false)))
     inputs:
       scriptPath: $(armModulePath)/wait_for_pods.sh
