@@ -30,6 +30,7 @@ parameters:
               ]
 jobs:
   - job: JMeter_Tests
+    timeoutInMinutes: 3
     cancelTimeoutInMinutes: 0
     displayName: JMeter pipeline - test
 
