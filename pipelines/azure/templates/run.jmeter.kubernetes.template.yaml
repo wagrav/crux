@@ -30,26 +30,30 @@ parameters:
               ]
 jobs:
   - job: JMeter_Tests
-      steps:
-        - bash: |
-            echo "Run mode selected:"  ${{ parameters.mode }}
-            echo "Debug:"  ${{ parameters.debug }}
-            echo "Pool:"  ${{ parameters.linux_pool }}
-          displayName: Display selected mode
+    displayName: JMeter pipeline - test
+
+    #choose pool
     ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
        pool:
          vmImage: 'ubuntu-latests'
     ${{ if ne(parameters.linux_pool, 'microsoft_hosted') }}:
         pool: ${{ parameters.linux_pool }}
 
+    #init default variables
     condition: not(eq(variables['jmeter_tests'], false))
     variables:
       - template: default.variables.yaml
         parameters:
           mode: ${{ parameters.mode }}
 
-    displayName: JMeter pipeline - test
     steps:
+      - bash: |
+          echo "Run mode selected:"  ${{ parameters.mode }}
+          echo "Debug:"  ${{ parameters.debug }}
+          echo "Pool:"  ${{ parameters.linux_pool }}
+        displayName: Display selected mode
+
+    #build actual pipeline flow
     - ${{ if eq(parameters.mode, 'tests') }}:
       - template: insert_step.yaml
         parameters:
