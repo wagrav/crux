@@ -21,6 +21,7 @@ jobs:
       - bash: |
             echo "Run mode selected:"  ${{ parameters.mode }}
             echo "Debug:"  ${{ parameters.debug }}
+            echo "Pool:"  ${{ parameters.linux_pool }}
         displayName: Display selected mode
 
   - ${{ if not(eq(parameters.mode,'tests')) }}: #jmeter variants
