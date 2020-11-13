@@ -30,6 +30,12 @@ parameters:
               ]
 jobs:
   - job: JMeter_Tests
+      steps:
+        - bash: |
+            echo "Run mode selected:"  ${{ parameters.mode }}
+            echo "Debug:"  ${{ parameters.debug }}
+            echo "Pool:"  ${{ parameters.linux_pool }}
+          displayName: Display selected mode
     ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
        pool:
          vmImage: 'ubuntu-latests'
