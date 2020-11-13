@@ -26,7 +26,6 @@ parameters:
               ]
 jobs:
   - job: JMeter_Tests
-    timeoutInMinutes: $(pipelines.job.timeoutInMinutes)
     condition: not(eq(variables['jmeter_tests'], false))
     variables:
       - template: default.variables.yaml
@@ -34,8 +33,8 @@ jobs:
           mode: ${{ parameters.mode }}
 
     displayName: JMeter pipeline - test
-    pool:
-      vmImage: 'ubuntu-latest'
+    pool: ${pipeline.pool.name.linux}
+      #vmImage: 'ubuntu-latest'
     steps:
     - ${{ if eq(parameters.mode, 'tests') }}:
       - template: insert_step.yaml
