@@ -29,11 +29,10 @@ parameters:
                'step.delete_cluster.yaml'
               ]
 jobs:
-  - job: deug
+  - job: debug
     steps:
       - bash: |
           echo "Run mode selected:"  ${{ parameters.mode }}
-          echo "Debug:"  ${{ parameters.debug }}
           echo "Pool:"  ${{ parameters.linux_pool }}
           displayName: Display selected mode
       #build actual pipeline flow
