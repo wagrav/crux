@@ -30,6 +30,9 @@ parameters:
               ]
 jobs:
   - job: JMeter_Tests
+    ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
+     pool:
+       vmImage: 'ubuntu-latest'
     condition: not(eq(variables['jmeter_tests'], false))
     variables:
       - template: default.variables.yaml
@@ -37,9 +40,6 @@ jobs:
           mode: ${{ parameters.mode }}
 
     displayName: JMeter pipeline - test
-    - ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
-      pool:
-        vmImage: 'ubuntu-latest'
     steps:
     - ${{ if eq(parameters.mode, 'tests') }}:
       - template: insert_step.yaml
