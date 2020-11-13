@@ -47,19 +47,11 @@ jobs:
           mode: ${{ parameters.mode }}
 
     steps:
-      - bash: |
-          echo "Run mode selected:"  ${{ parameters.mode }}
-          echo "Debug:"  ${{ parameters.debug }}
-          echo "Pool:"  ${{ parameters.linux_pool }}
-        displayName: Display selected mode
-
-    #build actual pipeline flow
     - ${{ if eq(parameters.mode, 'tests') }}:
       - template: insert_step.yaml
         parameters:
           source_folder: mocks
           step_list: ${{ parameters.crux_steps }}
-
     - ${{ if not(eq(parameters.mode, 'tests')) }}:
         - template: insert_step.yaml
           parameters:
