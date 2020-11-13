@@ -4,6 +4,10 @@ parameters:
     type: string
     default: jmeter
 
+  - name: linux_pool
+    type: string
+    default: microsoft_hosted
+
   - name: crux_steps
     type: object
     default:  [
@@ -33,8 +37,9 @@ jobs:
           mode: ${{ parameters.mode }}
 
     displayName: JMeter pipeline - test
-    pool: ${pipeline.pool.name.linux}
-      #vmImage: 'ubuntu-latest'
+    - ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
+      pool:
+        vmImage: 'ubuntu-latest'
     steps:
     - ${{ if eq(parameters.mode, 'tests') }}:
       - template: insert_step.yaml

@@ -9,6 +9,10 @@ parameters:
     type: boolean
     default: false
 
+  - name: linux_pool
+    type: string
+    default: microsoft_hosted
+
 jobs:
   - job: Debug
     condition: and(succeeded(), eq('${{ parameters.debug }}', true))
@@ -28,3 +32,4 @@ jobs:
     - template: run.jmeter.kubernetes.template.yaml
       parameters:
         mode: ${{ parameters.mode }}
+        linux_pool: ${{ parameters.linux_pool }}
