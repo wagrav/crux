@@ -32,7 +32,7 @@ jobs:
   - job: JMeter_Tests
     ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
        pool:
-         vmImage: 'ubuntu-latest'
+         vmImage: 'ubuntu-latests'
     ${{ if ne(parameters.linux_pool, 'microsoft_hosted') }}:
         pool: ${{ parameters.linux_pool }}
 
