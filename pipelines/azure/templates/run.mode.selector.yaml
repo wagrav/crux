@@ -33,4 +33,4 @@ jobs:
     - template: run.jmeter.kubernetes.template.yaml
       parameters:
         mode: ${{ parameters.mode }}
-        linux_pool: ${{ parameters.linux_pool }}
+        linux_pool2: ${{ parameters.linux_pool }}

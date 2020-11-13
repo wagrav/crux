@@ -4,7 +4,7 @@ parameters:
     type: string
     default: jmeter
 
-  - name: linux_pool
+  - name: linux_pool2
     type: string
     default: microsoft_hosted
 
@@ -33,8 +33,7 @@ jobs:
     steps:
       - bash: |
           echo "Run mode selected:"  ${{ parameters.mode }}
-          echo "Pool:"  ${{ parameters.linux_pool }}
-          displayName: Display selected mode
+          echo "Pool:"  ${{ parameters.linux_pool2 }}
       #build actual pipeline flow
   - job: JMeter_Tests
     displayName: JMeter pipeline - test
