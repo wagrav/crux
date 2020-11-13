@@ -5,7 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: jmeter-shared-disk-sc
+  storageClassName: default
   resources:
     requests:
       storage: 1Gi
