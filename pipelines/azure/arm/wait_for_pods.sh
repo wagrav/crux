@@ -47,10 +47,10 @@ wait_for_cluster_ready(){
   else
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume_sc.yaml
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume.yaml
-    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_deploy_v16_bkp.yaml
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_svc.yaml
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_configmap.yaml
-    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_deploy_v16.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_deploy_v16_bkp.yaml
   fi
   #Wait till ready
   #wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval "$service_master"
