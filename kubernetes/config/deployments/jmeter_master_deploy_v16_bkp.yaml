@@ -24,8 +24,6 @@ spec:
           - name: loadtest
             mountPath: /load_test
             subPath: "load_test"
-          - name: jmeter-shared-disk
-            mountPath: "/shared"
 
         ports:
         - containerPort: 60000
@@ -34,6 +32,3 @@ spec:
       - name: loadtest 
         configMap:
          name: jmeter-load-test
-      - name: jmeter-shared-disk
-        persistentVolumeClaim:
-          claimName: jmeter-shared-disk
