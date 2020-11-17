@@ -1,0 +1,42 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: nginx-slave
+  labels:
+    jmeter_mode: slave
+spec:
+  replicas: 1
+  selector: #this deployment manages pods with label jmeter_mode=slave
+    matchLabels:
+      jmeter_mode: slave
+  template: #these labels get applied to containers created jmeter_mode=slave
+    metadata:
+      labels:
+        jmeter_mode: slave
+    spec: #where to schedule containers
+      affinity: #schedule where master does NOT run
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: usage
+                    operator: In
+                    values:
+                      - jmeter
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: jmeter_mode
+                      operator: In
+                      values:
+                        - master
+                        - slave
+                topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: nginx
+        image: nginx
+        imagePullPolicy: IfNotPresent
