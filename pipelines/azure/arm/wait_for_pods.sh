@@ -27,6 +27,19 @@ wait_for_pods() {
   done
 
 }
+#display warning message if deployment is not correct e.g. more pods on nodes than allowed
+displayDeploymentCorrectnessStatus(){
+  local cluster_namespace=$1
+  echo "Deployment scheduled on: "
+  kubectl -n "$cluster_namespace" get pods -o wide | awk {'print $1,$3,$7'}
+  local rowsNumber=$(kubectl get -n default pods -o wide | awk {'print $7'} | wc -l)
+  local uniqueRowsNumber=$(kubectl get -n default pods -o wide | awk {'print $7'} | sort | uniq | wc -l)
+  #more pods scheduled than nodes in cluster
+  if [ "$rowsNumber" -gt "$uniqueRowsNumber" ]; then
+    echo "##[warning] $rowsNumber of pods are scheduled on $uniqueRowsNumber nodes. You should not do that!"
+    echo "##vso[task.complete result=SucceededWithIssues;]DONE"
+  fi;
+}
 
 #a bit too many steps but can support both ARM and k8 only
 wait_for_cluster_ready(){
@@ -65,7 +78,7 @@ wait_for_cluster_ready(){
 
   wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval $service_master
   wait_for_pods "$cluster_namespace" $scale_up_replicas $sleep_interval $service_slave
-
+  displayDeploymentCorrectnessStatus $cluster_namespace
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
