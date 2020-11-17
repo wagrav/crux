@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: nginx-master
   labels: #these lables get assigned to pods for this deployment
-    jmeter_mode: master
+    crux.jmeter_mode: master
 spec:
   replicas: 1
   selector: #these pods are managed by this deployment
     matchLabels:
-      jmeter_mode: master
+      crux.jmeter_mode: master
   template:
     metadata:
       labels:
-        jmeter_mode: master
+        crux.jmeter_mode: master
     spec:
       affinity: #schedule where master does NOT run ideally on a dedicated nodepool with label
         nodeAffinity: #try to schedule on nodes with sepcific label e.g. you have lablled a nodepool before
@@ -20,7 +20,7 @@ spec:
             - weight: 1
               preference:
                 matchExpressions:
-                  - key: usage
+                  - key: crux.usage
                     operator: In
                     values:
                       - jmeter
@@ -30,7 +30,7 @@ spec:
             podAffinityTerm:
               labelSelector:
                 matchExpressions:
-                  - key: jmeter_mode
+                  - key: crux.jmeter_mode
                     operator: In
                     values:
                       - master
