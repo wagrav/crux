@@ -36,7 +36,7 @@ displayDeploymentCorrectnessStatus(){
   local uniqueRowsNumber=$(kubectl get -n default pods -o wide | awk {'print $7'} | sort | uniq | wc -l)
   #more pods scheduled than nodes in cluster
   if [ "$rowsNumber" -gt "$uniqueRowsNumber" ]; then
-    echo "##[warning] $rowsNumber of pods are scheduled on $uniqueRowsNumber nodes. You should not do that!"
+    echo "##[warning] There are more jmeter pods scheduled than nodes. You should not do that! Read why https://github.com/ObjectivityLtd/crux/wiki/FAQ:
     echo "##vso[task.complete result=SucceededWithIssues;]DONE"
   fi;
 }
