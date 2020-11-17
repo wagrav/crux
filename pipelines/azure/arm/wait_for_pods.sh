@@ -32,7 +32,7 @@ displayDeploymentCorrectnessStatus(){
   local cluster_namespace=$1
   echo ""
   echo "Deployment scheduled on: "
-  kubectl -n "$cluster_namespace" get pods -o wide | awk {'print $1,$3,$7'}
+  kubectl -n "$cluster_namespace" get pods -o wide
   kubectl -n "$cluster_namespace" get svc
   local rowsNumber=$(kubectl get -n default pods -o wide | awk {'print $7'} | wc -l)
   local uniqueRowsNumber=$(kubectl get -n default pods -o wide | awk {'print $7'} | sort | uniq | wc -l)
