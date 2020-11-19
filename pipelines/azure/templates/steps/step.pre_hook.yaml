@@ -7,7 +7,7 @@ steps:
     displayName: User Pre Hook
 
   - task: AzureCLI@2
-    condition: and(succeeded(), not(eq(variables.create_cluster, false)))
+    condition: and(succeeded(), not(eq(variables.pre_hook, false)))
     displayName: User Azure CLI Pre Hook
     inputs:
       azureSubscription: $(armServiceConnection)
