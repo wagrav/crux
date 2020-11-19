@@ -1,6 +1,14 @@
 steps:
   - bash: |
-        echo "PRE HOOK should be a script"
-        echo "Parsing user pre hook from "$(System.DefaultWorkingDirectory)/$(reposRoot)/$(prehook_file)"
+      echo "PRE HOOK should be a script"
+      echo "This script will be run without any special rights"
+      echo "Parsing user pre hook from "$(System.DefaultWorkingDirectory)/$(reposRoot)/$(prehook_file)"
     condition: and(succeeded(), not(eq(variables.pre_hook, false)))
     displayName: User Pre Hook
+
+  - bash: |
+      echo "AZURE CLI PRE HOOK should be a script"
+      echo "This script will be run with the rights given by Azure Service Connection - arm_service_connection"
+      echo "Parsing user pre hook from "$(System.DefaultWorkingDirectory)/$(reposRoot)/$(prehook_file)"
+    condition: and(succeeded(), not(eq(variables.pre_hook, false)))
+    displayName: User Azure CLI Pre Hook
