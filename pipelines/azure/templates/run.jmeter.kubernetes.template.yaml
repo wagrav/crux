@@ -51,6 +51,7 @@ jobs:
 
     #build pipeline flow
     steps:
+      - template: .crux/pre.yaml@tests
     - ${{ if eq(parameters.mode, 'tests') }}:
       - template: insert_step.yaml
         parameters:
