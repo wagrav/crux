@@ -12,4 +12,5 @@ steps:
     inputs:
       azureSubscription: $(armServiceConnection)
       scriptPath: $(System.DefaultWorkingDirectory)/$(reposRoot)/$(prehook_cli_file)
+      scriptType: pwsh
       arguments: ""
