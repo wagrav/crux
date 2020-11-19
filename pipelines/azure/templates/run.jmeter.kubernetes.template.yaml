@@ -31,7 +31,7 @@ parameters:
               ]
 jobs:
   - job: JMeter_Tests
-    timeoutInMinutes: 8 secure
+    timeoutInMinutes: 8
     cancelTimeoutInMinutes: 0
     displayName: JMeter pipeline - test
 
