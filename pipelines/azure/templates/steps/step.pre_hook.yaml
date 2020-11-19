@@ -1,5 +1,7 @@
 steps:
   - bash: |
-      echo "hook"
+        echo "PRE HOOK should be steps template"
+        echo "Parsing user pre hook from "$(System.DefaultWorkingDirectory)/$(reposRoot)/$(prehook_file)"
     condition: and(succeeded(), not(eq(variables.pre_hook, false)))
-    displayName: User Hook
+    displayName: User Pre Hook
+  - template: $(System.DefaultWorkingDirectory)/$(reposRoot)/$(prehook_file)
