@@ -1,0 +1,5 @@
+steps:
+  - bash: |
+      echo "hook"
+    condition: and(succeeded(), not(eq(variables.pre_hook, false)))
+    displayName: User Hook

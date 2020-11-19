@@ -15,6 +15,7 @@ parameters:
                'step.tests_clone.yaml',
                'step.prepare_tests.yaml',
                'step.create_cluster.yaml',
+               'step.pre_hook.yaml',
                'step.configure_cluster.yaml',
                'step.deploy_to_cluster.yaml',
                'step.jmeter_tests.yaml',
@@ -30,7 +31,7 @@ parameters:
               ]
 jobs:
   - job: JMeter_Tests
-    timeoutInMinutes: 8
+    timeoutInMinutes: 8 secure
     cancelTimeoutInMinutes: 0
     displayName: JMeter pipeline - test
 
