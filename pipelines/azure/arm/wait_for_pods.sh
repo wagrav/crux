@@ -56,15 +56,18 @@ wait_for_cluster_ready(){
   local scale_down_replicas=0
   local sleep_interval=5
 
+  local master_file="jmeter_master_deploy_v16_bkp.yaml"
+  local slave_file="jmeter_slaves_deploy_v16_bkp.yaml"
+
   #re-deploy per defaults
   if kubectl get deployments -n "$cluster_namespace" | grep jmeter-master ; then
     echo "Deployments are already present. Skipping new deploy. Use attach.to.existing.kubernetes.yaml if you want to redeploy"
   else
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume_sc.yaml
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume.yaml
-    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_deploy_v16_bkp.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath/$slave_file"
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_svc.yaml
-    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_configmap.yaml
+    kubectl create  -n "$cluster_namespace" -f "$rootPath/$master_file"
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_master_deploy_v16_bkp.yaml
   fi
   #Wait till ready
@@ -72,11 +75,11 @@ wait_for_cluster_ready(){
   echo "Rescaling down and up to assure clean test env "
   echo "Scale to 0 "
   #Assure clean test env by scaling fresh
-  kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath"/jmeter_master_deploy_v16.yaml
-  kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
+  kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath/$master_file"
+  kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath/$slave_file"
   echo "Scale up master to $scale_up_replicas_master and slaves to $scale_up_replicas"
-  kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas_master" -f "$rootPath"/jmeter_master_deploy_v16.yaml
-  kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas" -f "$rootPath"/jmeter_slaves_deploy_v16.yaml
+  kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas_master" -f "$rootPath/$master_file"
+  kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas" -f "$rootPath/$slave_file"
 
   wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval $service_master
   wait_for_pods "$cluster_namespace" $scale_up_replicas $sleep_interval $service_slave
