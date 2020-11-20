@@ -11,6 +11,7 @@ variables:
   service-master: jmeter-master
   armModulePath: $(System.DefaultWorkingDirectory)/pipelines/azure/arm
   k8conn: k8_$(Build.BuildID)
+  crux.templates: pipelines/azure/templates
   ${{ if not(eq(parameters.mode,'tests')) }}:
     report_dir: kubernetes/tmp/report
     server_logs_dir: kubernetes/tmp/server_logs
