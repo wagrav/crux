@@ -14,7 +14,6 @@ parameters:
                'step.crux_clone.yaml',
                'step.tests_clone.yaml',
                'step.prepare_tests.yaml',
-               'step.pre_hook.yaml',
                'step.create_cluster.yaml',
                'step.configure_cluster.yaml',
                'step.deploy_to_cluster.yaml',
