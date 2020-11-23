@@ -1,7 +1,7 @@
 steps:
   - task: ShellScript@2
-    displayName: Create namespace
-    condition: and(succeeded(), not(eq(variables.delete_namespace, false)))
+    displayName: Delete namespace
+    condition: and(always(), not(eq(variables.delete_namespace, false)))
     inputs:
       scriptPath: $(armModulePath)/delete_namespace.sh
       args: $(cluster_namespace)
