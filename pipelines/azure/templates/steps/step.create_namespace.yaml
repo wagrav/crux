@@ -1,0 +1,7 @@
+steps:
+  - task: ShellScript@2
+    displayName: Create namespace
+    condition: and(succeeded(), not(eq(variables.create_namespace, false)))
+    inputs:
+      scriptPath: $(armModulePath)/create_namespace.sh
+      args: $(cluster_namespace)

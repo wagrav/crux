@@ -26,6 +26,10 @@ variables:
       create_cluster: false
     ${{ if ne(True,variables['configure_cluster']) }}:
       configure_cluster: false
+    ${{ if ne(True,variables['create_namespace']) }}:
+      create_namespace: false
+    ${{ if ne(True,variables['delete_namespace']) }}:
+      delete_namespace: false
     ${{ if ne(True,variables['deploy_to_cluster']) }}:
       deploy_to_cluster: false
     ${{ if ne(True,variables['delete_cluster']) }}:
@@ -54,3 +58,7 @@ variables:
   ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
     ${{ if ne(True,variables['configure_cluster']) }}:
       configure_cluster: false
+    ${{ if ne(True,variables['create_namespace']) }}:
+      create_namespalce: false
+    ${{ if ne(True,variables['delete_namespace']) }}:
+      delete_namespace: false
