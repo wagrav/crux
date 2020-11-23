@@ -1,6 +1,6 @@
 #!/bin/bash
 deleteNamespace(){
-  local namespace=$1
+  local cluster_namespace=$1
   if [ "$namespace" != "default" ];then
     echo "Deleting namespace $cluster_namespace"
     kubectl delete namespace "$namespace"

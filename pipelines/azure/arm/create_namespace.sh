@@ -1,6 +1,6 @@
 #!/bin/bash
 create_namespace(){
-  local namespace=$1
+  local cluster_namespace=$1
     #create namespace
   if kubectl get namespaces | grep "$cluster_namespace" ; then
     echo "Namespace $cluster_namespace already present"
