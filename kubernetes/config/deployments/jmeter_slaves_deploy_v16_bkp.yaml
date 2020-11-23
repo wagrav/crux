@@ -16,26 +16,26 @@ spec:
     spec:
       affinity: #schedule where master does NOT run
         nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              preference:
-                matchExpressions:
-                  - key: crux.usage
-                    operator: In
-                    values:
-                      - jmeter
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+                - key: crux.usage
+                  operator: In
+                  values:
+                    - jmeter
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: crux.jmeter_mode
-                      operator: In
-                      values:
-                        - master
-                        - slave
-                topologyKey: "kubernetes.io/hostname"
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: crux.jmeter_mode
+                    operator: In
+                    values:
+                      - master
+                      - slave
+              topologyKey: "kubernetes.io/hostname"
       volumes:
         - name: dshm
           emptyDir:

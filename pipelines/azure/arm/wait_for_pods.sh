@@ -56,8 +56,8 @@ wait_for_cluster_ready(){
   local scale_down_replicas=0
   local sleep_interval=5
 
-  local master_file="jmeter_master_deploy_v16_bkp.yaml"
-  local slave_file="jmeter_slaves_deploy_v16_bkp.yaml"
+  local master_file="jmeter_master_deploy_v16_bkp_req.yaml"
+  local slave_file="jmeter_slaves_deploy_v16_bkp_req.yaml"
 
   #re-deploy per defaults
   if kubectl get deployments -n "$cluster_namespace" | grep jmeter-master ; then
