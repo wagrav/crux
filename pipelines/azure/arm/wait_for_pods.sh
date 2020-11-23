@@ -19,7 +19,7 @@ wait_for_pod() {
   done
 
   if [[ elapsed -ge timeout ]]; then
-        echo "##[error] Deployment timed out. Scheduling conditions not satisfied?"
+        echo "##[error] Deployment timed out after $elapsed s. Scheduling conditions not satisfied?"
         echo "##vso[task.complete result=Failed;]DONE"
   fi
 }
