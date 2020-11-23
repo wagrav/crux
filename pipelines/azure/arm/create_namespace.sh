@@ -6,7 +6,7 @@ create_namespace(){
     echo "Namespace $cluster_namespace already present"
   else
     echo "Creating namespace $cluster_namespace"
-    kubectl create namespace "$namespace"
+    kubectl create namespace "$cluster_namespace"
   fi
 }
 
