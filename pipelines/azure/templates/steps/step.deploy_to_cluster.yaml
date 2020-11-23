@@ -1,10 +1,10 @@
 parameters:
-  timeout: 2
+  timeoutInMinutes: 2
 steps:
   - task: ShellScript@2
     displayName: Deploy services to cluster
     condition: and(succeeded(), not(eq(variables.deploy_to_cluster, false)))
-    timeoutInMinutes: {{ parameters.timeout }}
+    timeoutInMinutes: {{ parameters.timeoutInMinutes }}
     inputs:
       scriptPath: $(armModulePath)/wait_for_pods.sh
       args: $(System.DefaultWorkingDirectory) $(cluster_namespace) $(service-master) $(service) $(scale_up_replicas)
