@@ -1,10 +1,6 @@
 #!/bin/bash
 #help functions
 
-createNamespace(){
-  local namespace=$1
-  kubectl create namespace "$namespace"
-}
 wait_for_pod() {
   service_replicas="0/1"
   service_namespace=$1
@@ -63,13 +59,6 @@ wait_for_cluster_ready(){
   local master_file="jmeter_master_deploy_v16_bkp.yaml"
   local slave_file="jmeter_slaves_deploy_v16_bkp.yaml"
 
-  #create namespace
-  if kubectl get namespaces | grep "$cluster_namespace" ; then
-    echo "Namespace $cluster_namespace already present"
-  else
-    echo "Creating namespace $cluster_namespace"
-    createNamespace $cluster_namespace
-  fi
   #re-deploy per defaults
   if kubectl get deployments -n "$cluster_namespace" | grep jmeter-master ; then
     echo "Deployments are already present. Skipping new deploy. Use attach.to.existing.kubernetes.yaml if you want to redeploy"
