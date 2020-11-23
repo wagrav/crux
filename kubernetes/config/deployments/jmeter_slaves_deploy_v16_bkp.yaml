@@ -16,7 +16,7 @@ spec:
     spec:
       affinity: #schedule where master does NOT run
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
+          requiredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
               preference:
                 matchExpressions:
