@@ -59,7 +59,7 @@
             "managedOutboundIPs": {
               "count": 2
             },
-            "allocatedOutboundPorts": 30000
+            "allocatedOutboundPorts": 10000
           }
         },
         "agentPoolProfiles": [

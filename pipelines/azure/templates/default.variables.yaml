@@ -55,10 +55,10 @@ variables:
     ${{ if ne(True,variables['delete_cluster']) }}:
       delete_cluster: false
 
-  ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
+#  ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
     ${{ if ne(True,variables['configure_cluster']) }}:
       configure_cluster: false
     ${{ if ne(True,variables['create_namespace']) }}:
-      create_namespalce: false
+      create_namespace: false
     ${{ if ne(True,variables['delete_namespace']) }}:
       delete_namespace: false
