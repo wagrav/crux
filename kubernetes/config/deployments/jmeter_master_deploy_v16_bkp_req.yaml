@@ -16,13 +16,6 @@ spec:
     spec:
       affinity: #schedule where master does NOT run
         nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: crux.usage
-                    operator: In
-                    values:
-                      - jmeter
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
             preference:
