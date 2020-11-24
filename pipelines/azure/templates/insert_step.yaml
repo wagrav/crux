@@ -1,6 +1,0 @@
-parameters:
-  step_list: []
-  source_folder: steps # steps/mock
-steps:
-  - ${{ each template in parameters.step_list }}:
-    - template: ${{ parameters.source_folder }}/${{ template }}
