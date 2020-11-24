@@ -1,4 +1,5 @@
 steps:
   - checkout: tests
     displayName: TESTS clone
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: and(succeeded(), not(eq(variables.tests_clone, false)))

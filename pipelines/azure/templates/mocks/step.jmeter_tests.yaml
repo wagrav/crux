@@ -16,3 +16,4 @@ steps:
 
     condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
     displayName: JMeter tests (mocked)
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}

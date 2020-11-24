@@ -3,3 +3,4 @@ steps:
       echo "hook mock"
     condition: and(succeeded(), not(eq(variables.pre_hook, false)))
     displayName: User Hook
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}

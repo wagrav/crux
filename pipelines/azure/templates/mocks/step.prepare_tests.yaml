@@ -18,4 +18,5 @@ steps:
 
 
     displayName: PREPARE tests (mocked)
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: and(succeeded(), not(eq(variables.prepare_tests, false)))

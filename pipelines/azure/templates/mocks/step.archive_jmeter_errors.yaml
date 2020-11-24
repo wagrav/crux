@@ -2,6 +2,7 @@ steps:
   - task: PublishPipelineArtifact@1
     condition: not(eq(variables.archive_errors, false))
     displayName: Archive Errors
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     inputs:
       path: $(errors)
       artifact: errors.xml

@@ -1,4 +1,5 @@
 steps:
   - checkout: crux
     displayName: CRUX clone
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: and(succeeded(), not(eq(variables.crux_clone, false)))

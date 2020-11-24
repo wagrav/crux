@@ -2,6 +2,7 @@ steps:
   - task: AzureCLI@2
     condition: and(succeeded(), not(eq(variables.create_cluster, false)))
     displayName: Create cluster
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     inputs:
       azureSubscription: $(armServiceConnection)
       scriptType: bash
