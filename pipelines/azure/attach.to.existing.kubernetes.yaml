@@ -49,9 +49,9 @@ jobs:
     - bash: |
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_shared_volume_sc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_shared_volume.yaml
-        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16_bkp.yaml
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
-        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16_bkp.yaml
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
       condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'delete')))
       displayName: Deploy services to cluster

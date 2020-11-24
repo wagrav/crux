@@ -3,17 +3,39 @@ kind: Deployment
 metadata:
   name: jmeter-master
   labels:
-    jmeter_mode: master
+    crux.jmeter_mode: master
 spec:
   replicas: 1
   selector:
     matchLabels:
-      jmeter_mode: master
+      crux.jmeter_mode: master
   template:
     metadata:
       labels:
-        jmeter_mode: master
+        crux.jmeter_mode: master
     spec:
+      affinity: #schedule where master does NOT run
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: crux.usage
+                    operator: In
+                    values:
+                      - jmeter
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: crux.jmeter_mode
+                      operator: In
+                      values:
+                        - master
+                        - slave
+                topologyKey: "kubernetes.io/hostname"
       containers:
       - name: jmmaster
         image: gabrielstar/crux-master:0.0.1
