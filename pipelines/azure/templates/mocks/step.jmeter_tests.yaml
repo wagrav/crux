@@ -1,5 +1,5 @@
 parameters:
-  timeoutInMinutes: $(stepTimeout)
+  timeoutInMinutes: 5
 steps:
   - bash: |
       echo ${{ parameters.mode }}

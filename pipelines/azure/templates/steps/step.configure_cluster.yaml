@@ -1,5 +1,5 @@
 parameters:
-  timeoutInMinutes: $(stepTimeout)
+  timeoutInMinutes: 5
 steps:
   - task: Kubernetes@1
     displayName: Configure cluster

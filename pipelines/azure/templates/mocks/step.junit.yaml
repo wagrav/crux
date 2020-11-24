@@ -1,5 +1,5 @@
 parameters:
-  timeoutInMinutes: $(stepTimeout)
+  timeoutInMinutes: 5
 steps:
   - task: ShellScript@2
     displayName: Evaluate as JUNIT tests

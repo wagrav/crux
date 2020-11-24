@@ -1,5 +1,5 @@
 parameters:
-  timeoutInMinutes: $(stepTimeout)
+  timeoutInMinutes: 5
 steps:
   - bash: |
       mkdir -p $(reposRoot) && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName)

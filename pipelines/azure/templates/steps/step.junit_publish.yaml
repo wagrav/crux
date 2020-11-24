@@ -1,5 +1,5 @@
 parameters:
-  timeoutInMinutes: $(stepTimeout)
+  timeoutInMinutes: 5
 steps:
   - task: PublishTestResults@2
     displayName: Publish JUNIT results

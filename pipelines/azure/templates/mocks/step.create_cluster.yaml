@@ -1,5 +1,5 @@
 parameters:
-  timeoutInMinutes: $(stepTimeout)
+  timeoutInMinutes: 5
 steps:
   - task: AzureCLI@2
     condition: and(succeeded(), not(eq(variables.create_cluster, false)))

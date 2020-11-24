@@ -1,5 +1,5 @@
 parameters:
-  timeoutInMinutes: $(stepTimeout)
+  timeoutInMinutes: 5
 steps:
   - task: PublishPipelineArtifact@1
     condition: not(eq(variables.archive_errors, false))

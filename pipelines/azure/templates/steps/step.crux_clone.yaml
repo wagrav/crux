@@ -1,5 +1,5 @@
 parameters:
-  timeoutInMinutes: ${{ variable.stepTimeout }}
+  timeoutInMinutes: 5
 steps:
   - checkout: crux
     displayName: CRUX clone
