@@ -1,3 +1,5 @@
+parameters:
+  timeoutInMinutes: $(stepTimeout)
 steps:
   - checkout: tests
     displayName: TESTS clone

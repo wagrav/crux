@@ -1,3 +1,5 @@
+parameters:
+  timeoutInMinutes: $(stepTimeout)
 steps:
   - bash: |
       echo "hook mock"

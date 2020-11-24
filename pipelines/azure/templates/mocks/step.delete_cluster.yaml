@@ -1,3 +1,5 @@
+parameters:
+  timeoutInMinutes: $(stepTimeout)
 steps:
   - task: AzureCLI@2
     displayName: Delete cluster

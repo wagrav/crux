@@ -1,3 +1,5 @@
+parameters:
+  timeoutInMinutes: $(stepTimeout)
 steps:
   - task: PowerShell@2
     displayName: Workbooks upload
