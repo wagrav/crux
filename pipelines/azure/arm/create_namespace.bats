@@ -12,19 +12,37 @@ function teardown(){
 }
 
 @test "UT:create_namespace: should report when namespace already exists" {
+  namespace=default
   kubectl (){
-      echo 'dummy'
+      cat << EOF
+        NAME              STATUS   AGE
+        crux2086          Active   2d2h
+        $namespace        Active   3d1h
+        kube-node-lease   Active   3d1h
+        kube-public       Active   3d1h
+        kube-system       Active   3d1h
+EOF
   }
   export -f kubectl
-  run create_namespace "dummy"
-  assert_output --partial "Namespace dummy already present"
+  run create_namespace "$namespace"
+  assert_output --partial "Namespace $namespace already present"
 }
 
 @test "UT:create_namespace: should create namespace if does not exists" {
+  namespace=test
   kubectl (){
-      echo 'does_not_exist'
+      subcommand=$1
+      if [ "$subcommand" == "get" ];then
+      cat << EOF
+        NAME              STATUS   AGE
+        crux2086          Active   2d2h
+        kube-node-lease   Active   3d1h
+        kube-public       Active   3d1h
+        default           Active   3d1h
+EOF
+    fi
   }
   export -f kubectl
-  run create_namespace "dummy"
-  assert_output --partial "Creating namespace"
+  run create_namespace "$namespace"
+  assert_output "Creating namespace $namespace"
 }
