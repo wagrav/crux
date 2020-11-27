@@ -66,7 +66,11 @@ wait_for_cluster_ready(){
   if kubectl get deployments -n "$cluster_namespace" | grep jmeter-master ; then
     echo "Deployments are already present. Skipping new deploy. Use attach.to.existing.kubernetes.yaml if you want to redeploy"
   else
-    kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume_sc.yaml
+    if kubectl get sc -n "$cluster_namespace" | jmeter-shared-disk-sc ; then
+      echo "Storage class already present. Skipping creation."
+    else
+      kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume_sc.yaml
+    fi
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume.yaml
     kubectl create  -n "$cluster_namespace" -f "$rootPath/$slave_file"
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_slaves_svc.yaml
