@@ -69,6 +69,7 @@ wait_for_cluster_ready(){
     if kubectl get sc -n "$cluster_namespace" | grep jmeter-shared-disk-sc ; then
       echo "Storage class already present. Skipping creation."
     else
+      echo "Create storage class."
       kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume_sc.yaml
     fi
     kubectl create  -n "$cluster_namespace" -f "$rootPath"/jmeter_shared_volume.yaml
