@@ -1,5 +1,5 @@
 #!/bin/bash
-validate_configurationr() {
+validate_configuration() {
       local mode="$1"
       local armServiceConnection="$2"
       local kubernetesServiceConnection="$3"
@@ -45,5 +45,5 @@ validate_configurationr() {
 
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  create_cluster "$@"
+  validate_configuration "$@"
 fi
