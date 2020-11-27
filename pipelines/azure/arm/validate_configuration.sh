@@ -1,14 +1,12 @@
 #!/bin/bash
 validate_configurationr() {
-      local mode=$1
-      local armServiceConnection=$2
-      local kubernetesServiceConnection=$3
-      local link=$4
-
+      local mode="$1"
+      local armServiceConnection="$2"
+      local kubernetesServiceConnection="$3"
+      local link="$4"
       check_arm_connection=false
       check_k8_connection=false
       check_dockerhub_connection=false
-      link="https://github.com/ObjectivityLtd/crux/wiki/CRUX-pipeline-requirements"
 
       echo "You have chosen to run CRUX in '$mode' mode."
       if [ "$mode" == 'jmeter' ];then
