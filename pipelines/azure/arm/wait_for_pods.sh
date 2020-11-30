@@ -57,7 +57,7 @@ wait_for_cluster_ready(){
 
   local scale_up_replicas_master=1
   local scale_down_replicas=0
-  local sleep_interval=5
+  local sleep_interval=15
 
   local master_file="jmeter_master_deploy_v16.yaml"
   local slave_file="jmeter_slaves_deploy_v16.yaml"
