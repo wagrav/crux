@@ -30,6 +30,10 @@ variables:
       create_namespace: false
     ${{ if ne(True,variables['delete_namespace']) }}:
       delete_namespace: false
+    ${{ if ne(True,variables['create_nodepool']) }}:
+      create_nodepool: false
+    ${{ if ne(True,variables['delete_nodepool']) }}:
+      delete_nodepool: false
     ${{ if ne(True,variables['deploy_to_cluster']) }}:
       deploy_to_cluster: false
     ${{ if ne(True,variables['delete_cluster']) }}:
@@ -54,6 +58,10 @@ variables:
       create_cluster: false
     ${{ if ne(True,variables['delete_cluster']) }}:
       delete_cluster: false
+    ${{ if ne(True,variables['create_nodepool']) }}:
+      create_nodepool: false
+    ${{ if ne(True,variables['delete_nodepool']) }}:
+      delete_nodepool: false
 
   ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
     ${{ if ne(True,variables['configure_cluster']) }}:
