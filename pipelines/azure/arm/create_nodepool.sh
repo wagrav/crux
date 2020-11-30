@@ -49,7 +49,7 @@ create_nodepool() {
   --output table
 
   display_cluster_pools "$cluster_name" "$resource_group" "Available pools on this cluster: "
-  printf "\nThis build will use the following nodepool to run performance tests:"
+  echo "This build will use the following nodepool to run performance tests:"
   confirm_pool_created "$cluster_name" "$resource_group" "$nodepool_name"
 }
 
