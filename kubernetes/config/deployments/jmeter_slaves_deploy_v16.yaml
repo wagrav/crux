@@ -5,7 +5,7 @@ metadata:
   labels:
     crux.jmeter_mode: slave
 spec:
-  replicas: 2 
+  replicas: 1
   selector:
     matchLabels:
       crux.jmeter_mode: slave
