@@ -10,7 +10,7 @@ parameters:
 
   - name: crux_templates
     type: string
-    default: pipelines/azure/templates
+    default: ""
 
   - name: crux_job_timeout
     type: string
