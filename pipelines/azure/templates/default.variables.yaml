@@ -56,7 +56,6 @@ variables:
     _crux_aks_agent_pool: ""
 
   ${{ if eq(parameters.mode,'jmeter') }}:
-    jmeter_master_deploy_file
     ${{ if ne(True,variables['create_cluster']) }}:
       create_cluster: false
     ${{ if ne(True,variables['delete_cluster']) }}:
@@ -70,7 +69,6 @@ variables:
     _crux_aks_agent_pool: ""
 
   ${{ if eq(parameters.mode,'jmeter_with_dynamic_pools') }}:
-    jmeter_master_deploy_file
     ${{ if ne(True,variables['create_cluster']) }}:
       create_cluster: false
     ${{ if ne(True,variables['delete_cluster']) }}:
