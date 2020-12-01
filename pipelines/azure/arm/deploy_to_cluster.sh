@@ -66,7 +66,7 @@ deploy_to_cluster() {
   if [ -z "$aks_pool" ]; then
     :
   else
-    sed -i "s/{{agentpool}}/$aks_pool/g" $(System.DefaultWorkingDirectory)/kubernetes/config/deployments/*.yaml
+    sed -i "s/{{agentpool}}/$aks_pool/g" "$rootPath"/*.yaml
   fi
   echo "Using deployment rules. $jmeter_master_deploy_file and $jmeter_slaves_deploy_file"
 
