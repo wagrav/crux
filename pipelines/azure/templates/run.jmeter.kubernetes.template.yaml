@@ -55,7 +55,6 @@ jobs:
 
     #STATIC mode without node pool creation
       - ${{ if and(eq(parameters.mode, 'jmeter'),ne(parameters.kubernetes_service_connection,'_')) }}:
-          - template: ${{ parameters.CUSTOM_crux_templates }}/steps/step.download_secret_file.yaml
           - template: ${{ parameters.crux_templates }}/steps/step.configure_cluster.yaml
           - template: ${{ parameters.crux_templates }}/steps/step.create_namespace.yaml
           - template: ${{ parameters.crux_templates }}/steps/step.deploy_to_cluster.yaml
@@ -71,7 +70,6 @@ jobs:
           - template: ${{ parameters.crux_templates }}/steps/step.delete_namespace.yaml
 
       - ${{ if and(eq(parameters.mode, 'jmeter_with_dynamic_pools'),ne(parameters.kubernetes_service_connection,'_'),ne(parameters.arm_service_connection,'_')) }}:
-          - template: ${{ parameters.CUSTOM_crux_templates }}/steps/step.download_secret_file.yaml
           - template: ${{ parameters.crux_templates }}/steps/step.create_nodepool.yaml
             parameters:
               mode: ${{ parameters.mode }}
@@ -93,7 +91,6 @@ jobs:
               mode: ${{ parameters.mode }}
 
       - ${{ if and(eq(parameters.mode, 'jmeter_dynamic'),ne(parameters.arm_service_connection,'_')) }}:
-          - template: ${{ parameters.CUSTOM_crux_templates }}/steps/step.download_secret_file.yaml
           - template: ${{ parameters.crux_templates }}/steps/step.create_cluster.yaml
           - template: ${{ parameters.crux_templates }}/steps/step.create_nodepool.yaml
             parameters:
