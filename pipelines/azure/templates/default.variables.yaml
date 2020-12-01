@@ -65,7 +65,7 @@ variables:
     ${{ if ne(True,variables['delete_nodepool']) }}:
       delete_nodepool: false
     _crux_jmeter_master_deploy_file: "jmeter_master_deploy.yaml" #soft deployment rules
-    _crux_jmeter_slave_deploy_file: "jmeter_slave_deploy.yaml"
+    _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy.yaml"
     _crux_aks_agent_pool: ""
 
   ${{ if eq(parameters.mode,'jmeter_with_dynamic_pools') }}:
@@ -78,7 +78,7 @@ variables:
     ${{ if ne(True,variables['delete_nodepool']) }}:
       delete_nodepool: false
     _crux_jmeter_master_deploy_file: "jmeter_master_deploy_required.yaml" #soft deployment rules
-    _crux_jmeter_slave_deploy_file: "jmeter_slave_deploy_required.yaml"
+    _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy_required.yaml"
     _crux_aks_agent_pool: crux$(Build.BuildID)
 
   ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
@@ -89,5 +89,5 @@ variables:
     ${{ if ne(True,variables['delete_namespace']) }}:
       delete_namespace: false
     _crux_jmeter_master_deploy_file: "jmeter_master_deploy_required.yaml" #hard deployment rules
-    _crux_jmeter_slave_deploy_file: "jmeter_slave_deploy_required.yaml"
+    _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy_required.yaml"
     _crux_aks_agent_pool: crux$(Build.BuildID)
