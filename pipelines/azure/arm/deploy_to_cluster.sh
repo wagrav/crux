@@ -59,8 +59,9 @@ deploy_to_cluster() {
   local scale_down_replicas=0
   local sleep_interval=15
 
-  local jmeter_master_deploy_file="jmeter_master_deploy.yaml"
-  local jmeter_slaves_deploy_file="jmeter_slaves_deploy.yaml"
+  local jmeter_master_deploy_file=$6
+  local jmeter_slaves_deploy_file=$7
+
   local jmeter_master_configmap_file="jmeter_master_configmap.yaml"
   local jmeter_shared_volume_file="jmeter_shared_volume.yaml"
   local jmeter_shared_volume_sc_file="jmeter_shared_volume_sc.yaml"
