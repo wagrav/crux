@@ -1,0 +1,151 @@
+parameters:
+  - name: mode
+    displayName: 'Which template to use ?'
+    type: string
+    default: jmeter
+
+  - name: linux_pool
+    type: string
+    default: microsoft_hosted
+
+  - name: crux_templates
+    type: string
+    default: pipelines/azure/templates
+
+  - name: crux_job_timeout
+    type: string
+    default: 60
+
+  - name: step_timeout
+    type: string
+    default: 2
+
+  - name: kubernetes_service_connection #used on compile time
+    default: _
+
+  - name: arm_service_connection #used on compile time
+    default: _
+
+jobs:
+  - job: Jmeter
+    timeoutInMinutes: ${{ parameters.crux_job_timeout }}
+    displayName: JMeter pipeline
+    #choose pool
+    ${{ if eq(parameters.linux_pool, 'microsoft_hosted') }}:
+      pool:
+        vmImage: 'ubuntu-latest'
+    ${{ if ne(parameters.linux_pool, 'microsoft_hosted') }}:
+      pool: ${{ parameters.linux_pool }}
+
+    #load up default CRUX variables
+    condition: not(eq(variables['jmeter_tests'], false))
+    variables:
+    - template: ${{ parameters.crux_templates }}/default.variables.yaml
+      parameters:
+        mode: ${{ parameters.mode }}
+
+    steps:
+      - ${{ if ne(parameters.mode, 'tests') }}:
+        - template: ${{ parameters.crux_templates }}/steps/step.crux_clone.yaml
+        - template: ${{ parameters.crux_templates }}/steps/step.tests_clone.yaml
+        - template: ${{ parameters.crux_templates }}/steps/step.prepare_tests.yaml
+        - template: ${{ parameters.crux_templates }}/steps/step.validate_configuration.yaml
+          parameters:
+            mode: ${{ parameters.mode}}
+
+    #STATIC mode without node pool creation
+      - ${{ if and(eq(parameters.mode, 'jmeter'),ne(parameters.kubernetes_service_connection,'_')) }}:
+          - template: ${{ parameters.CUSTOM_crux_templates }}/steps/step.download_secret_file.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.configure_cluster.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.create_namespace.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.deploy_to_cluster.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.jmeter_tests.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.workbooks_upload.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_report.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_results.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_log.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_errors.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_server_logs.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.junit.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.junit_publish.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.delete_namespace.yaml
+
+      - ${{ if and(eq(parameters.mode, 'jmeter_with_dynamic_pools'),ne(parameters.kubernetes_service_connection,'_'),ne(parameters.arm_service_connection,'_')) }}:
+          - template: ${{ parameters.CUSTOM_crux_templates }}/steps/step.download_secret_file.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.create_nodepool.yaml
+            parameters:
+              mode: ${{ parameters.mode }}
+          - template: ${{ parameters.crux_templates }}/steps/step.configure_cluster.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.create_namespace.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.deploy_to_cluster.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.jmeter_tests.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.workbooks_upload.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_report.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_results.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_log.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_errors.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_server_logs.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.junit.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.junit_publish.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.delete_namespace.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.delete_nodepool.yaml
+            parameters:
+              mode: ${{ parameters.mode }}
+
+      - ${{ if and(eq(parameters.mode, 'jmeter_dynamic'),ne(parameters.arm_service_connection,'_')) }}:
+          - template: ${{ parameters.CUSTOM_crux_templates }}/steps/step.download_secret_file.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.create_cluster.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.create_nodepool.yaml
+            parameters:
+              mode: ${{ parameters.mode }}
+          - template: ${{ parameters.crux_templates }}/steps/step.create_namespace.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.deploy_to_cluster.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.jmeter_tests.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.workbooks_upload.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_report.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_results.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_log.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_errors.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.archive_jmeter_server_logs.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.junit.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.junit_publish.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.delete_namespace.yaml
+          - template: ${{ parameters.crux_templates }}/steps/step.delete_nodepool.yaml
+            parameters:
+              mode: ${{ parameters.mode }}
+          - template: ${{ parameters.crux_templates }}/steps/step.delete_cluster.yaml
+
+
+          #RUN on framework tests
+      - ${{ if eq(parameters.mode, 'tests') }}:
+        - template: ${{ parameters.crux_templates }}/mocks/step.crux_clone.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.tests_clone.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.prepare_tests.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.create_cluster.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.create_nodepool.yaml
+          parameters:
+            mode: ${{ parameters.mode }}
+        - template: ${{ parameters.crux_templates }}/mocks/step.configure_cluster.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.create_namespace.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.deploy_to_cluster.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.jmeter_tests.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.workbooks_upload.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.archive_jmeter_report.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.archive_jmeter_results.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.archive_jmeter_log.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.archive_jmeter_errors.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.archive_jmeter_server_logs.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.junit.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.junit_publish.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.delete_namespace.yaml
+        - template: ${{ parameters.crux_templates }}/mocks/step.delete_nodepool.yaml
+          parameters:
+            mode: ${{ parameters.mode }}
+        - template: ${{ parameters.crux_templates }}/mocks/step.delete_cluster.yaml
+
+  #RUN on framework tests
+  - ${{ if eq(parameters.mode, 'tests') }}:
+    - template: ${{ parameters.crux_templates }}/tests/jobs/run_bats_modules_tests.yaml
+    - template: ${{ parameters.crux_templates }}/tests/jobs/run_pester_modules_tests.yaml
+    - template: ${{ parameters.crux_templates }}/tests/jobs/test_docker_images.yaml
+    - template: ${{ parameters.crux_templates }}/build/jobs/build_and_push_docker.yaml
