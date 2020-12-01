@@ -12,7 +12,7 @@ steps:
         azureSubscription: $(armServiceConnection)
         scriptType: bash
         scriptPath: $(armModulePath)/create_nodepool.sh
-        arguments: crux$(Build.BuildID) $(cluster_name) crux.usage jmeter $(rgroup) $(scale_up_replicas) $(clusterNodeSize)
+        arguments: $(_crux_aks_agent_pool) $(cluster_name) crux.usage jmeter $(rgroup) $(scale_up_replicas) $(clusterNodeSize)
                    #nodepool_name       #cluster_name   #crux_label #crux_label_value #resource_group #scale_up_replicas #node_size
 
   - ${{ if and(ne(parameters.mode,'tests'),eq(parameters.mode,'jmeter_dynamic')) }}: #dynamic cluster name cname becomes available
@@ -24,5 +24,5 @@ steps:
           azureSubscription: $(armServiceConnection)
           scriptType: bash
           scriptPath: $(armModulePath)/create_nodepool.sh
-          arguments: crux$(Build.BuildID) $(cname) crux.usage jmeter $(rgroup) $(scale_up_replicas) $(clusterNodeSize)
+          arguments: $(_crux_aks_agent_pool) $(cname) crux.usage jmeter $(rgroup) $(scale_up_replicas) $(clusterNodeSize)
                      #nodepool_name       #cluster_name   #crux_label #crux_label_value #resource_group #scale_up_replicas #node_size

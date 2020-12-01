@@ -61,6 +61,14 @@ deploy_to_cluster() {
 
   local jmeter_master_deploy_file=$6
   local jmeter_slaves_deploy_file=$7
+  local aks_pool=$8
+
+  if [ -z "$aks_pool" ]; then
+    :
+  else
+    sed -i "s/{{agentpool}}/$aks_pool/g" $(System.DefaultWorkingDirectory)/kubernetes/config/deployments/*.yaml
+  fi
+  echo "Using deployment rules. $jmeter_master_deploy_file and $jmeter_slaves_deploy_file"
 
   local jmeter_master_configmap_file="jmeter_master_configmap.yaml"
   local jmeter_shared_volume_file="jmeter_shared_volume.yaml"
