@@ -73,10 +73,6 @@ variables:
       create_cluster: false
     ${{ if ne(True,variables['delete_cluster']) }}:
       delete_cluster: false
-    ${{ if ne(True,variables['create_nodepool']) }}:
-      create_nodepool: false
-    ${{ if ne(True,variables['delete_nodepool']) }}:
-      delete_nodepool: false
     _crux_jmeter_master_deploy_file: "jmeter_master_deploy_required.yaml" #soft deployment rules
     _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy_required.yaml"
     _crux_aks_agent_pool: crux$(Build.BuildID)
