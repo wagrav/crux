@@ -1,19 +1,41 @@
-apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
   name: jmeter-master
   labels:
-    jmeter_mode: master
+    crux.jmeter_mode: master
 spec:
   replicas: 1
   selector:
     matchLabels:
-      jmeter_mode: master
+      crux.jmeter_mode: master
   template:
     metadata:
       labels:
-        jmeter_mode: master
+        crux.jmeter_mode: master
     spec:
+      affinity: #schedule where master does NOT run
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: crux.usage
+                    operator: In
+                    values:
+                      - jmeter
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: crux.jmeter_mode
+                      operator: In
+                      values:
+                        - master
+                        - slave
+                topologyKey: "kubernetes.io/hostname"
       containers:
       - name: jmmaster
         image: gabrielstar/crux-master:0.0.1
@@ -24,6 +46,9 @@ spec:
           - name: loadtest
             mountPath: /load_test
             subPath: "load_test"
+          - name: jmeter-shared-disk
+            mountPath: "/shared"
+
         ports:
         - containerPort: 60000
         - containerPort: 9191
@@ -31,3 +56,6 @@ spec:
       - name: loadtest 
         configMap:
          name: jmeter-load-test
+      - name: jmeter-shared-disk
+        persistentVolumeClaim:
+          claimName: jmeter-shared-disk

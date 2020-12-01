@@ -1,19 +1,41 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jmeter-slaves
   labels:
-    jmeter_mode: slave
+    crux.jmeter_mode: slave
 spec:
   replicas: 1
   selector:
     matchLabels:
-      jmeter_mode: slave
+      crux.jmeter_mode: slave
   template:
     metadata:
       labels:
-        jmeter_mode: slave
+        crux.jmeter_mode: slave
     spec:
+      affinity: #schedule where master does NOT run
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: crux.usage
+                    operator: In
+                    values:
+                      - jmeter
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: crux.jmeter_mode
+                      operator: In
+                      values:
+                        - master
+                        - slave
+                topologyKey: "kubernetes.io/hostname"
       volumes:
         - name: dshm
           emptyDir:
@@ -31,5 +53,5 @@ spec:
         volumeMounts:
           - mountPath: /dev/shm
             name: dshm
-          - name: jmeter-shared-disk
-            mountPath: "/shared"
+          - mountPath: "/shared"
+            name: jmeter-shared-disk
