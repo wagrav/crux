@@ -10,7 +10,7 @@ parameters:
 
   - name: crux_templates
     type: string
-    default: "../"
+    default: "../templates"
 
   - name: crux_job_timeout
     type: string
