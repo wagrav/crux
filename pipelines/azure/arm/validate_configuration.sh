@@ -28,7 +28,7 @@ validate_configuration() {
             echo "##vso[task.logissue type=error]$message [$link]"
             exit 1
           else
-            echo "##[command] OK"
+            echo "##[command] Required ARM Service Connection has been provided - OK"
           fi
       fi
       if [ "$check_k8_connection" == "true" ];then
@@ -37,7 +37,7 @@ validate_configuration() {
             echo "##vso[task.logissue type=error]$message [$link]"
             exit 1
           else
-            echo "##[command] OK"
+            echo "##[command] Required Kubernetes Service Connection has been provided - OK"
           fi
       fi
 
