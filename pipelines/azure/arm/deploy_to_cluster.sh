@@ -46,19 +46,17 @@ displayDeploymentCorrectnessStatus() {
   fi
 }
 
+
 #a bit too many steps but can support both ARM and k8 only
 deploy_to_cluster() {
-  local rootPath=$1
-  rootPath="$rootPath"/kubernetes/config/deployments
+  local rootPath="$1"/kubernetes/config/deployments
   local cluster_namespace=$2
   local service_master=$3
   local service_slave=$4
   local scale_up_replicas=$5
-
   local scale_up_replicas_master=1
   local scale_down_replicas=0
   local sleep_interval=15
-
   local jmeter_master_deploy_file=$6
   local jmeter_slaves_deploy_file=$7
   local aks_pool=$8
@@ -76,7 +74,7 @@ deploy_to_cluster() {
   local jmeter_slaves_svc_file="jmeter_slaves_svc.yaml"
 
   #re-deploy per defaults
-  if kubectl get deployments -n "$cluster_namespace" | grep jmeter-master; then
+  if kubectl get deployments -n "$cluster_namespace" | grep "$service_master"; then
     echo "Deployments are already present. Skipping new deploy. Use attach.to.existing.kubernetes.yaml if you want to redeploy"
   else
     if kubectl get sc -n "$cluster_namespace" | grep jmeter-shared-disk-sc; then
@@ -91,20 +89,18 @@ deploy_to_cluster() {
     kubectl create -n "$cluster_namespace" -f "$rootPath/$jmeter_master_configmap_file"
     kubectl create -n "$cluster_namespace" -f "$rootPath/$jmeter_master_deploy_file"
   fi
-  #Wait till ready
-  #wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval "$service_master"
-  echo "Rescaling down and up to assure clean test env "
-  echo "Scale to 0 "
-  #Assure clean test env by scaling fresh
+
+  echo "Rescaling down and up to assure clean test env. Scaling to 0 first. "
   kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath/$jmeter_master_deploy_file"
   kubectl scale -n "$cluster_namespace" --replicas="$scale_down_replicas" -f "$rootPath/$jmeter_slaves_deploy_file"
+
   echo "Scale up master to $scale_up_replicas_master and slaves to $scale_up_replicas"
   kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas_master" -f "$rootPath/$jmeter_master_deploy_file"
   kubectl scale -n "$cluster_namespace" --replicas="$scale_up_replicas" -f "$rootPath/$jmeter_slaves_deploy_file"
 
   wait_for_pods "$cluster_namespace" $scale_up_replicas_master $sleep_interval $service_master
   wait_for_pods "$cluster_namespace" $scale_up_replicas $sleep_interval $service_slave
-  displayDeploymentCorrectnessStatus $cluster_namespace
+  displayDeploymentCorrectnessStatus "$cluster_namespace"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
