@@ -1,7 +1,0 @@
-#This pipeline is supposed to execute without external resources such as kubernetes cluster or an arm connection
-#Therefore it only handles UT and IT tests
-jobs:
-  - template: tests/jobs/run_bats_modules_tests.yaml
-  - template: tests/jobs/run_pester_modules_tests.yaml
-  - template: tests/jobs/test_docker_images.yaml
-  - template: build/jobs/build_and_push_docker.yaml

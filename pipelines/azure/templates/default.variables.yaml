@@ -26,6 +26,14 @@ variables:
       create_cluster: false
     ${{ if ne(True,variables['configure_cluster']) }}:
       configure_cluster: false
+    ${{ if ne(True,variables['create_namespace']) }}:
+      create_namespace: false
+    ${{ if ne(True,variables['delete_namespace']) }}:
+      delete_namespace: false
+    ${{ if ne(True,variables['create_nodepool']) }}:
+      create_nodepool: false
+    ${{ if ne(True,variables['delete_nodepool']) }}:
+      delete_nodepool: false
     ${{ if ne(True,variables['deploy_to_cluster']) }}:
       deploy_to_cluster: false
     ${{ if ne(True,variables['delete_cluster']) }}:
@@ -43,14 +51,39 @@ variables:
     workbooks_file: $(mock_dir)/workbooks.properties
     crux_file: $(mock_dir)/crux.properties
     reposRoot: ""
-
+    _crux_jmeter_master_deploy_file: ""
+    _crux_jmeter_slave_deploy_file: ""
+    _crux_aks_agent_pool: ""
 
   ${{ if eq(parameters.mode,'jmeter') }}:
     ${{ if ne(True,variables['create_cluster']) }}:
       create_cluster: false
     ${{ if ne(True,variables['delete_cluster']) }}:
       delete_cluster: false
+    ${{ if ne(True,variables['create_nodepool']) }}:
+      create_nodepool: false
+    ${{ if ne(True,variables['delete_nodepool']) }}:
+      delete_nodepool: false
+    _crux_jmeter_master_deploy_file: "jmeter_master_deploy.yaml" #soft deployment rules
+    _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy.yaml"
+    _crux_aks_agent_pool: ""
+
+  ${{ if eq(parameters.mode,'jmeter_with_dynamic_pools') }}:
+    ${{ if ne(True,variables['create_cluster']) }}:
+      create_cluster: false
+    ${{ if ne(True,variables['delete_cluster']) }}:
+      delete_cluster: false
+    _crux_jmeter_master_deploy_file: "jmeter_master_deploy_required.yaml" #soft deployment rules
+    _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy_required.yaml"
+    _crux_aks_agent_pool: crux$(Build.BuildID)
 
   ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
     ${{ if ne(True,variables['configure_cluster']) }}:
       configure_cluster: false
+    ${{ if ne(True,variables['create_namespace']) }}:
+      create_namespace: true
+    ${{ if ne(True,variables['delete_namespace']) }}:
+      delete_namespace: false
+    _crux_jmeter_master_deploy_file: "jmeter_master_deploy_required.yaml" #hard deployment rules
+    _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy_required.yaml"
+    _crux_aks_agent_pool: crux$(Build.BuildID)

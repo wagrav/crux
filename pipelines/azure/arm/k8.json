@@ -57,9 +57,9 @@
           "loadBalancerSku": "standard",
           "loadBalancerProfile": {
             "managedOutboundIPs": {
-              "count": 5
+              "count": 2
             },
-            "allocatedOutboundPorts": 30000
+            "allocatedOutboundPorts": 10000
           }
         },
         "agentPoolProfiles": [

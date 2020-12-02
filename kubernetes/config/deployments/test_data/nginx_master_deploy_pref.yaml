@@ -1,0 +1,42 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: nginx-master
+  labels: #these lables get assigned to pods for this deployment
+    crux.jmeter_mode: master
+spec:
+  replicas: 1
+  selector: #these pods are managed by this deployment
+    matchLabels:
+      crux.jmeter_mode: master
+  template:
+    metadata:
+      labels:
+        crux.jmeter_mode: master
+    spec:
+      affinity: #schedule where master does NOT run ideally on a dedicated nodepool with label
+        nodeAffinity: #try to schedule on nodes with sepcific label e.g. you have lablled a nodepool before
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: crux.usage
+                    operator: In
+                    values:
+                      - jmeter
+        podAntiAffinity: #do not schedule where another jmeter runs .... as long as possible
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: crux.jmeter_mode
+                    operator: In
+                    values:
+                      - master
+                      - slave
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: nginx
+          image: nginx
+          imagePullPolicy: IfNotPresent

@@ -1,4 +1,7 @@
 #!/bin/bash
+display_kubectl_config(){
+  kubectl config view
+}
 refresh_creds(){
   local resource_group=$1
   local cluster_name=$2
@@ -19,7 +22,7 @@ create_cluster_and_refresh_creds() {
   create_cluster "$deployment_name" "$resource_group" "$template_file" "$node_size" "$node_count" "$cluster_name_prefix" "$output_variable"
 
   refresh_creds "$resource_group" "${!output_variable}"
-
+  display_kubectl_config
 }
 
 

@@ -6,7 +6,6 @@ trigger: none
 #config
 parameters:
   - name: mode
-    displayName: 'Which template to use ?'
     type: string
     default: deploy
     values:
@@ -49,9 +48,9 @@ jobs:
     - bash: |
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_shared_volume_sc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_shared_volume.yaml
-        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy_v16.yaml
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_deploy.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_slaves_svc.yaml
         kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_configmap.yaml
-        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy_v16.yaml
+        kubectl create  -n $(namespace) -f kubernetes/config/deployments/jmeter_master_deploy.yaml
       condition: and(succeeded(), not(eq('${{ parameters.mode }}', 'delete')))
       displayName: Deploy services to cluster

@@ -1,6 +1,9 @@
+parameters:
+  timeoutInMinutes: 5
 steps:
   - task: ShellScript@2
     displayName: Evaluate as JUNIT tests
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: and(not(eq(variables['module.junit.enabled'], false)),not(eq(variables.evaluate_as_junit_tests, false)))
     inputs:
       scriptPath: modules/junit/evaluateTestResultsAsJunit.sh

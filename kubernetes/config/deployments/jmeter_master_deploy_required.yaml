@@ -16,26 +16,35 @@ spec:
     spec:
       affinity: #schedule where master does NOT run
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              preference:
-                matchExpressions:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
                   - key: crux.usage
                     operator: In
                     values:
                       - jmeter
+                  - key: agentpool
+                    operator: In
+                    values:
+                      - {{agentpool}}
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: crux.jmeter_mode
-                      operator: In
-                      values:
-                        - master
-                        - slave
-                topologyKey: "kubernetes.io/hostname"
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: crux.jmeter_mode
+                operator: In
+                values:
+                  - master
+                  - slave
+            topologyKey: "kubernetes.io/hostname"
+      volumes:
+        - name: loadtest
+          configMap:
+            name: jmeter-load-test
+        - name: jmeter-shared-disk
+          persistentVolumeClaim:
+            claimName: jmeter-shared-disk
+
       containers:
       - name: jmmaster
         image: gabrielstar/crux-master:0.0.1
@@ -46,16 +55,8 @@ spec:
           - name: loadtest
             mountPath: /load_test
             subPath: "load_test"
-          - name: jmeter-shared-disk
-            mountPath: "/shared"
-
+          - mountPath: "/shared"
+            name: jmeter-shared-disk
         ports:
         - containerPort: 60000
         - containerPort: 9191
-      volumes:
-      - name: loadtest 
-        configMap:
-         name: jmeter-load-test
-      - name: jmeter-shared-disk
-        persistentVolumeClaim:
-          claimName: jmeter-shared-disk

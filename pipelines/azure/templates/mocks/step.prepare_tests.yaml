@@ -1,3 +1,5 @@
+parameters:
+  timeoutInMinutes: 5
 steps:
   - bash: |
       echo "reposRoot: $(reposRoot), repoName: $(repoName)"
@@ -18,4 +20,5 @@ steps:
 
 
     displayName: PREPARE tests (mocked)
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: and(succeeded(), not(eq(variables.prepare_tests, false)))
