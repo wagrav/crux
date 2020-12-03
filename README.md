@@ -4,6 +4,8 @@
 CRUX (pron. kruhks) is build around Kubernetes (AKS) and JMeter. It makes it easy to incorporate performance tests into your Azure CI/CD pipeline. Each performance build can create and destroy infrastructure necessary for the run, which makes it cost effective. 
 CRUX deploys a distributed JMeter cluster on Kubernetes (AKS) with the size you need, runs tests, destroy infrastructure.
 
+![pipeline](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/pipeline.png)
+
 ### Overview
 
 ![overview](https://github.com/ObjectivityLtd/jmeter_azure_k8_boilerplate/blob/master/img/overview.png)
