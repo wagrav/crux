@@ -1,0 +1,22 @@
+parameters:
+  timeoutInMinutes: 5
+steps:
+  - bash: |
+      echo ${{ parameters.mode }}
+      echo "Creating dummy data: report_dir"
+      mkdir -p $(report_dir)
+      echo "Creating dummy data: jmeter.log, results.csv, report"
+      touch $(log) $(server_logs_dir) $(errors) $(report_dir)/index.html
+      test_data_path=azure/steps/test_data
+      cp $test_data_path/statistics.json $(report_dir)/
+      cp $test_data_path/thresholds.properties $(thresholds_file)
+      cp $test_data_path/workbooks.e2e.properties $(workbooks_file)
+      cp -R $test_data_path/results.csv $(results)
+      ls -alh $(mock_dir)
+
+      echo "module.junit.enabled:$(module.junit.enabled)"
+      echo "module.workbooks.enabled:$(module.junit.enabled)"
+
+    condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
+    displayName: JMeter tests (mocked)
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
