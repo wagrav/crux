@@ -2,14 +2,15 @@ parameters:
   timeoutInMinutes: 5
 steps:
   - bash: |
-      echo "reposRoot: $(reposRoot), repoName: $(repoName)"
+      pwd && ls -alh
+      echo "_crux_repos_root: $(_crux_repos_root), _crux_tests_repo_name: $(_crux_tests_repo_name)"
       echo "-- Unpacking crux and test repo to correct folders"
-      mkdir -p $(reposRoot) &> /dev/null && cp -r $(repoName) $(System.DefaultWorkingDirectory)/$(reposRoot)/$(repoName) # reposRoot empty so supressing errors in mkdir
-      cp -r $(cruxRepoName)/* $(System.DefaultWorkingDirectory)/
-
+      mkdir -p $(_crux_repos_root) &> /dev/null && cp -r $(_crux_tests_repo_name) $(System.DefaultWorkingDirectory)/$(_crux_repos_root)/$(_crux_tests_repo_name) # reposRoot empty so supressing errors in mkdir
+      cp -r $(_crux_crux_repo_name)/* $(System.DefaultWorkingDirectory)/
+      ls -alh
       #mock set-up for tests
       echo "-- Creating mock dir"
-      mkdir -p $(mock_dir)
+      mkdir -p $(_crux_mock_dir)
 
       #loading properties from crux.properties
       echo "-- Parsing crux.propeties"

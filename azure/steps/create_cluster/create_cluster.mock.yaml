@@ -2,19 +2,19 @@ parameters:
   timeoutInMinutes: 10
 steps:
   - task: AzureCLI@2
-    condition: and(succeeded(), not(eq(variables.create_cluster, false)))
+    condition: and(succeeded(), not(eq(variables._crux_create_cluster, false)))
     displayName: Create cluster
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     inputs:
-      azureSubscription: $(armServiceConnection)
+      azureSubscription: $(_crux_arm_service_connection)
       scriptType: bash
       scriptPath: $(_crux_steps_path)/create_cluster/create_cluster_and_refresh_creds.sh
       arguments: >
         temp$(Build.BuildID)
-        $(rgroup)
+        $(_crux_cluster_resource_group)
         $(_crux_steps_path)/create_cluster/k8.json
-        $(clusterNodeSize)
-        $(clusterNodeNumber)
+        $(_crux_cluster_node_size)
+        $(_crux_cluster_default_node_number)
         perf_$(Build.BuildID)_
         cname
         $(_crux_steps_path)/create_cluster

@@ -5,11 +5,11 @@ parameters:
 steps:
   - ${{ if eq(parameters.mode,'tests') }}:
     - task: AzureCLI@2
-      condition: and(always(), not(eq(variables.delete_nodepool, false)))
+      condition: and(always(), not(eq(variables._crux_delete_nodepool, false)))
       displayName: Delete dedicated nodepool
       timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
       inputs:
-        azureSubscription: $(armServiceConnection)
+        azureSubscription: $(_crux_arm_service_connection)
         scriptType: bash
         scriptPath: $(_crux_steps_path)/delete_nodepool/delete_nodepool.sh
-        arguments: crux$(Build.BuildID) $(cluster_name) $(rgroup)
+        arguments: crux$(Build.BuildID) $(_crux_cluster_name) $(_crux_cluster_resource_group)
