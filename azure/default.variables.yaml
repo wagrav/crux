@@ -1,0 +1,107 @@
+parameters:
+  - name: mode
+    displayName: 'Which template to use ?'
+    type: string
+    default: jmeter
+
+variables:
+  _crux_tests_repo_name: _tests
+  _crux_crux_repo_name: _crux
+
+  _crux_scale_up_replicas_master: 1
+  _crux_jmeter_slaves_service: jmeter-slaves
+  _crux_jmeter_master_service: jmeter-master
+  _crux_data_dir: $(_crux_tests_repo_name)/$(_crux_data_dir_relative)
+  _crux_jmeter_scenario: $(_crux_tests_repo_name)/$(_crux_jmeter_scenario_relative)
+
+
+  _crux_remote_report_dir: "/tmp/report"
+  _crux_remote_results_file: "/tmp/results.csv"
+  _crux_remote_test_dir: "/test"
+  _crux_remote_tmp: "/tmp"
+  _crux_remote_shared_mount: "/shared"
+  _crux_remote_error_file: "/test/errors.xml"
+  _crux_remote_log_file: "/test/jmeter.log"
+  _crux_remote_server_log_file: "/test/jmeter-server.log"
+
+  _crux_tmp: kubernetes/tmp
+  _crux_steps_path: $(System.DefaultWorkingDirectory)/azure/steps
+  ${{ if not(eq(parameters.mode,'tests')) }}:
+    _crux_properties_file: $(_crux_tests_repo_name)/$(_crux_properties_file_relative)
+    _crux_thresholds_file: $(_crux_tests_repo_name)/$(_crux_thresholds_file_relative)
+    _crux_workbooks_file: $(_crux_tests_repo_name)/$(_crux_workbooks_file_relative)
+    _crux_report_dir: kubernetes/tmp/report
+    _crux_server_logs_dir: kubernetes/tmp/server_logs
+    _crux_results: kubernetes/tmp/results.csv
+    _crux_log: kubernetes/tmp/jmeter.log
+    _crux_errors: kubernetes/tmp/errors.xml
+    _crux_repos_root: "repos"
+
+#Variables are set for steps that need to be switched off by default but can be overwritten if need be
+
+  ${{ if eq(parameters.mode,'tests') }}:
+    ${{ if ne(True,variables['_crux_create_cluster']) }}:
+      _crux_create_cluster: false
+    ${{ if ne(True,variables['_crux_configure_cluster']) }}:
+      _crux_configure_cluster: false
+    ${{ if ne(True,variables['_crux_create_namespace']) }}:
+      _crux_create_namespace: false
+    ${{ if ne(True,variables['_crux_delete_namespace']) }}:
+      _crux_delete_namespace: false
+    ${{ if ne(True,variables['_crux_create_nodepool']) }}:
+      _crux_create_nodepool: false
+    ${{ if ne(True,variables['_crux_delete_nodepool']) }}:
+      _crux_delete_nodepool: false
+    ${{ if ne(True,variables['_crux_deploy_to_cluster']) }}:
+      _crux_deploy_to_cluster: false
+    ${{ if ne(True,variables['_crux_delete_cluster']) }}:
+      _crux_delete_cluster: false
+    ${{ if ne(True,variables['_crux_docker_build_and_push']) }}:
+      _crux_docker_build_and_push: false
+    #changing paths for mock to avoid clash with real tests
+    _crux_mock_dir: mocked/kubernetes/tmp
+    _crux_report_dir: $(_crux_mock_dir)/report
+    _crux_results: $(_crux_mock_dir)/results.csv
+    _crux_server_logs_dir: $(_crux_mock_dir)/server_logs
+    _crux_log: $(_crux_mock_dir)/jmeter.log
+    _crux_errors: $(_crux_mock_dir)/errors.xml
+    _crux_thresholds_file: $(_crux_mock_dir)/thresholds.properties
+    _crux_workbooks_file: $(_crux_mock_dir)/workbooks.properties
+    _crux_properties_file: $(_crux_mock_dir)/crux.properties
+    _crux_repos_root: ""
+    _crux_jmeter_master_deploy_file: ""
+    _crux_jmeter_slave_deploy_file: ""
+    _crux_aks_agent_pool: ""
+
+  ${{ if eq(parameters.mode,'jmeter') }}:
+    ${{ if ne(True,variables['_crux_create_cluster']) }}:
+      _crux_create_cluster: false
+    ${{ if ne(True,variables['_crux_delete_cluster']) }}:
+      _crux_delete_cluster: false
+    ${{ if ne(True,variables['_crux_create_nodepool']) }}:
+      _crux_create_nodepool: false
+    ${{ if ne(True,variables['_crux_delete_nodepool']) }}:
+      _crux_delete_nodepool: false
+    _crux_jmeter_master_deploy_file: "jmeter_master_deploy.yaml" #soft deployment rules
+    _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy.yaml"
+    _crux_aks_agent_pool: ""
+
+  ${{ if eq(parameters.mode,'jmeter_with_dynamic_pools') }}:
+    ${{ if ne(True,variables['_crux_create_cluster']) }}:
+      _crux_create_cluster: false
+    ${{ if ne(True,variables['_crux_delete_cluster']) }}:
+      _crux_delete_cluster: false
+    _crux_jmeter_master_deploy_file: "jmeter_master_deploy_required.yaml" #soft deployment rules
+    _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy_required.yaml"
+    _crux_aks_agent_pool: crux$(Build.BuildID)
+
+  ${{ if eq(parameters.mode,'jmeter_dynamic') }}:
+    ${{ if ne(True,variables['_crux_configure_cluster']) }}:
+      _crux_configure_cluster: false
+    ${{ if ne(True,variables['_crux_create_namespace']) }}:
+      create_namespace: true
+    ${{ if ne(True,variables['_crux_delete_namespace']) }}:
+      _crux_delete_namespace: false
+    _crux_jmeter_master_deploy_file: "jmeter_master_deploy_required.yaml" #hard deployment rules
+    _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy_required.yaml"
+    _crux_aks_agent_pool: crux$(Build.BuildID)

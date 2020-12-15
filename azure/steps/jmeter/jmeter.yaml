@@ -1,0 +1,26 @@
+parameters:
+  timeoutInMinutes: 5
+steps:
+  - task: ShellScript@2
+    displayName: JMeter tests
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+    condition: and(succeeded(), not(eq(variables.jmeter_tests, false)))
+    inputs:
+      scriptPath: $(_crux_steps_path)/jmeter/jmeter.sh
+      args: >
+        $(System.DefaultWorkingDirectory)
+        $(_crux_cluster_deployment_namespace)
+        $(_crux_repos_root)/$(_crux_jmeter_scenario)
+        $(_crux_repos_root)/$(_crux_data_dir)
+        "$(_crux_jmeter_args)"
+        $(System.DefaultWorkingDirectory)/$(_crux_report_dir)
+        $(System.DefaultWorkingDirectory)/$(_crux_server_logs_dir)
+        $(_crux_remote_report_dir)
+        $(_crux_remote_results_file)
+        $(_crux_remote_test_dir)
+        $(_crux_remote_tmp)
+        $(_crux_remote_shared_mount)
+        $(_crux_remote_error_file)
+        $(_crux_remote_log_file)
+        $(_crux_remote_server_log_file)
+        $(System.DefaultWorkingDirectory)/$(_crux_tmp)
