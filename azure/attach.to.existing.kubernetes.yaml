@@ -2,7 +2,6 @@
 # Remember to have 1-1 jmeter service to k8 node (VM)/pod ratio - otherwsie some slaves can crash due to lack of resources
 
 name: $(BuildID)
-trigger: none
 #config
 parameters:
   - name: mode
