@@ -1,0 +1,45 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: jmeter-master
+  labels:
+    crux.jmeter_mode: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      crux.jmeter_mode: master
+  template:
+    metadata:
+      labels:
+        crux.jmeter_mode: master
+    spec:
+      affinity: #schedule where master does NOT run
+        {{ if eq .Values.placementRules "best.effort.placement" }}
+        {{- template "best.effort.placement" . }}
+        {{ else if eq .Values.placementRules "required.placement" }}
+        {{- template "required.placement" . }}
+        {{ end }}
+      containers:
+      - name: jmmaster
+        image: {{ .Values.master.image }}
+        imagePullPolicy: IfNotPresent
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        volumeMounts:
+          - name: loadtest
+            mountPath: /load_test
+            subPath: "load_test"
+          - name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+            mountPath: "/shared"
+
+        ports:
+        - containerPort: 60000
+        - containerPort: 9191
+      volumes:
+      - name: loadtest 
+        configMap:
+         name: jmeter-load-test
+      - name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}

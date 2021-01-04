@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jmeter-slaves
+  labels:
+    crux.jmeter_mode: slave
+spec:
+  replicas: {{ .Values.slave.replicas }}
+  selector:
+    matchLabels:
+      crux.jmeter_mode: slave
+  template:
+    metadata:
+      labels:
+        crux.jmeter_mode: slave
+    spec:
+      affinity:
+        {{ if eq .Values.placementRules "best.effort.placement" }}
+        {{- template "best.effort.placement" . }}
+        {{ else if eq .Values.placementRules "required.placement" }}
+        {{- template "required.placement" . }}
+        {{ end }}
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+        - name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+      containers:
+        - name: jmslave
+          image: {{ .Values.slave.image }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 1099
+            - containerPort: 50000
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: "/shared"
+              name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}

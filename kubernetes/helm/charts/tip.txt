@@ -1,0 +1,21 @@
+Useful commands:
+
+helm upgrade jj .\jmeter-cluster\ --install --namespace helm --create-namespace
+helm ls --namespace helm
+kubectl get pvc --namespace helm
+kubectl get all --namespace helm
+helm rollback jj 7 --namespace helm
+#show potential chart
+helm upgrade jj .\jmeter-cluster\ --install --namespace helm --create-namespace --dry-run
+helm upgrade jj .\jmeter-cluster\ --set placementRules=best.effort.placement --install --namespace helm --create-namespace --dry-run
+#this will delete PVC too
+helm delete jj --namespace helm
+
+
+Implement:
+ 1. Enable mode: helm or kubectl
+ 2. Execute dry-run and abort if dry run returned non-0
+ 3. Deploy
+ 4. Run test
+ ....
+ 5. Archive chart deployed ...

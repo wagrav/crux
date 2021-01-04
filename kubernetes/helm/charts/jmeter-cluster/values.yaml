@@ -1,0 +1,17 @@
+agentpool:
+  name: agentpool
+  useLabelledNodesOnly: false
+placementRules: required.placement
+storage:
+  size: 2Gi
+  namePrefix: crux-disk-
+  classNamePrefix: crux-sc-
+slave:
+  replicas: 3
+  image: gabrielstar/crux-slave:0.0.1
+master:
+  image: gabrielstar/crux-master:0.0.1
+#sub-chart
+jmeter-storage-class:
+  storage:
+    classNamePrefix: crux-sc-
