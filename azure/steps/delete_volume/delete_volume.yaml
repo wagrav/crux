@@ -3,7 +3,7 @@ parameters:
 steps:
     #helm delete leaves pvc
   - task: ShellScript@2
-    displayName: Delete Volume
+    displayName: Delete volume
     condition: and(always(), not(eq(variables._crux_delete_volume, false)))
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     inputs:
