@@ -4,6 +4,11 @@ parameters:
   helmVersion: v3.4.2
   helmTimeout: 4m
   sleepInterval: 15
+  placementRules: best.effort.placement
+  storageSize: 3Gi
+  slaveImage: gabrielstar/crux-slave:0.0.1
+  masterImage: gabrielstar/crux-master:0.0.1
+  useLabelledNodesOnly: false
 
 steps:
   #kubectl is left as fall-back if helm becomes messy to maintain
@@ -45,7 +50,7 @@ steps:
           chartType: FilePath
           chartPath: kubernetes/helm/charts/jmeter-cluster
           releaseName: $(_crux_helm_release)
-          overrideValues: 'slaveReplicas=2,placementRules=best.effort.placement'
+          overrideValues: 'slave.image=${{ parameters.slaveImage }},master.image=${{ parameters.masterImage }},storage.size=${{ parameters.storageSize }},agentpool.name=$(_crux_aks_agent_pool),slaveReplicas=$(_crux_cluster_jmeter_slaves_replicas),placementRules=${{ parameters.placementRules }}, agentpool.useLabelledNodesOnly={{ parameters.useLabelledNodesOnly}}'
           force: true
           arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
 
