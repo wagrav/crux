@@ -49,8 +49,8 @@ steps:
           arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
 
       - bash : |
-          pvc=$(kubectl get pvc --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
-          kubectl patch pvc --namespace $(_crux_cluster_deployment_namespace) "$pvc" -p '{"metadata":{"finalizers":null}}'
+          pvc=$(kubectl get pv --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
+          kubectl patch pv --namespace $(_crux_cluster_deployment_namespace) "$pvc" -p '{"metadata":{"finalizers":null}}'
         displayName: Patch PVC finalizers
 
       - task: HelmDeploy@0
