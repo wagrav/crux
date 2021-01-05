@@ -3,6 +3,7 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: {{ .Values.storage.classNamePrefix }}{{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
 provisioner: kubernetes.io/azure-file
 mountOptions:
   - dir_mode=0777
