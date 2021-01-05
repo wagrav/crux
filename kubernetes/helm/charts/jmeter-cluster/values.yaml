@@ -1,7 +1,7 @@
 agentpool:
   name: agentpool
   useLabelledNodesOnly: false
-placementRules: required.placement
+placementRules: best.effort.placement
 storage:
   size: 2Gi
   namePrefix: crux-disk-
