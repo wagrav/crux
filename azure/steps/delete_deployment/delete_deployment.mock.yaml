@@ -13,4 +13,4 @@ steps:
           azureResourceGroup: $(_crux_cluster_resource_group)
           kubernetesCluster: $(_crux_cluster_name)
           command: delete
-          arguments: '-n $(_crux_cluster_deployment_namespace) release-$(_crux_cluster_deployment_namespace)'
+          arguments: '-n $(_crux_cluster_deployment_namespace) $(_crux_helm_release)'

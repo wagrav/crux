@@ -44,7 +44,7 @@ steps:
           command: upgrade
           chartType: FilePath
           chartPath: kubernetes/helm/charts/jmeter-cluster
-          releaseName: release-$(_crux_cluster_deployment_namespace)
+          releaseName: $(_crux_helm_release)
           overrideValues: 'slaveReplicas=2,placementRules=best.effort.placement'
           force: true
           arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
