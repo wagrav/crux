@@ -6,7 +6,7 @@ steps:
       #helm delete leaves pvc but deleting namespace will help as a work-around
       - task: HelmDeploy@0
         timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
-        displayName: 'helm delete'
+        displayName: 'Helm delete'
         condition: always()
         inputs:
           azureSubscriptionEndpoint: $(_crux_arm_service_connection)
@@ -22,10 +22,3 @@ steps:
     inputs:
       scriptPath: $(_crux_steps_path)/delete_namespace/delete_namespace.sh
       args: $(_crux_cluster_deployment_namespace)
-
-  - ${{ if eq(parameters.tool,'helm') }}:
-      #helm delete leaves pvc but deleting namespace will help as a work-around
-      - bash: |
-          pv=$(kubectl get pv --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
-          kubectl delete --namespace $(_crux_cluster_deployment_namespace) "pv/$pv"
-        displayName: Delete PV
