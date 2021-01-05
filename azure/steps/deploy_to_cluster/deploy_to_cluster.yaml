@@ -48,13 +48,6 @@ steps:
           force: true
           arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
 
-      - bash : |
-          pvc=$(kubectl get pvc --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
-          pv=$(kubectl get pv --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
-          kubectl delete --namespace $(_crux_cluster_deployment_namespace) "pvc/$pvc"
-          kubectl delete --namespace $(_crux_cluster_deployment_namespace) "pv/$pv"
-        displayName: Dirty cleanup
-
       - task: HelmDeploy@0
         timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
         displayName: 'helm delete'
@@ -65,3 +58,11 @@ steps:
           kubernetesCluster: $(_crux_cluster_name)
           command: delete
           arguments: '-n $(_crux_cluster_deployment_namespace) release-$(_crux_cluster_deployment_namespace)'
+
+      - bash : |
+          kubectl delete pods --namespace $(_crux_cluster_deployment_namespace)
+          kubectl delete svc --namespace $(_crux_cluster_deployment_namespace)
+          kubectl delete pv --namespace $(_crux_cluster_deployment_namespace)
+          kubectl delete pvc --namespace $(_crux_cluster_deployment_namespace)
+        displayName: Dirty cleanup
+        timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
