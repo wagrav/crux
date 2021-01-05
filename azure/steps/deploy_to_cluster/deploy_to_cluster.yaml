@@ -51,7 +51,7 @@ steps:
       - bash : |
           pvc=$(kubectl get pvc --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
           pv=$(kubectl get pv --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
-          kubectl delete "pvc/$pvc" "pv/$pv"
+          kubectl delete "pv/$pv" "pvc/$pvc"
         displayName: Dirty cleanup
 
       - task: HelmDeploy@0
