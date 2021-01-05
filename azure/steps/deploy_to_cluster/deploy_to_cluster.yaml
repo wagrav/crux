@@ -34,6 +34,7 @@ steps:
         displayName: 'helm upgrade'
         inputs:
           azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+          azureResourceGroup: $(_crux_cluster_resource_group)
           kubernetesCluster: $(_crux_cluster_name)
           namespace: $(_crux_cluster_deployment_namespace)
           command: upgrade
@@ -49,6 +50,7 @@ steps:
         condition: always()
         inputs:
           azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+          azureResourceGroup: $(_crux_cluster_resource_group)
           kubernetesCluster: $(_crux_cluster_name)
           command: delete
           arguments: '-n $(_crux_cluster_deployment_namespace) crux-$(_crux_cluster_deployment_namespace)'
