@@ -2,7 +2,7 @@ parameters:
   timeoutInMinutes: 5
 steps:
   - task: ShellScript@2
-    displayName: Deploy services to cluster
+    displayName: Deploy cluster (kubectl)
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: and(succeeded(), not(eq(variables._crux_deploy_to_cluster, false)))
     inputs:

@@ -1,19 +1,65 @@
 parameters:
   timeoutInMinutes: 5
+  tool: helm
+  helmVersion: v3.2.1
+
 steps:
-  - task: ShellScript@2
-    displayName: Deploy services to cluster
-    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
-    condition: and(succeeded(), not(eq(variables._crux_deploy_to_cluster, false)))
-    inputs:
-      scriptPath: $(_crux_steps_path)/deploy_to_cluster/deploy_to_cluster.sh
-      args: >
-        $(System.DefaultWorkingDirectory)
-        $(_crux_cluster_deployment_namespace)
-        $(_crux_jmeter_master_service)
-        $(_crux_jmeter_slaves_service)
-        $(_crux_cluster_jmeter_slaves_replicas)
-        $(_crux_jmeter_master_deploy_file)
-        $(_crux_jmeter_slave_deploy_file)
-        15
-        $(_crux_aks_agent_pool)
+  #kubectl is left as fall-back if helm becomes messy to maintain
+  - ${{ if eq(parameters.tool,'kubectl') }}:
+    - task: ShellScript@2
+      displayName: Deploy cluster (kubectl)
+      timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+      condition: and(succeeded(), not(eq(variables._crux_deploy_to_cluster, false)))
+      inputs:
+        scriptPath: $(_crux_steps_path)/deploy_to_cluster/deploy_to_cluster.sh
+        args: >
+          $(System.DefaultWorkingDirectory)
+          $(_crux_cluster_deployment_namespace)
+          $(_crux_jmeter_master_service)
+          $(_crux_jmeter_slaves_service)
+          $(_crux_cluster_jmeter_slaves_replicas)
+          $(_crux_jmeter_master_deploy_file)
+          $(_crux_jmeter_slave_deploy_file)
+          15
+          $(_crux_aks_agent_pool)
+
+  #helm is the recommended way to manage the cluster
+  - ${{ if eq(parameters.tool,'helm') }}:
+      - task: HelmInstaller@1
+        displayName: 'Install Helm'
+        inputs:
+          helmVersionToInstall: ${{ parameters.helmVersion }}
+
+      - task: HelmDeploy@0
+        displayName: 'helm upgrade'
+        inputs:
+          azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+          namespace: $(_crux_cluster_deployment_namespace)
+          command: upgrade
+          chartType: FilePath
+          chartPath: kubernetes/helm/charts/jmeter-cluster
+          releaseName: crux-$(_crux_cluster_deployment_namespace)
+          overrideValues: 'slaveReplicas=2,placementRules=required.placement'
+          force: true
+          arguments: '--timeout ${{ parameters.timeoutInMinutes }} --create-namespace'
+
+      - task: HelmDeploy@0
+        displayName: 'helm upgrade'
+        inputs:
+          azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+          namespace: $(_crux_cluster_deployment_namespace)
+          command: upgrade
+          chartType: FilePath
+          chartPath: kubernetes/helm/charts/jmeter-cluster
+          releaseName: crux-$(_crux_cluster_deployment_namespace)
+          overrideValues: 'slaveReplicas=2,placementRules=required.placement'
+          force: true
+          arguments: '--timeout ${{ parameters.timeoutInMinutes }} --create-namespace'
+
+      - task: HelmDeploy@0
+        displayName: 'helm delete'
+        condition: always()
+        inputs:
+          azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+          command: delete
+          arguments: '-n $(_crux_cluster_deployment_namespace) crux-$(_crux_cluster_deployment_namespace)'
