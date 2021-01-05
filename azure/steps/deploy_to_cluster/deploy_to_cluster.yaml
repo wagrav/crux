@@ -34,19 +34,7 @@ steps:
         displayName: 'helm upgrade'
         inputs:
           azureSubscriptionEndpoint: $(_crux_arm_service_connection)
-          namespace: $(_crux_cluster_deployment_namespace)
-          command: upgrade
-          chartType: FilePath
-          chartPath: kubernetes/helm/charts/jmeter-cluster
-          releaseName: crux-$(_crux_cluster_deployment_namespace)
-          overrideValues: 'slaveReplicas=2,placementRules=required.placement'
-          force: true
-          arguments: '--timeout ${{ parameters.timeoutInMinutes }} --create-namespace'
-
-      - task: HelmDeploy@0
-        displayName: 'helm upgrade'
-        inputs:
-          azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+          kubernetesCluster: $(_crux_cluster_name)
           namespace: $(_crux_cluster_deployment_namespace)
           command: upgrade
           chartType: FilePath
@@ -61,5 +49,6 @@ steps:
         condition: always()
         inputs:
           azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+          kubernetesCluster: $(_crux_cluster_name)
           command: delete
           arguments: '-n $(_crux_cluster_deployment_namespace) crux-$(_crux_cluster_deployment_namespace)'
