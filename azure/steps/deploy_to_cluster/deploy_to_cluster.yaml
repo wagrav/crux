@@ -60,9 +60,9 @@ steps:
           arguments: '-n $(_crux_cluster_deployment_namespace) release-$(_crux_cluster_deployment_namespace)'
 
       - bash : |
-          kubectl delete pods --namespace $(_crux_cluster_deployment_namespace)
-          kubectl delete svc --namespace $(_crux_cluster_deployment_namespace)
-          kubectl delete pv --namespace $(_crux_cluster_deployment_namespace)
-          kubectl delete pvc --namespace $(_crux_cluster_deployment_namespace)
+          kubectl delete pods --namespace $(_crux_cluster_deployment_namespace) --all
+          kubectl delete svc --namespace $(_crux_cluster_deployment_namespace) --all
+          kubectl delete pv --namespace $(_crux_cluster_deployment_namespace) --all
+          kubectl delete pvc --namespace $(_crux_cluster_deployment_namespace) --all
         displayName: Dirty cleanup
         timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
