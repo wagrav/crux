@@ -2,6 +2,7 @@ parameters:
   timeoutInMinutes: 5
   tool: helm
   helmVersion: v3.2.1
+  helmTimeout: 4m
 
 steps:
   #kubectl is left as fall-back if helm becomes messy to maintain
@@ -26,11 +27,13 @@ steps:
   #helm is the recommended way to manage the cluster
   - ${{ if eq(parameters.tool,'helm') }}:
       - task: HelmInstaller@1
+        timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
         displayName: 'Install Helm'
         inputs:
           helmVersionToInstall: ${{ parameters.helmVersion }}
 
       - task: HelmDeploy@0
+        timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
         displayName: 'helm upgrade'
         inputs:
           azureSubscriptionEndpoint: $(_crux_arm_service_connection)
@@ -40,12 +43,13 @@ steps:
           command: upgrade
           chartType: FilePath
           chartPath: kubernetes/helm/charts/jmeter-cluster
-          releaseName: crux-$(_crux_cluster_deployment_namespace)
+          releaseName: release-$(_crux_cluster_deployment_namespace)
           overrideValues: 'slaveReplicas=2,placementRules=required.placement'
           force: true
-          arguments: '--timeout ${{ parameters.timeoutInMinutes }} --create-namespace'
+          arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
 
       - task: HelmDeploy@0
+        timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
         displayName: 'helm delete'
         condition: always()
         inputs:
@@ -53,4 +57,4 @@ steps:
           azureResourceGroup: $(_crux_cluster_resource_group)
           kubernetesCluster: $(_crux_cluster_name)
           command: delete
-          arguments: '-n $(_crux_cluster_deployment_namespace) crux-$(_crux_cluster_deployment_namespace)'
+          arguments: '-n $(_crux_cluster_deployment_namespace) release-$(_crux_cluster_deployment_namespace)'
