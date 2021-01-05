@@ -35,7 +35,7 @@ steps:
 
       - task: HelmDeploy@0
         timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
-        displayName: 'helm upgrade'
+        displayName: 'Helm upgrade'
         inputs:
           azureSubscriptionEndpoint: $(_crux_arm_service_connection)
           azureResourceGroup: $(_crux_cluster_resource_group)
