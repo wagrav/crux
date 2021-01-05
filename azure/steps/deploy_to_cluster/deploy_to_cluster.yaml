@@ -49,8 +49,9 @@ steps:
           arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
 
       - bash : |
-          #pvc=$(kubectl get pvc --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
+          pvc=$(kubectl get pvc --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
           pv=$(kubectl get pv --namespace $(_crux_cluster_deployment_namespace) -o=jsonpath='{.items[0].metadata.name}')
+          kubectl delete "pvc/$pvc"
           kubectl delete "pv/$pv"
         displayName: Dirty cleanup
 
