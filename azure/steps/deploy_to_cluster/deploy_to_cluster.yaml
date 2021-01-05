@@ -1,7 +1,7 @@
 parameters:
   timeoutInMinutes: 5
   tool: helm
-  helmVersion: v3.2.1
+  helmVersion: v3.4.2
   helmTimeout: 4m
 
 steps:
