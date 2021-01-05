@@ -7,7 +7,7 @@ steps:
       - task: HelmDeploy@0
         timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
         displayName: 'Helm delete'
-        condition: always()
+        condition: and(always(), not(eq(variables._crux_delete_deployment, false)))
         inputs:
           azureSubscriptionEndpoint: $(_crux_arm_service_connection)
           azureResourceGroup: $(_crux_cluster_resource_group)
