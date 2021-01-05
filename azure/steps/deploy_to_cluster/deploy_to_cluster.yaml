@@ -48,6 +48,11 @@ steps:
           force: true
           arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
 
+      - bash : |
+          pvc=$(kubectl get pvc --namespace helm3 -o=jsonpath='{.items[0].metadata.name}')
+          kubectl patch pvc "$pvc" -p '{"metadata":{"finalizers":null}}'
+        displayName: Patch PVC finalizers
+
       - task: HelmDeploy@0
         timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
         displayName: 'helm delete'
