@@ -38,36 +38,36 @@ steps:
         inputs:
           helmVersionToInstall: ${{ parameters.helmVersion }}
 
-    - ${{ if ne(parameters.mode,'on_aks_created_for_each_test_run') }}:
-        - task: HelmDeploy@0
-          timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
-          displayName: 'Helm upgrade'
-          inputs:
-            azureSubscriptionEndpoint: $(_crux_arm_service_connection)
-            azureResourceGroup: $(_crux_cluster_resource_group)
-            kubernetesCluster: $(_crux_cluster_name)
-            namespace: $(_crux_cluster_deployment_namespace)
-            command: upgrade
-            chartType: FilePath
-            chartPath: kubernetes/helm/charts/jmeter-cluster
-            releaseName: $(_crux_helm_release)
-            overrideValues: 'slave.image=${{ parameters.slaveImage }},master.image=${{ parameters.masterImage }},storage.size=${{ parameters.storageSize }},agentpool.name=$(_crux_aks_agent_pool),slaveReplicas=$(_crux_cluster_jmeter_slaves_replicas),placementRules=${{ parameters.placementRules }},agentpool.useLabelledNodesOnly=${{ parameters.useLabelledNodesOnly}}'
-            force: true
-            arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
+      - ${{ if ne(parameters.mode,'on_aks_created_for_each_test_run') }}:
+          - task: HelmDeploy@0
+            timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+            displayName: 'Helm upgrade'
+            inputs:
+              azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+              azureResourceGroup: $(_crux_cluster_resource_group)
+              kubernetesCluster: $(_crux_cluster_name)
+              namespace: $(_crux_cluster_deployment_namespace)
+              command: upgrade
+              chartType: FilePath
+              chartPath: kubernetes/helm/charts/jmeter-cluster
+              releaseName: $(_crux_helm_release)
+              overrideValues: 'slave.image=${{ parameters.slaveImage }},master.image=${{ parameters.masterImage }},storage.size=${{ parameters.storageSize }},agentpool.name=$(_crux_aks_agent_pool),slaveReplicas=$(_crux_cluster_jmeter_slaves_replicas),placementRules=${{ parameters.placementRules }},agentpool.useLabelledNodesOnly=${{ parameters.useLabelledNodesOnly}}'
+              force: true
+              arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
 
-    - ${{ if eq(parameters.mode,'on_aks_created_for_each_test_run') }}:
-        - task: HelmDeploy@0
-          timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
-          displayName: 'Helm upgrade'
-          inputs:
-            azureSubscriptionEndpoint: $(_crux_arm_service_connection)
-            azureResourceGroup: $(_crux_cluster_resource_group)
-            kubernetesCluster: $(_crux_created_cluster_name)
-            namespace: $(_crux_cluster_deployment_namespace)
-            command: upgrade
-            chartType: FilePath
-            chartPath: kubernetes/helm/charts/jmeter-cluster
-            releaseName: $(_crux_helm_release)
-            overrideValues: 'slave.image=${{ parameters.slaveImage }},master.image=${{ parameters.masterImage }},storage.size=${{ parameters.storageSize }},agentpool.name=$(_crux_aks_agent_pool),slaveReplicas=$(_crux_cluster_jmeter_slaves_replicas),placementRules=${{ parameters.placementRules }},agentpool.useLabelledNodesOnly=${{ parameters.useLabelledNodesOnly}}'
-            force: true
-            arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
+      - ${{ if eq(parameters.mode,'on_aks_created_for_each_test_run') }}:
+          - task: HelmDeploy@0
+            timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+            displayName: 'Helm upgrade'
+            inputs:
+              azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+              azureResourceGroup: $(_crux_cluster_resource_group)
+              kubernetesCluster: $(_crux_created_cluster_name)
+              namespace: $(_crux_cluster_deployment_namespace)
+              command: upgrade
+              chartType: FilePath
+              chartPath: kubernetes/helm/charts/jmeter-cluster
+              releaseName: $(_crux_helm_release)
+              overrideValues: 'slave.image=${{ parameters.slaveImage }},master.image=${{ parameters.masterImage }},storage.size=${{ parameters.storageSize }},agentpool.name=$(_crux_aks_agent_pool),slaveReplicas=$(_crux_cluster_jmeter_slaves_replicas),placementRules=${{ parameters.placementRules }},agentpool.useLabelledNodesOnly=${{ parameters.useLabelledNodesOnly}}'
+              force: true
+              arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
