@@ -8,7 +8,7 @@ steps:
       - ${{ if ne(parameters.mode,'on_aks_created_for_each_test_run') }}:
         - task: HelmDeploy@0
           timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
-          displayName: 'Delete k8 cluster (Helm)'
+          displayName: 'Delete jmeter-cluster (Helm)'
           condition: and(always(), not(eq(variables._crux_delete_deployment, false)))
           inputs:
             azureSubscriptionEndpoint: $(_crux_arm_service_connection)
@@ -20,7 +20,7 @@ steps:
       - ${{ if eq(parameters.mode,'on_aks_created_for_each_test_run') }}:
           - task: HelmDeploy@0
             timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
-            displayName: 'Delete k8 cluster (Helm)'
+            displayName: 'Delete jmeter-cluster (Helm)'
             condition: and(always(), not(eq(variables._crux_delete_deployment, false)))
             inputs:
               azureSubscriptionEndpoint: $(_crux_arm_service_connection)

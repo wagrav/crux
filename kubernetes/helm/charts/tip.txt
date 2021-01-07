@@ -1,21 +1,24 @@
 Useful commands:
 
+cd C:\Users\gstarczewski\repos\performance\jmeter_azure_k8_boilerplate\kubernetes\helm\charts
+#install chart
 helm upgrade jj .\jmeter-cluster\ --install --namespace helm --create-namespace
+#list contents of deployment
 helm ls --namespace helm
 kubectl get pvc --namespace helm
 kubectl get all --namespace helm
+#rollback to specific version
 helm rollback jj 7 --namespace helm
-#show potential chart
+#show potential chart without applying it
 helm upgrade jj .\jmeter-cluster\ --install --namespace helm --create-namespace --dry-run
 helm upgrade jj .\jmeter-cluster\ --set placementRules=best.effort.placement --install --namespace helm --create-namespace --dry-run
 #this will delete PVC too
 helm delete jj --namespace helm
+#edit existing deployment
+kubectl edit  --namespace helm deployment/jmeter-master
+#enter running pod - master (BASH)
+kubectl exec -ti -n helm $(kubectl get po -n helm | grep jmeter-master | awk '{print $1}') -- bash
+#enter one of pod slaves (BASH)
+kubectl exec -ti  -n helm $(kubectl get po -n helm | grep jmeter-slave | awk '{print $1}'  | head -n1) -- bash
 
 
-Implement:
- 1. Enable mode: helm or kubectl
- 2. Execute dry-run and abort if dry run returned non-0
- 3. Deploy
- 4. Run test
- ....
- 5. Archive chart deployed ...

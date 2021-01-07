@@ -9,8 +9,12 @@ storage:
 slave:
   replicas: 3
   image: gabrielstar/crux-slave:0.0.1
+  env:
+    JVM_ARGS: "-Xms1G -Xmx2G"
 master:
   image: gabrielstar/crux-master:0.0.1
+  env:
+    JVM_ARGS: "-Xms1G -Xmx2G"
 #sub-chart
 jmeter-storage-class:
   storage:

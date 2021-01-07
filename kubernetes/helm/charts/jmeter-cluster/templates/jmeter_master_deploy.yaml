@@ -26,6 +26,9 @@ spec:
         imagePullPolicy: IfNotPresent
         command: [ "/bin/bash", "-c", "--" ]
         args: [ "while true; do sleep 30; done;" ]
+        env:
+          - name: JVM_ARGS
+            value: {{ .Values.master.env.JVM_ARGS }}
         volumeMounts:
           - name: loadtest
             mountPath: /load_test

@@ -31,6 +31,9 @@ spec:
         - name: jmslave
           image: {{ .Values.slave.image }}
           imagePullPolicy: IfNotPresent
+          env:
+            - name: JVM_ARGS
+              value: {{ .Values.slave.env.JVM_ARGS }}
           ports:
             - containerPort: 1099
             - containerPort: 50000
