@@ -7,5 +7,5 @@ steps:
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: not(eq(variables._crux_validate_deployment, false))
     inputs:
-      scriptPath: $(_crux_steps_path)/validate_deployement/validate_deployment.sh
+      scriptPath: $(_crux_steps_path)/validate_deployment/validate_deployment.sh
       args: $(_crux_cluster_deployment_namespace)
