@@ -9,6 +9,7 @@ parameters:
   slaveImage: gabrielstar/crux-slave:0.0.1
   masterImage: gabrielstar/crux-master:0.0.1
   useLabelledNodesOnly: false
+  mode: on_build_agent
 
 steps:
   #kubectl is left as fall-back if helm becomes messy to maintain
