@@ -41,10 +41,7 @@ function teardown(){
   _wait_for_pods(){
     :
      }
-  _display_deployment_correctness_status(){
-    :
-   }
-  export -f _replace_aks_pool_name _wait_for_pods kubectl _display_deployment_correctness_status
+  export -f _replace_aks_pool_name _wait_for_pods kubectl
   run deploy_to_cluster 1 2 3 4 5 6 7 8 "pool_name"
   assert_output "Called _replace_aks_pool_name"
 }
