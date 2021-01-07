@@ -8,11 +8,12 @@ param(
     $FixedArgs = "-o $ContainerTestDataDir/report/ -f -l $ContainerTestDataDir/results.csv -e -Gsts=localhost -Gchromedriver=/usr/bin/chromedriver",
     $SleepSeconds = 2,
     $ArtifactsDirectory = "$PSScriptRoot/../../../kubernetes/tmp",
-    $SkipRun = $FALSE
+    $SkipRun = $FALSE,
+    $JVM_ARGS = "-Xms512M -Xmx1G"
 )
 Import-Module $PSScriptRoot\JMeterDocker.psm1 -Force
 
-function Start-JMeterTests($Image, $ContainerName, $JMXPathOnAgent, $TestDataDirOnAgent, $ContainerTestDataDir, $UserArgs, $FixedArgs, $SleepSeconds, $ArtifactsDirectory, $SkipRun)
+function Start-JMeterTests($Image, $ContainerName, $JMXPathOnAgent, $TestDataDirOnAgent, $ContainerTestDataDir, $UserArgs, $FixedArgs, $SleepSeconds, $ArtifactsDirectory, $SkipRun, $JVM_ARGS)
 {
     if(!$SkipRun)
     {
@@ -20,7 +21,7 @@ function Start-JMeterTests($Image, $ContainerName, $JMXPathOnAgent, $TestDataDir
         $testName = Split-Path $JMXPathOnAgent -leaf
         Copy-Item $JMXPathOnAgent $TestDataDirOnAgent
         Stop-JMeterContainer -ContainerName $ContainerName
-        Start-JMeterContainer -Image $Image -ContainerName $ContainerName -TestDataDir $TestDataDirOnAgent -ContainerTestDataDir $ContainerTestDataDir
+        Start-JMeterContainer -Image $Image -ContainerName $ContainerName -TestDataDir $TestDataDirOnAgent -ContainerTestDataDir $ContainerTestDataDir -JVM_ARGS "$JVM_ARGS"
         Start-SimpleTableServer -ContainerName $ContainerName -DataSetDirectory $ContainerTestDataDir -SleepSeconds $SleepSeconds
         Show-TestDirectory -ContainerName $ContainerName -Directory $ContainerTestDataDir
         Start-JmeterTest -ContainerName $ContainerName -JMXPath $ContainerTestDataDir/$testName -UserArgs $UserArgs -FixedArgs $FixedArgs
@@ -42,5 +43,6 @@ Start-JMeterTests `
                   -FixedArgs $FixedArgs `
                   -SleepSeconds $SleepSeconds `
                   -ArtifactsDirectory $ArtifactsDirectory `
-                  -SkipRun $SkipRun
+                  -SkipRun $SkipRun `
+                  -JVM_ARGS "$JVM_ARGS"
 

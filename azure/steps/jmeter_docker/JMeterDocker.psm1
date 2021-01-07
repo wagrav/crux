@@ -16,12 +16,13 @@ function Stop-JMeterContainer($ContainerName){
   }
 }
 
-function Start-JMeterContainer($Image, $ContainerName, $TestDataDir, $ContainerTestDataDir)
+function Start-JMeterContainer($Image, $ContainerName, $TestDataDir, $ContainerTestDataDir, $JVM_ARGS)
 {
   Write-Host "Starting container ${ContainerName} from ${Image} ..."
   docker run -d `
           --name ${ContainerName} `
           --entrypoint tail `
+          -e JVM_ARGS="$JVM_ARGS" `
           --volume ${TestDataDir}:${ContainerTestDataDir} ${Image} `
           -f /dev/null
   Write-Host "Started container ${ContainerName} "
@@ -46,9 +47,9 @@ function Start-JmeterTest($ContainerName, $JMXPath,$UserArgs,$FixedArgs){
 }
 function Copy-Artifacts($ArtifactsDirectory, $TestDataDirOnAgent)
 {
-  Copy-Item $TestDataDirOnAgent/report $ArtifactsDirectory/report -Recurse
-  Copy-Item $TestDataDirOnAgent/jmeter.log $ArtifactsDirectory
-  Copy-Item $TestDataDirOnAgent/results.csv $ArtifactsDirectory
-  Copy-Item $TestDataDirOnAgent/errors.xml $ArtifactsDirectory
+  Copy-Item $TestDataDirOnAgent/report $ArtifactsDirectory/report -Recurse -force
+  Copy-Item $TestDataDirOnAgent/jmeter.log $ArtifactsDirectory -force
+  Copy-Item $TestDataDirOnAgent/results.csv $ArtifactsDirectory -force
+  Copy-Item $TestDataDirOnAgent/errors.xml $ArtifactsDirectory -force
 }
 Export-ModuleMember -function *
