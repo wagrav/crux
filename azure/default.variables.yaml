@@ -51,6 +51,8 @@ variables:
       _crux_delete_namespace: false
     ${{ if ne(True,variables['_crux_create_nodepool']) }}:
       _crux_create_nodepool: false
+    ${{ if ne(True,variables['_crux_validate_deployment']) }}:
+      _crux_validate_deployment: false
     ${{ if ne(True,variables['_crux_delete_nodepool']) }}:
       _crux_delete_nodepool: false
     ${{ if ne(True,variables['_crux_deploy_to_cluster']) }}:
