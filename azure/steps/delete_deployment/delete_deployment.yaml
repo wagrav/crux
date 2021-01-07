@@ -6,7 +6,7 @@ steps:
       #helm delete leaves pvc but deleting namespace will help as a work-around
       - task: HelmDeploy@0
         timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
-        displayName: 'Helm delete'
+        displayName: 'Delete k8 cluster (Helm)'
         condition: and(always(), not(eq(variables._crux_delete_deployment, false)))
         inputs:
           azureSubscriptionEndpoint: $(_crux_arm_service_connection)
