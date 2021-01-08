@@ -8,6 +8,7 @@ parameters:
   storageSize: 3Gi
   slaveImage: gabrielstar/crux-slave:0.0.1
   masterImage: gabrielstar/crux-master:0.0.1
+  chartURL: ""
   useLabelledNodesOnly: false
   mode: on_build_agent
   slaveJVM_ARGS: "-Xms512M -Xmx1G"
@@ -41,6 +42,15 @@ steps:
         displayName: 'Install Helm'
         inputs:
           helmVersionToInstall: ${{ parameters.helmVersion }}
+
+      - ${{ if parameters.chartURL }}: #download custom chart or use repo one if not provided
+          - bash: |
+              echo "Installing chart ${{ parameters.chartURL }} "
+              curl -o jmeter-cluster.zip -L -X GET ${{ parameters.chartURL }}
+              mkdir -p kubernetes/helm/charts && unzip -o -d kubernetes/helm/charts jmeter-cluster.zip
+            condition: and(succeeded(), not(eq(variables._crux_fetch_helm_chart, false)))
+            timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+            displayName: Fetch Helm Chart
 
       - ${{ if ne(parameters.mode,'on_aks_created_for_each_test_run') }}:
           - task: HelmDeploy@0
@@ -77,3 +87,4 @@ steps:
               overrideValues: 'master.env.JVM_ARGS="${{ parameters.masterJVM_ARGS }}",slave.env.JVM_ARGS="${{ parameters.slaveJVM_ARGS }}",slave.image=${{ parameters.slaveImage }},master.image=${{ parameters.masterImage }},storage.size=${{ parameters.storageSize }},agentpool.name=$(_crux_aks_agent_pool),slave.replicas=$(_crux_cluster_jmeter_slaves_replicas),placementRules=${{ parameters.placementRules }},agentpool.useLabelledNodesOnly=${{ parameters.useLabelledNodesOnly}}'
               force: true
               arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
+
