@@ -64,7 +64,7 @@ steps:
               chartType: FilePath
               chartPath: kubernetes/helm/charts/jmeter-cluster
               releaseName: $(_crux_helm_release)
-              overrideValues: >
+              overrideValues: >-
                 'master.env.JVM_ARGS="${{ parameters.masterJVM_ARGS }}",
                 slave.env.JVM_ARGS="${{ parameters.slaveJVM_ARGS }}",
                 slave.image=${{ parameters.slaveImage }},
