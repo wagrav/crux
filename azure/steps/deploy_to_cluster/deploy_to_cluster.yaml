@@ -42,6 +42,7 @@ steps:
         displayName: 'Install Helm'
         inputs:
           helmVersionToInstall: ${{ parameters.helmVersion }}
+
       - ${{ if ne(parameters.chartURL,'') }}:
           bash: |
             echo "Installing chart ${{ parameters.chartURL }} "
