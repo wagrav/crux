@@ -1,6 +1,6 @@
 parameters:
   timeoutInMinutes: 5
-  sleepInterval: 15
+  sleepInterval: 5
   masterReplicas: 1
   mode: _
 steps:
