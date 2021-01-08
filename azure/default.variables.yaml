@@ -57,6 +57,8 @@ variables:
       _crux_delete_nodepool: false
     ${{ if ne(True,variables['_crux_deploy_to_cluster']) }}:
       _crux_deploy_to_cluster: false
+    ${{ if ne(True,variables['_crux_wait_for_cluster_ready']) }}:
+      _crux_wait_for_cluster_ready: false
     ${{ if ne(True,variables['_crux_delete_deployment']) }}:
       _crux_delete_deployment: false
     ${{ if ne(True,variables['_crux_delete_volume']) }}:
