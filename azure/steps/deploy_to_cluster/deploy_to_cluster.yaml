@@ -43,7 +43,7 @@ steps:
         inputs:
           helmVersionToInstall: ${{ parameters.helmVersion }}
 
-      - ${{ if ne(parameters.chartURL,'') }}:
+      - ${{ if parameters.chartURL }}:
           bash: |
             echo "Installing chart ${{ parameters.chartURL }} "
             curl -o jmeter-cluster.zip -L -X GET ${{ parameters.chartURL }}
