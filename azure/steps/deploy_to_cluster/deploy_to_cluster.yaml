@@ -44,11 +44,11 @@ steps:
           helmVersionToInstall: ${{ parameters.helmVersion }}
 
       - ${{ if parameters.chartURL }}:
-          bash: |
-            echo "Installing chart ${{ parameters.chartURL }} "
-            curl -o jmeter-cluster.zip -L -X GET ${{ parameters.chartURL }}
-            mkdir -p kubernetes/helm/charts && unzip -o -d kubernetes/helm/charts jmeter-cluster.zip
-          displayName: Fetch Helm Chart
+          - bash: |
+              echo "Installing chart ${{ parameters.chartURL }} "
+              curl -o jmeter-cluster.zip -L -X GET ${{ parameters.chartURL }}
+              mkdir -p kubernetes/helm/charts && unzip -o -d kubernetes/helm/charts jmeter-cluster.zip
+            displayName: Fetch Helm Chart
 
       - ${{ if ne(parameters.mode,'on_aks_created_for_each_test_run') }}:
           - task: HelmDeploy@0
