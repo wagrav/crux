@@ -7,13 +7,13 @@ steps:
   - task: ShellScript@2
     inputs:
       scriptPath: $(_crux_steps_path)/wait_for_cluster_ready/wait_for_cluster_ready.sh
-        args: >
-          $(_crux_cluster_deployment_namespace)
-          ${{ parameters.sleepInterval }}
-          $(_crux_jmeter_master_service)
-          $(_crux_jmeter_slaves_service)
-          ${{ parameters.masterReplicas }}
-          $(_crux_cluster_jmeter_slaves_replicas)
+      args: >
+        $(_crux_cluster_deployment_namespace)
+        ${{ parameters.sleepInterval }}
+        $(_crux_jmeter_master_service)
+        $(_crux_jmeter_slaves_service)
+        ${{ parameters.masterReplicas }}
+        $(_crux_cluster_jmeter_slaves_replicas)
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: and(succeeded(), not(eq(variables._crux_wait_for_cluster_ready, false)))
     displayName: 'Wait for Cluster ready'
