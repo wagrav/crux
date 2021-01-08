@@ -88,11 +88,3 @@ steps:
               force: true
               arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
 
-      - bash: |
-          source azure/steps/deploy_to_cluster/deploy_to_cluster.sh
-          _scale_up_replicas_master=1
-          _wait_for_pods "$(_crux_cluster_deployment_namespace)" "$_scale_up_replicas_master" "${{ parameters.sleepInterval }}" "$(_crux_jmeter_master_service)"
-          _wait_for_pods "$(_crux_cluster_deployment_namespace)" "$(_crux_cluster_jmeter_slaves_replicas)" "${{ parameters.sleepInterval }}" "$(_crux_jmeter_slaves_service)"
-        timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
-        condition: and(succeeded(), not(eq(variables._crux_wait_for_cluster_ready, false)))
-        displayName: 'Wait for Cluster ready'
