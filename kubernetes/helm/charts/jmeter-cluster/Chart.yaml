@@ -6,4 +6,4 @@ type: application
 maintainers:
   - email: UK_KTI-DevOps@pwc.com
     name: KTI-DevOps Team
-version: 1.0.0
+version: 0.8.0

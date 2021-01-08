@@ -8,6 +8,7 @@ parameters:
   storageSize: 3Gi
   slaveImage: gabrielstar/crux-slave:0.0.1
   masterImage: gabrielstar/crux-master:0.0.1
+  chartURL: ""
   useLabelledNodesOnly: false
   mode: on_build_agent
   slaveJVM_ARGS: "-Xms512M -Xmx1G"
@@ -41,6 +42,12 @@ steps:
         displayName: 'Install Helm'
         inputs:
           helmVersionToInstall: ${{ parameters.helmVersion }}
+      - ${{ if parameters.chartURL }}:
+          bash: |
+            echo "Installing chart ${{ parameters.chartURL }} "
+            curl -o jmeter-cluster.zip -L -X GET ${{ parameters.chartURL }}
+            mkdir -p kubernetes/helm/charts && unzip -o -d kubernetes/helm/charts jmeter-cluster.zip
+          displayName: Fetch Helm Chart
 
       - ${{ if ne(parameters.mode,'on_aks_created_for_each_test_run') }}:
           - task: HelmDeploy@0
