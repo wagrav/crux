@@ -1,0 +1,54 @@
+#Test case 1
+#This test mounts a sample tests scenario to /test directory 
+#Scenario writes to a shared drive at /shared
+{{ if eq .Values.tests.deploy true }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "e2e-shared-drive-jmeter-cluster-test"
+  annotations:
+   "helm.sh/hook": test
+spec:
+  containers:
+  - name: jmeter-master
+    image: {{ .Values.master.image }}
+    imagePullPolicy: IfNotPresent
+    ports:
+    - containerPort: {{ .Values.master.ports.rmiLocal }}
+    - containerPort: {{ .Values.master.ports.stsServer }}
+    command:
+      - /bin/bash
+      - -c
+      - |
+        #WHEN a test is run that writes to a /shared mount
+        #AND each node writes its IP to a file on /shared mount
+        /load_test shared-drive.jmx -Gshared_drive=/shared
+        #THEN number of entries in the file should match slave nodes number
+        cat /shared/ips.txt | sort | uniq | wc -l | grep {{ .Values.slave.replicas }}
+        #AND  no error is thrown in JMeter
+        cat jmeter.log | grep  "Err:     0 (0.00%)"
+    volumeMounts:
+     - name: loadtest
+       mountPath: /load_test
+       subPath: load_test
+     - mountPath: "/shared"
+       name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+     - name: test-jmx
+       mountPath: /test/shared-drive.jmx
+       subPath: shared-drive.jmx
+
+  volumes:
+  - name: loadtest 
+    configMap:
+     name: jmeter-load-test
+     defaultMode: 0755
+  - name: test-jmx
+    configMap:
+     name: jmx-shared-drive-test-scenario
+     defaultMode: 0444
+  - name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+    persistentVolumeClaim:
+      claimName: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+     
+  restartPolicy: Never
+{{ end }}

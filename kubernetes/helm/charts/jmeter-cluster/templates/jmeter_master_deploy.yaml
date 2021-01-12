@@ -37,8 +37,8 @@ spec:
             mountPath: "/shared"
 
         ports:
-        - containerPort: 60000
-        - containerPort: 9191
+        - containerPort: {{ .Values.master.ports.rmiLocal }}
+        - containerPort: {{ .Values.master.ports.stsServer }}
       volumes:
       - name: loadtest 
         configMap:

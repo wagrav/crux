@@ -35,8 +35,8 @@ spec:
             - name: JVM_ARGS
               value: {{ .Values.slave.env.JVM_ARGS }}
           ports:
-            - containerPort: 1099
-            - containerPort: 50000
+            - containerPort: {{ .Values.slave.ports.rmi }}
+            - containerPort: {{ .Values.slave.ports.rmiLocal }}
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm

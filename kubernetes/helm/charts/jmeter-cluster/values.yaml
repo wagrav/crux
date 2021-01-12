@@ -8,14 +8,24 @@ storage:
   classNamePrefix: crux-sc-
 slave:
   replicas: 3
-  image: gabrielstar/crux-slave:0.0.1
+  image: gabrielstar/crux-slave:jmeter5.4-chrome87
+  ports:
+    rmi: 1099
+    rmiLocal: 50000
   env:
-    JVM_ARGS: "-Xms1G -Xmx2G"
+    JVM_ARGS: "-Xms512M -Xmx2G"
 master:
-  image: gabrielstar/crux-master:0.0.1
+  image: gabrielstar/crux-master:jmeter5.4-chrome87
+  ports:
+    rmiLocal: 60000
+    stsServer: 9191
   env:
-    JVM_ARGS: "-Xms1G -Xmx2G"
-#sub-chart
+    JVM_ARGS: "-Xms512M -Xmx2G"
+tests:
+  deploy: true
+
+#sub-chart configuration
 jmeter-storage-class:
   storage:
     classNamePrefix: crux-sc-
+    host: minikube

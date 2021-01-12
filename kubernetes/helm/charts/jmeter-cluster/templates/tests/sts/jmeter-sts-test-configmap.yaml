@@ -1,0 +1,11 @@
+#a simple jmx test scenario mounted to master for helm deployment test
+{{ if eq .Values.tests.deploy true }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jmx-test-scenario
+data:
+  sts.jmx: |-
+    {{ range .Files.Lines "test_data/sts.jmx" }}
+    {{ . }}{{ end }}
+{{ end }}
