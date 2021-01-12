@@ -28,4 +28,4 @@ tests:
 jmeter-storage-class:
   storage:
     classNamePrefix: crux-sc-
-    host: minikube
+    host: azure
