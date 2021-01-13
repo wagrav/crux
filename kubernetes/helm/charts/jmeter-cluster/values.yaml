@@ -6,7 +6,7 @@ storage:
   size: 2Gi
   namePrefix: crux-disk-
   classNamePrefix: crux-sc-
-  host: minikube
+  host: azure
 slave:
   replicas: 3
   image: gabrielstar/crux-slave:jmeter5.4-chrome87
