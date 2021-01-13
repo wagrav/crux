@@ -21,3 +21,4 @@ mountOptions:
   - mfsymlinks
   - cache=strict
 parameters:
+  skuName: Standard_LRS
