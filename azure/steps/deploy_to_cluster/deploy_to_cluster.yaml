@@ -58,11 +58,11 @@ steps:
             condition: and(succeeded(), not(eq(variables._crux_deploy_to_cluster, false)))
             displayName: 'Deploy jmeter-cluster (Helm)'
             inputs:
-              #azureSubscriptionEndpoint: $(_crux_arm_service_connection)
-              #azureResourceGroup: $(_crux_cluster_resource_group)
-              #kubernetesCluster: $(_crux_cluster_name)
-              connectionType: Kubernetes Service Connection
-              kubernetesServiceEndpoint: $(_crux_kubernetes_service_connection)
+              azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+              azureResourceGroup: $(_crux_cluster_resource_group)
+              kubernetesCluster: $(_crux_cluster_name)
+              #connectionType: Kubernetes Service Connection
+              #kubernetesServiceEndpoint: $(_crux_kubernetes_service_connection)
               namespace: $(_crux_cluster_deployment_namespace)
               command: upgrade
               chartType: FilePath
