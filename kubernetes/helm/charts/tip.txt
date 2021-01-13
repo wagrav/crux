@@ -20,7 +20,7 @@ kubectl get all --namespace helm
 helm rollback jmeter-cluster 7 --namespace helm
 #show potential chart without applying it
 helm upgrade jmeter-cluster .\jmeter-cluster\ --install --namespace helm --create-namespace --dry-run
-helm upgrade jmeter-cluster .\jmeter-cluster\ --set jmeter-storage-class.host=minikube --install --namespace helm --create-namespace --dry-run
+helm upgrade jmeter-cluster .\jmeter-cluster\ --set jmeter-storage-class.storage.host=minikube --install --namespace helm --create-namespace --dry-run
 #this will delete PVC too
 helm delete jmeter-cluster --namespace helm
 #edit existing deployment
