@@ -2,7 +2,6 @@
 #storageclass can pint to azure or minikube hostpath for ease of local development and testing
 #thanks to that we can deploy entire helm chart with minikube
 
-{{}}
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
