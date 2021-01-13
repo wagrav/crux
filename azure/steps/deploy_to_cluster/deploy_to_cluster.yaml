@@ -61,6 +61,7 @@ steps:
               #azureSubscriptionEndpoint: $(_crux_arm_service_connection)
               #azureResourceGroup: $(_crux_cluster_resource_group)
               #kubernetesCluster: $(_crux_cluster_name)
+              useClusterAdmin: true
               connectionType: Kubernetes Service Connection
               kubernetesServiceEndpoint: $(_crux_kubernetes_service_connection)
               namespace: $(_crux_cluster_deployment_namespace)
