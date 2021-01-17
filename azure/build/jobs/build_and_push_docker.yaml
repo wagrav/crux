@@ -17,15 +17,15 @@ jobs:
       - template: steps/build_and_push_step.yaml
         parameters:
           Dockerfile: Dockerfile
-          repository: gabrielstar/crux-base
+          repository: objectivityltd/crux-base
           tag: $(crux.tag)
       - template: steps/build_and_push_step.yaml
         parameters:
           Dockerfile: Dockerfile-master
-          repository: gabrielstar/crux-master
+          repository: objectivityltd/crux-master
           tag: $(crux.tag)
       - template: steps/build_and_push_step.yaml
         parameters:
           Dockerfile: Dockerfile-slave
-          repository: gabrielstar/crux-slave
+          repository: objectivityltd/crux-slave
           tag: $(crux.tag)
