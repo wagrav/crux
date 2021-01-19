@@ -1,0 +1,1 @@
+helm delete storage-test --namespace helm

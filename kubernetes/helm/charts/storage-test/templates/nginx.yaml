@@ -1,0 +1,27 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: nginx-master
+  labels: #these lables get assigned to pods for this deployment
+    crux.jmeter_mode: master
+spec:
+  replicas: 1
+  selector: #these pods are managed by this deployment
+    matchLabels:
+      crux.jmeter_mode: master
+  template:
+    metadata:
+      labels:
+        crux.jmeter_mode: master
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: shared-disk
+              mountPath: "/shared"
+      volumes:
+      - name: shared-disk
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}

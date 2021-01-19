@@ -1,0 +1,3 @@
+storage:
+  classNamePrefix: some_prefix
+  host: minikube
