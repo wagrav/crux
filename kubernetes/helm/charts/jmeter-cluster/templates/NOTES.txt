@@ -1,0 +1,6 @@
+You can run JMeter tests by executing :
+
+report_args=""
+user_args=""
+MASTER_POD=$(kubectl get po -n {{ .Release.Namespace }} | grep Running | grep jmeter-master | awk '{print $1}')    #set master pod globally
+kubectl exec -i -n {{ .Release.Namespace }} "$MASTER_POD" -- /bin/bash /load_test test_table_server.jmx  "$_report_args $_user_args"
