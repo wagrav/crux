@@ -5,6 +5,8 @@ metadata:
   labels:
     crux.jmeter_mode: slave
 spec:
+  strategy:
+    type: Recreate
   replicas: {{ .Values.slave.replicas }}
   selector:
     matchLabels:
@@ -31,6 +33,18 @@ spec:
         - name: jmslave
           image: {{ .Values.slave.image }}
           imagePullPolicy: IfNotPresent
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  #checks if TCP ports are listening as JMeter slaves supposed to
+                  ss -tulwpn | grep :{{ .Values.slave.ports.rmiLocal }} && \
+                  ss -tulwpn | grep :{{ .Values.slave.ports.rmi }}
+            failureThreshold: {{ .Values.master.startupProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.master.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.master.startupProbe.periodSeconds }}
           env:
             - name: JVM_ARGS
               value: {{ .Values.slave.env.JVM_ARGS }}
