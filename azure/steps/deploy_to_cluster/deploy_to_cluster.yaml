@@ -52,7 +52,28 @@ steps:
             timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
             displayName: Fetch Helm Chart
 
-      - ${{ if ne(parameters.mode,'on_aks_created_for_each_test_run') }}:
+      - ${{ if eq(parameters.mode,'on_aks') }}:
+          - task: HelmDeploy@0
+            timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+            condition: and(succeeded(), not(eq(variables._crux_deploy_to_cluster, false)))
+            displayName: 'Deploy jmeter-cluster (Helm)'
+            inputs:
+              #azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+              #azureResourceGroup: $(_crux_cluster_resource_group)
+              #kubernetesCluster: $(_crux_cluster_name)
+              #useClusterAdmin: true
+              connectionType: Kubernetes Service Connection
+              kubernetesServiceEndpoint: $(_crux_kubernetes_service_connection)
+              namespace: $(_crux_cluster_deployment_namespace)
+              command: upgrade
+              chartType: FilePath
+              chartPath: kubernetes/helm/charts/jmeter-cluster
+              releaseName: $(_crux_helm_release)
+              overrideValues: 'master.env.JVM_ARGS="${{ parameters.masterJVM_ARGS }}",slave.env.JVM_ARGS="${{ parameters.slaveJVM_ARGS }}",slave.image=${{ parameters.slaveImage }},master.image=${{ parameters.masterImage }},storage.size=${{ parameters.storageSize }},agentpool.name=$(_crux_aks_agent_pool),slave.replicas=$(_crux_cluster_jmeter_slaves_replicas),placementRules=${{ parameters.placementRules }},agentpool.useLabelledNodesOnly=${{ parameters.useLabelledNodesOnly}}'
+              force: true
+              arguments: '--timeout ${{ parameters.helmTimeout }} --create-namespace'
+
+      - ${{ if eq(parameters.mode,'on_aks_pool_created_for_each_test_run') }}:
           - task: HelmDeploy@0
             timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
             condition: and(succeeded(), not(eq(variables._crux_deploy_to_cluster, false)))
