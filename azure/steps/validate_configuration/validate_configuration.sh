@@ -11,7 +11,7 @@ validate_configuration() {
       echo "You have chosen to run CRUX in '$_mode' _mode."
       if [ "$_mode" == 'on_aks' ];then
         _check_k8_connection=true
-      elif [ "$_mode" == 'on_aks_created_for_each_tests_run' ];then
+      elif [ "$_mode" == 'on_aks_created_for_each_test_run' ];then
         _check_arm_connection=true
       elif [ "$_mode" == 'on_aks_pool_created_for_each_test_run' ];then
         _check_arm_connection=true
