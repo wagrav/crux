@@ -84,11 +84,12 @@ teardown_file(){
   assert_output --partial "Google Chrome 87."
 }
 
-@test "IT: Python 2.7 is installed" {
-  run docker run  $RUN_OPTS "$TEST_IMAGE_NAME" python --version
+@test "IT: Python 3 is installed" {
+  run docker run  $RUN_OPTS "$TEST_IMAGE_NAME" python3 --version
   #Then it is successful
-  assert_output --partial "Python 2.7."
+  assert_output --partial "Python 3."
 }
+
 
 @test "IT: Groovy 2.4 is installed" {
   run docker run $RUN_OPTS "$TEST_IMAGE_NAME" groovy --version
@@ -104,7 +105,7 @@ teardown_file(){
 
 @test "IT: Chrome Headless works fine when used in python script" {
   #WHEN I run test that use chrome headless
-  run docker run $RUN_OPTS "$TEST_IMAGE_NAME" python test.py
+  run docker run $RUN_OPTS "$TEST_IMAGE_NAME" python3 test.py
   #Then they are successful
   assert_success
 }
