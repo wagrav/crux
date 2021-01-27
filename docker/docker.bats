@@ -3,9 +3,9 @@
 load $HOME/test/'test_helper/bats-assert/load.bash'
 load $HOME/test/'test_helper/bats-support/load.bash'
 
-TEST_IMAGE_NAME="${TEST_IMAGE_NAME:-gabrielstar/crux-base:jmeter5.4-chrome87}"
-TEST_IMAGE_NAME_MASTER="${TEST_IMAGE_NAME_MASTER:-gabrielstar/crux-master:jmeter5.4-chrome87}"
-TEST_IMAGE_NAME_SLAVE="${TEST_IMAGE_NAME_SLAVE:-gabrielstar/crux-slave:jmeter5.4-chrome87}"
+TEST_IMAGE_NAME="${TEST_IMAGE_NAME:-objectivityltd/crux-base:jmeter5.4-chrome87}"
+TEST_IMAGE_NAME_MASTER="${TEST_IMAGE_NAME_MASTER:-objectivityltd/crux-master:jmeter5.4-chrome87}"
+TEST_IMAGE_NAME_SLAVE="${TEST_IMAGE_NAME_SLAVE:-objectivityltd/crux-slave:jmeter5.4-chrome87}"
 RUN_OPTS="--shm-size=1g --rm"
 JMETER_TESTS_SUCCESSFULL_OUTPUT="Err:     0 (0.00%)"
 

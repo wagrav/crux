@@ -17,7 +17,7 @@ WORKDIR $CONTAINER_JMETER_TEST_DIR
 #replace python test with groovy?
 #PIP, PIP LIBS for test,tools
 RUN  apt-get update -qqy \
-    && apt-get -qqy install python3 python3-pip && pip3 install selenium
+    && apt-get -qqy install python3 python3-pip && pip3 install selenium \
 	&& apt-get -qqy install vim groovy curl
 
 RUN apt-get clean && \
