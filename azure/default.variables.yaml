@@ -23,7 +23,7 @@ variables:
   _crux_remote_error_file: "/test/errors.xml"
   _crux_remote_log_file: "/test/jmeter.log"
   _crux_remote_server_log_file: "/test/jmeter-server.log"
-
+  _crux_helm_release: release-$(_crux_cluster_deployment_namespace)
   _crux_tmp: kubernetes/tmp
   _crux_steps_path: $(System.DefaultWorkingDirectory)/azure/steps
   ${{ if not(eq(parameters.mode,'tests')) }}:
@@ -51,10 +51,18 @@ variables:
       _crux_delete_namespace: false
     ${{ if ne(True,variables['_crux_create_nodepool']) }}:
       _crux_create_nodepool: false
+    ${{ if ne(True,variables['_crux_validate_deployment']) }}:
+      _crux_validate_deployment: false
     ${{ if ne(True,variables['_crux_delete_nodepool']) }}:
       _crux_delete_nodepool: false
     ${{ if ne(True,variables['_crux_deploy_to_cluster']) }}:
       _crux_deploy_to_cluster: false
+    ${{ if ne(True,variables['_crux_wait_for_cluster_ready']) }}:
+      _crux_wait_for_cluster_ready: false
+    ${{ if ne(True,variables['_crux_delete_deployment']) }}:
+      _crux_delete_deployment: false
+    ${{ if ne(True,variables['_crux_delete_volume']) }}:
+      _crux_delete_volume: false
     ${{ if ne(True,variables['_crux_delete_cluster']) }}:
       _crux_delete_cluster: false
     ${{ if ne(True,variables['_crux_docker_build_and_push']) }}:
@@ -101,8 +109,8 @@ variables:
       _crux_configure_cluster: false
     ${{ if ne(True,variables['_crux_create_namespace']) }}:
       create_namespace: true
-    ${{ if ne(True,variables['_crux_delete_namespace']) }}:
-      _crux_delete_namespace: false
+    ${{ if ne(False,variables['_crux_delete_namespace']) }}:
+      _crux_delete_namespace: true
     _crux_jmeter_master_deploy_file: "jmeter_master_deploy_required.yaml" #hard deployment rules
     _crux_jmeter_slave_deploy_file: "jmeter_slaves_deploy_required.yaml"
     _crux_aks_agent_pool: crux$(Build.BuildID)

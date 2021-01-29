@@ -26,7 +26,8 @@ Describe "Script Tests" {
                   -FixedArgs $FixedArgs `
                   -SleepSeconds $SleepSeconds `
                   -ArtifactsDirectory $ArtifactsDirectory `
-                  -SkipRun $FALSE
+                  -SkipRun $FALSE `
+                  -JVM_ARGS "$JVM_ARGS"
             }
             It "should execute Write-Host with Running message"  {
                 Assert-MockCalled Write-Host -Scope Context -ParameterFilter { $Object -eq "Running" }
@@ -48,7 +49,8 @@ Describe "Script Tests" {
                                 $FixedArgs,
                                 $SleepSeconds,
                                 $ArtifactsDirectory,
-                                $SkipRun)
+                                $SkipRun,
+                                $JVM_ARGS)
                 foreach($variable in $variables){
                     $variable | Should -Not -BeNullOrEmpty
                 }

@@ -1,0 +1,36 @@
+#Go to chart e.g.
+cd C:\Users\gstarczewski\repos\performance\jmeter_azure_k8_boilerplate\kubernetes\helm\charts
+
+#DEPLOY
+#AZURE - for development with az login against an AKS
+helm upgrade jmeter-cluster .\jmeter-cluster\ --install --namespace helm --create-namespace
+#MINIKUBE - for local development against minikube k8
+helm upgrade jmeter-cluster .\jmeter-cluster\ --set jmeter-storage-class.host=minikube --install --namespace helm --create-namespace
+
+#TEST
+#run tests on an exisiting deployment - change to test requires a redeploy
+helm test jmeter-cluster --namespace helm --logs
+
+#EDIT and VERIFY
+#list contents of deployment
+helm ls --namespace helm
+kubectl get pvc --namespace helm
+kubectl get all --namespace helm
+#rollback to specific version
+helm rollback jmeter-cluster 7 --namespace helm
+#show potential chart without applying it
+helm upgrade jmeter-cluster .\jmeter-cluster\ --install --namespace helm --create-namespace --dry-run
+helm upgrade jmeter-cluster .\jmeter-cluster\ --set jmeter-storage-class.storage.host=minikube --install --namespace helm --create-namespace --dry-run
+#this will delete PVC too
+helm delete jmeter-cluster --namespace helm
+#edit existing deployment
+kubectl edit  --namespace helm deployment/jmeter-master
+#enter running pod - master (BASH)
+kubectl exec -ti -n helm $(kubectl get po -n helm | grep jmeter-master | awk '{print $1}') -- bash
+#enter one of pod slaves (BASH)
+kubectl exec -ti  -n helm $(kubectl get po -n helm | grep jmeter-slave | awk '{print $1}'  | head -n1) -- bash
+
+
+
+
+

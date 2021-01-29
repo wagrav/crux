@@ -1,0 +1,10 @@
+#this is a dependency and will be installed before main chart
+#CRDs cannot atm be templated so we use a subchart to make sure storage is there and is unique for each test run
+apiVersion: v2
+name: storage-class
+description: Helm chart for JMeter Storage Class - needs to be installed as dependency with unqiue name before each deployment
+type: application
+maintainers:
+  - email: UK_KTI-DevOps@pwc.com
+    name: KTI-DevOps Team
+version: 1.0.0

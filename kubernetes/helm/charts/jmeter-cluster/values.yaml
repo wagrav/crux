@@ -1,0 +1,39 @@
+agentpool:
+  name: agentpool
+  useLabelledNodesOnly: false
+placementRules: best.effort.placement
+storage:
+  size: 2Gi
+  namePrefix: crux-disk-
+  classNamePrefix: crux-sc-
+slave:
+  replicas: 1
+  image: objectivityltd/crux-slave:jmeter5.4-chrome87
+  ports:
+    rmi: 1099
+    rmiLocal: 50000
+  env:
+    JVM_ARGS: "-Xms512M -Xmx2G"
+  startupProbe:
+    failureThreshold: 10
+    initialDelaySeconds: 1
+    periodSeconds: 1
+master:
+  image: objectivityltd/crux-master:jmeter5.4-chrome87
+  ports:
+    rmiLocal: 60000
+    stsServer: 9191
+  env:
+    JVM_ARGS: "-Xms512M -Xmx2G"
+  startupProbe:
+    failureThreshold: 10
+    initialDelaySeconds: 1
+    periodSeconds: 1
+tests:
+  deploy: true
+
+#sub-chart configuration
+jmeter-storage-class:
+  storage:
+    classNamePrefix: crux-sc-
+    host: azure

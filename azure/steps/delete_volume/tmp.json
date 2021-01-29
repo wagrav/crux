@@ -1,0 +1,104 @@
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "annotations": {
+      "kubernetes.io/createdby": "azure-file-dynamic-provisioner",
+      "pv.kubernetes.io/bound-by-controller": "yes",
+      "pv.kubernetes.io/provisioned-by": "kubernetes.io/azure-file"
+    },
+    "creationTimestamp": "2021-01-07T14:20:26Z",
+    "deletionGracePeriodSeconds": 0,
+    "deletionTimestamp": "2021-01-07T14:39:38Z",
+    "finalizers": [
+      "kubernetes.io/pv-protection"
+    ],
+    "managedFields": [
+      {
+        "apiVersion": "v1",
+        "fieldsType": "FieldsV1",
+        "fieldsV1": {
+          "f:metadata": {
+            "f:annotations": {
+              ".": {},
+              "f:kubernetes.io/createdby": {},
+              "f:pv.kubernetes.io/bound-by-controller": {},
+              "f:pv.kubernetes.io/provisioned-by": {}
+            }
+          },
+          "f:spec": {
+            "f:accessModes": {},
+            "f:azureFile": {
+              ".": {},
+              "f:secretName": {},
+              "f:secretNamespace": {},
+              "f:shareName": {}
+            },
+            "f:capacity": {
+              ".": {},
+              "f:storage": {}
+            },
+            "f:claimRef": {
+              ".": {},
+              "f:apiVersion": {},
+              "f:kind": {},
+              "f:name": {},
+              "f:namespace": {},
+              "f:resourceVersion": {},
+              "f:uid": {}
+            },
+            "f:mountOptions": {},
+            "f:persistentVolumeReclaimPolicy": {},
+            "f:storageClassName": {},
+            "f:volumeMode": {}
+          },
+          "f:status": {
+            "f:phase": {}
+          }
+        },
+        "manager": "kube-controller-manager",
+        "operation": "Update",
+        "time": "2021-01-07T14:20:27Z"
+      }
+    ],
+    "name": "pvc-77b9fc54-6fb3-4cb5-ad6a-aa70ca0d0be6",
+    "resourceVersion": "4961507",
+    "selfLink": "/api/v1/persistentvolumes/pvc-77b9fc54-6fb3-4cb5-ad6a-aa70ca0d0be6",
+    "uid": "530680ee-d457-43a2-953b-65629d74bcfd"
+  },
+  "spec": {
+    "accessModes": [
+      "ReadWriteMany"
+    ],
+    "azureFile": {
+      "secretName": "azure-storage-account-f62e3ad71c26d479eb50c4e-secret",
+      "secretNamespace": "helm",
+      "shareName": "kubernetes-dynamic-pvc-77b9fc54-6fb3-4cb5-ad6a-aa70ca0d0be6"
+    },
+    "capacity": {
+      "storage": "2Gi"
+    },
+    "claimRef": {
+      "apiVersion": "v1",
+      "kind": "PersistentVolumeClaim",
+      "name": "crux-disk-helm",
+      "namespace": "helm",
+      "resourceVersion": "4958544",
+      "uid": "77b9fc54-6fb3-4cb5-ad6a-aa70ca0d0be6"
+    },
+    "mountOptions": [
+      "dir_mode=0777",
+      "file_mode=0777",
+      "uid=0",
+      "gid=0",
+      "mfsymlinks",
+      "cache=strict"
+    ],
+    "persistentVolumeReclaimPolicy": "Delete",
+    "storageClassName": "crux-sc-helm",
+    "volumeMode": "Filesystem"
+  },
+  "status": {
+    "phase": "Bound"
+  }
+}

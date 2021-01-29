@@ -1,0 +1,13 @@
+#A unique disk that is mounted only for the test run
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: {{ .Values.storage.classNamePrefix }}{{ .Release.Namespace }}
+  resources:
+    requests:
+      storage: {{ .Values.storage.size }}

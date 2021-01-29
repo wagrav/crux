@@ -1,0 +1,13 @@
+storage:
+  size: 2Gi
+  namePrefix: crux-disk-
+  classNamePrefix: crux-sc-
+
+tests:
+  deploy: true
+
+#sub-chart configuration
+storage-class:
+  storage:
+    classNamePrefix: crux-sc-
+    host: azure

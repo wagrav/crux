@@ -1,0 +1,9 @@
+#Contains chart necessary to start a jmeter aks cluster with storage provisioned uniquely for each test run
+apiVersion: v2
+name: jmeter-cluster
+description: Helm chart for JMeter CRUX cluster
+type: application
+maintainers:
+  - email: UK_KTI-DevOps@pwc.com
+    name: KTI-DevOps Team
+version: 0.8.0

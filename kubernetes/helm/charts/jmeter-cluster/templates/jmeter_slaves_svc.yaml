@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jmeter-slaves-svc
+  labels:
+    crux.jmeter_mode: slave_svc
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.slave.ports.rmi }}
+      name: first
+      targetPort: {{ .Values.slave.ports.rmi }}
+    - port: {{ .Values.slave.ports.rmiLocal }}
+      name: second
+      targetPort: {{ .Values.slave.ports.rmiLocal }}
+  selector:
+    crux.jmeter_mode: slave

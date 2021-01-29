@@ -1,0 +1,66 @@
+
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: jmeter-master
+  labels:
+    crux.jmeter_mode: master
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      crux.jmeter_mode: master
+  template:
+    metadata:
+      labels:
+        crux.jmeter_mode: master
+    spec:
+      affinity: #schedule where master does NOT run
+        {{ if eq .Values.placementRules "best.effort.placement" }}
+        {{- template "best.effort.placement" . }}
+        {{ else if eq .Values.placementRules "required.placement" }}
+        {{- template "required.placement" . }}
+        {{ end }}
+      containers:
+      - name: jmmaster
+        image: {{ .Values.master.image }}
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/bash
+          - -c
+          - |
+            while true; do sleep 30; done;
+        startupProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - |
+                #checks if folders are mounted
+                ls /test && ls /shared && ls /load_test
+          failureThreshold: {{ .Values.master.startupProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.master.startupProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.master.startupProbe.periodSeconds }}
+        env:
+          - name: JVM_ARGS
+            value: {{ .Values.master.env.JVM_ARGS }}
+        volumeMounts:
+          - name: loadtest
+            mountPath: /load_test
+            subPath: "load_test"
+          - name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+            mountPath: "/shared"
+
+        ports:
+        - containerPort: {{ .Values.master.ports.rmiLocal }}
+        - containerPort: {{ .Values.master.ports.stsServer }}
+
+      volumes:
+      - name: loadtest 
+        configMap:
+         name: jmeter-load-test
+      - name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}

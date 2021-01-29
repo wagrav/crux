@@ -1,0 +1,16 @@
+parameters:
+  timeoutInMinutes: 5
+  tool: helm
+steps:
+  - ${{ if eq(parameters.tool,'helm') }}:
+      #helm delete leaves pvc but deleting namespace will help as a work-around
+      - task: HelmDeploy@0
+        timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+        displayName: 'Delete k8 cluster (Helm)'
+        condition: and(always(), not(eq(variables._crux_delete_deployment, false)))
+        inputs:
+          azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+          azureResourceGroup: $(_crux_cluster_resource_group)
+          kubernetesCluster: $(_crux_cluster_name)
+          command: delete
+          arguments: '-n $(_crux_cluster_deployment_namespace) $(_crux_helm_release)'

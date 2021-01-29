@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jmeter-load-test
+data:
+  load_test: |-
+    {{ range .Files.Lines "bin/load_test.sh" }}
+    {{ . }}{{ end }}

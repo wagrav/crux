@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jmeter-slaves
+  labels:
+    crux.jmeter_mode: slave
+spec:
+  strategy:
+    type: Recreate
+  replicas: {{ .Values.slave.replicas }}
+  selector:
+    matchLabels:
+      crux.jmeter_mode: slave
+  template:
+    metadata:
+      labels:
+        crux.jmeter_mode: slave
+    spec:
+      affinity:
+        {{ if eq .Values.placementRules "best.effort.placement" }}
+        {{- template "best.effort.placement" . }}
+        {{ else if eq .Values.placementRules "required.placement" }}
+        {{- template "required.placement" . }}
+        {{ end }}
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+        - name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}
+      containers:
+        - name: jmslave
+          image: {{ .Values.slave.image }}
+          imagePullPolicy: IfNotPresent
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  #checks if TCP ports are listening as JMeter slaves supposed to
+                  ss -tulwpn | grep :{{ .Values.slave.ports.rmiLocal }} && \
+                  ss -tulwpn | grep :{{ .Values.slave.ports.rmi }}
+            failureThreshold: {{ .Values.master.startupProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.master.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.master.startupProbe.periodSeconds }}
+          env:
+            - name: JVM_ARGS
+              value: {{ .Values.slave.env.JVM_ARGS }}
+          ports:
+            - containerPort: {{ .Values.slave.ports.rmi }}
+            - containerPort: {{ .Values.slave.ports.rmiLocal }}
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: "/shared"
+              name: {{ .Values.storage.namePrefix }}{{ .Release.Namespace }}

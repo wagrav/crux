@@ -1,6 +1,7 @@
 parameters:
   timeoutInMinutes: 5
   image: "gabrielstar/crux-master:0.0.1"
+  JVM_ARGS: "-Xms512M -Xmx1G"
 steps:
   - task: PowerShell@2
     displayName: JMeter tests (docker)
@@ -15,5 +16,6 @@ steps:
         -ContainerTestDataDir "$(_crux_remote_test_dir)"
         -UserArgs "$(_crux_jmeter_args)"
         -ArtifactsDirectory "$(System.DefaultWorkingDirectory)/$(_crux_tmp_dir)"
+        -JVM_ARGS "$JVM_ARGS"
       filePath: $(_crux_steps_path)/jmeter_docker/JMeterDocker.ps1
       pwsh: true

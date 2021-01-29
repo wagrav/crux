@@ -1,0 +1,46 @@
+#Test case 1
+#This test mounts a sample tests scenario to /test directory 
+#Scenario makes an HTTP call to STS server on port master:9191
+#Verifies E2E that cluster deployment has been successful, distributed testing is possible
+{{ if eq .Values.tests.deploy true }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "e2e-chrome-headless-jmeter-cluster-test"
+  annotations:
+   "helm.sh/hook": test
+spec:
+  containers:
+  - name: jmeter-master
+    image: {{ .Values.master.image }}
+    imagePullPolicy: IfNotPresent
+    ports:
+    - containerPort: {{ .Values.master.ports.rmiLocal }}
+    - containerPort: {{ .Values.master.ports.stsServer }}
+    command:
+      - /bin/bash
+      - -c
+      - |
+        #WHEN I run a test that opens an STS page with Chrome Headless and WDS
+        /load_test chrome-headless.jmx
+        #THEN no error is thrown in JMeter
+        cat jmeter.log | grep  "Err:     0 (0.00%)"
+    volumeMounts:
+     - name: loadtest
+       mountPath: /load_test
+       subPath: load_test
+     - name: test-jmx
+       mountPath: /test/chrome-headless.jmx
+       subPath: chrome-headless.jmx
+  volumes:
+  - name: loadtest 
+    configMap:
+     name: jmeter-load-test
+     defaultMode: 0755
+  - name: test-jmx
+    configMap:
+     name: jmx-chrome-headless-test-scenario
+     defaultMode: 0444
+     
+  restartPolicy: Never
+{{ end }}

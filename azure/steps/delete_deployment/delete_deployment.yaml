@@ -1,0 +1,32 @@
+parameters:
+  timeoutInMinutes: 5
+  tool: helm
+  mode: on_build_agent
+steps:
+  - ${{ if eq(parameters.tool,'helm') }}:
+      #helm delete leaves pvc but deleting namespace will help as a work-around
+      - ${{ if ne(parameters.mode,'on_aks_created_for_each_test_run') }}:
+        - task: HelmDeploy@0
+          timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+          displayName: 'Delete jmeter-cluster (Helm)'
+          condition: and(always(), not(eq(variables._crux_delete_deployment, false)))
+          inputs:
+            azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+            azureResourceGroup: $(_crux_cluster_resource_group)
+            kubernetesCluster: $(_crux_cluster_name)
+            #connectionType: Kubernetes Service Connection
+            #kubernetesServiceEndpoint: $(_crux_kubernetes_service_connection)
+            command: delete
+            arguments: '-n $(_crux_cluster_deployment_namespace) $(_crux_helm_release)'
+
+      - ${{ if eq(parameters.mode,'on_aks_created_for_each_test_run') }}:
+          - task: HelmDeploy@0
+            timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+            displayName: 'Delete jmeter-cluster (Helm)'
+            condition: and(always(), not(eq(variables._crux_delete_deployment, false)))
+            inputs:
+              azureSubscriptionEndpoint: $(_crux_arm_service_connection)
+              azureResourceGroup: $(_crux_cluster_resource_group)
+              kubernetesCluster: $(_crux_created_cluster_name)
+              command: delete
+              arguments: '-n $(_crux_cluster_deployment_namespace) $(_crux_helm_release)'
