@@ -25,6 +25,7 @@ CRUX deploys a distributed JMeter cluster on Kubernetes (AKS) with the size you 
 * CRUX can send data to Azure LogAnalytics that can be analyzed with pre-defined Workbook templates for performance trends and anomalies 
 * CRUX uses Docker images and Helm Charts to execute tests. If you want to extend JMeter capabilities you can extend Docker images and Helm charts for CRUX. 
 
+
 ## Setup
 
 See [Installation Page](https://github.com/ObjectivityLtd/crux/wiki/Installation) to get started with CRUX.
