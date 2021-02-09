@@ -18,7 +18,6 @@ _wait_for_pod() { #public: wait for pods of a given type to be in Running state
       | uniq)" # this will display also old pods until they are gone
     echo "Service $_service pods statuses: $(echo "$_status" | xargs)"
   done
-  kubectl -n "$_service_namespace" get svc
 }
 
 _wait_for_pods() { #public: waits for pods to be running for a list of services
