@@ -34,7 +34,13 @@ _jmeter(){
   shift 1
   local _fixed_args="-Gsts=$_ip -Gchromedriver=/usr/bin/chromedriver -q /$_test_dir/user.properties -Dserver.rmi.ssl.disable=true"
   echo "##[command] sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t /$_test_dir/$_jmx $@ $_fixed_args -R $(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')"
-  sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t "/$_test_dir/$_jmx" $@ $_fixed_args -R $(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')
+  local _slaveIPs=""
+  until [[ "$_slaveIPs" != "" ]]; do
+    sleep "$_sleep_time_s"
+    _slaveIPs="$(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')"
+    echo "Slave IPs: $_slaveIPs"
+  done
+  sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t "/$_test_dir/$_jmx" $@ $_fixed_args -R "$_slaveIPs"
 
 }
 load_test(){
