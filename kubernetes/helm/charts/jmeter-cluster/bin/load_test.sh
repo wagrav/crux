@@ -38,8 +38,10 @@ _jmeter(){
   local _slaveIPs=""
   until [[ "$_slaveIPs" != "" ]]; do
     sleep "$_sleep_time_s"
-    _slaveIPs="$(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')"
-    echo "Slave IPs: $_slaveIPs"
+    _slaveIPs="$(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')" #sometimes this becomes empty (kubernetes issue likely)
+    if [ -z "$_slaveIPs" ];then
+       echo "Slave IPs not avalable yet via service. Waiting."
+    fi
   done
   sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t "/$_test_dir/$_jmx" $@ $_fixed_args -R "$_slaveIPs"
 
