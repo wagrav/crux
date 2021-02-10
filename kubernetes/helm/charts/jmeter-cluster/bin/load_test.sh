@@ -43,7 +43,8 @@ _jmeter(){
        echo "Slave IPs not avalable yet via service. Waiting."
     fi
   done
-  sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t "/$_test_dir/$_jmx" $@ $_fixed_args -R "$_slaveIPs"
+  local _firstSlave=$(echo "$_slaveIPs" | awk -F, '{print $1}')
+  sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t "/$_test_dir/$_jmx" $@ $_fixed_args -R "$_slaveIPs" -GfirstSlave="$_firstSlave"
 
 }
 load_test(){
