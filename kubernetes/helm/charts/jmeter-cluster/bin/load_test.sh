@@ -44,8 +44,8 @@ _jmeter(){
     fi
   done
   local _firstSlave=$(echo "$_slaveIPs" | awk -F, '{print $1}')
-  echo "##[command] sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t /$_test_dir/$_jmx $@ $_fixed_args -R $_slaveIPs -GfirstSlave=$_firstSlave"
-  sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t "/$_test_dir/$_jmx" $@ $_fixed_args -R "$_slaveIPs" -GfirstSlave="$_firstSlave"
+  echo "##[command] sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t /$_test_dir/$_jmx $@ $_fixed_args -R $_slaveIPs -GfirstSlave=$_firstSlave -GslaveIPs=$_slaveIPs"
+  sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t "/$_test_dir/$_jmx" $@ $_fixed_args -R "$_slaveIPs" -GfirstSlave="$_firstSlave" -GslaveIPs="$_slaveIPs"
 
 }
 load_test(){
