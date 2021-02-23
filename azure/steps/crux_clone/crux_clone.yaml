@@ -2,6 +2,7 @@ parameters:
   timeoutInMinutes: 5
 steps:
   - checkout: crux
+    clean: true
     displayName: CRUX clone
     path: s/_crux
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
