@@ -14,6 +14,7 @@ Describe "Script Tests" {
                 Mock Start-JmeterTest -Verifiable
                 Mock Start-SimpleTableServer -Verifiable
                 Mock Show-TestDirectory -Verifiable
+                Mock Set-Permissions -Verifiable
                 Mock Copy-Artifacts -Verifiable
                 #default variables are loaded up
                 Start-JMeterTests  `
@@ -87,11 +88,11 @@ Describe "Script Tests" {
             }
 
             $TestDataDirOnAgent = "$PSScriptRoot/test_data"
-            $ArtifactsDirectory = "$TestDrive/tmp"
+            $ArtifactsDirectory = "$(GetFullPath $TestDrive)"
             $JMXPathOnAgent = "$PSScriptRoot/test_jmx/test_table_server.jmx"
             $ContainerTestDataDir='/test'
             $FixedArgs= "-o $ContainerTestDataDir/report/ -f -l $ContainerTestDataDir/results.csv -e -Gsts=localhost -Gchromedriver=/usr/bin/chromedriver"
-            Write-Host "Results will be stored in $(GetFullPath $TestDrive/tmp)"
+            Write-Host "Results will be stored in $(GetFullPath $TestDrive)"
             Start-JMeterTests `
                   -Image $Image `
                   -ContainerName $ContainerName `
@@ -104,10 +105,8 @@ Describe "Script Tests" {
                   -ArtifactsDirectory $ArtifactsDirectory `
                   -SkipRun $FALSE
         }
-        AfterAll {
-            Write-Host "Artifacts produced at $TestDrive/tmp : $(Get-ChildItem -Path $TestDrive/tmp)"
-        }
         It "test file artifacts should be created"  {
+
             $artifacts=@('report','jmeter.log','errors.xml','results.csv')
             foreach($artifact in $artifacts)
             {
@@ -127,7 +126,7 @@ Describe "Script Tests" {
     }
 }
 
-Describe "Module Tests" -Tag ModuleTests{
+Describe "Module Tests" -Tag ModuleTests {
         It "should Copy-Artifacts execute Copy-Item 4 times exactly"  {
             Mock docker
             Copy-Artifacts
