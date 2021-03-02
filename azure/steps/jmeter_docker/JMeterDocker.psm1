@@ -34,7 +34,7 @@ function Start-CommandInsideDocker($ContainerName, $Command){
 }
 function Show-TestDirectory($ContainerName,$Directory){
   Write-Host "Directory ${Directory}:"
-  Start-CommandInsideDocker $ContainerName "ls $Directory"
+  Start-CommandInsideDocker $ContainerName "ls -alh $Directory"
 }
 function Start-SimpleTableServer($ContainerName, $DataSetDirectory, $SleepSeconds){
   $stsCommand="screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/simple-table-server.sh -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=${DataSetDirectory}"
@@ -45,11 +45,14 @@ function Start-JmeterTest($ContainerName, $JMXPath,$UserArgs,$FixedArgs){
   Write-Host "##[command] sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t ${JMXPath} ${UserArgs} ${FixedArgs}"
   Start-CommandInsideDocker $ContainerName "sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t ${JMXPath} ${UserArgs} ${FixedArgs}"
 }
-function Copy-Artifacts($ArtifactsDirectory, $TestDataDirOnAgent)
+function Set-Permissions($ContainerName, $Directory,$Permissions){
+  Start-CommandInsideDocker $ContainerName "chmod -R ${Permissions} ${Directory}"
+}
+function Copy-Artifacts($ContainerName,$ContainerTestDataDir, $ArtifactsDirectory, $TestDataDirOnAgent)
 {
-  Copy-Item $TestDataDirOnAgent/report $ArtifactsDirectory/report -Recurse -force
-  Copy-Item $TestDataDirOnAgent/jmeter.log $ArtifactsDirectory -force
-  Copy-Item $TestDataDirOnAgent/results.csv $ArtifactsDirectory -force
-  Copy-Item $TestDataDirOnAgent/errors.xml $ArtifactsDirectory -force
+  docker cp ${ContainerName}:${ContainerTestDataDir}/report $ArtifactsDirectory/report
+  docker cp ${ContainerName}:${ContainerTestDataDir}/jmeter.log $ArtifactsDirectory
+  docker cp ${ContainerName}:${ContainerTestDataDir}/results.csv $ArtifactsDirectory
+  docker cp ${ContainerName}:${ContainerTestDataDir}/errors.xml $ArtifactsDirectory
 }
 Export-ModuleMember -function *
