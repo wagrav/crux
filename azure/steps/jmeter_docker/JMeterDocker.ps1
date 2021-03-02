@@ -25,7 +25,7 @@ function Start-JMeterTests($Image, $ContainerName, $JMXPathOnAgent, $TestDataDir
         Start-SimpleTableServer -ContainerName $ContainerName -DataSetDirectory $ContainerTestDataDir -SleepSeconds $SleepSeconds
         Show-TestDirectory -ContainerName $ContainerName -Directory $ContainerTestDataDir
         Start-JmeterTest -ContainerName $ContainerName -JMXPath $ContainerTestDataDir/$testName -UserArgs $UserArgs -FixedArgs $FixedArgs -ContainerTestDataDir $ContainerTestDataDir
-        Set-Permissions -Directory $ContainerTestDataDir -Permissions "777" #default owner is root hence change
+        Set-Permissions -Directory $ContainerTestDataDir -Permissions "777" #default owner artifacts created is root hence allow all
         Show-TestDirectory -ContainerName $ContainerName -Directory $ContainerTestDataDir
         Stop-JMeterContainer -ContainerName $ContainerName
         Copy-Artifacts -ArtifactsDirectory $ArtifactsDirectory `

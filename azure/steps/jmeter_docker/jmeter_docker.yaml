@@ -25,7 +25,11 @@ steps:
       if hash sudo; then
         sudo chown "$(id -un)" -R "$(System.DefaultWorkingDirectory)/"
       else
-        echo "##[warning] Cannot change artifacts dir permissions. I am ($(id -un)) and have no access to sudo."
+        echo "##[warning] Cannot change artifacts $(System.DefaultWorkingDirectory) permissions. I am ($(id -un)) and have no access to sudo."
       fi
-        echo "Current user: $(id -un)"
-      ls -alh "$(System.DefaultWorkingDirectory)/"
+      echo "Current user: $(id -un)"
+      echo "Agent dir:"
+      ls -alh "$(System.DefaultWorkingDirectory)/$(_crux_repos_root)/$(_crux_data_dir)"
+      echo "Artifacts dir:"
+      ls -alh "$(System.DefaultWorkingDirectory)/$(_crux_tmp_dir)"
+    displayName: Prepare artifacts
