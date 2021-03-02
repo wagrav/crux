@@ -33,8 +33,19 @@ _jmeter(){
   local _jmx=$1
   shift 1
   local _fixed_args="-Gsts=$_ip -Gchromedriver=/usr/bin/chromedriver -q /$_test_dir/user.properties -Dserver.rmi.ssl.disable=true"
-  echo "##[command] sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t /$_test_dir/$_jmx $@ $_fixed_args -R $(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')"
-  sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t "/$_test_dir/$_jmx" $@ $_fixed_args -R $(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')
+  #echo "##[command] sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t /$_test_dir/$_jmx $@ $_fixed_args -R $(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')"
+  local _sleep_time_s=5
+  local _slaveIPs=""
+  until [[ "$_slaveIPs" != "" ]]; do
+    sleep "$_sleep_time_s"
+    _slaveIPs="$(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')" #sometimes this becomes empty (kubernetes issue likely)
+    if [ -z "$_slaveIPs" ];then
+       echo "Slave IPs not avalable yet via service. Waiting."
+    fi
+  done
+  local _firstSlave=$(echo "$_slaveIPs" | awk -F, '{print $1}')
+  echo "##[command] sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t /$_test_dir/$_jmx $@ $_fixed_args -R $_slaveIPs -GfirstSlave=$_firstSlave -GslaveIPs=$_slaveIPs"
+  sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t "/$_test_dir/$_jmx" $@ $_fixed_args -R "$_slaveIPs" -GfirstSlave="$_firstSlave" -GslaveIPs="$_slaveIPs"
 
 }
 load_test(){
