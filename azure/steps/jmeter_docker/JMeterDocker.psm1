@@ -34,7 +34,7 @@ function Start-CommandInsideDocker($ContainerName, $Command){
 }
 function Show-TestDirectory($ContainerName,$Directory){
   Write-Host "Directory ${Directory}:"
-  Start-CommandInsideDocker $ContainerName "ls $Directory"
+  Start-CommandInsideDocker $ContainerName "ls -alh $Directory"
 }
 function Start-SimpleTableServer($ContainerName, $DataSetDirectory, $SleepSeconds){
   $stsCommand="screen -A -m -d -S sts /jmeter/apache-jmeter-*/bin/simple-table-server.sh -DjmeterPlugin.sts.addTimestamp=true -DjmeterPlugin.sts.datasetDirectory=${DataSetDirectory}"
@@ -46,7 +46,7 @@ function Start-JmeterTest($ContainerName, $JMXPath,$UserArgs,$FixedArgs){
   Start-CommandInsideDocker $ContainerName "sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t ${JMXPath} ${UserArgs} ${FixedArgs}"
 }
 function Set-Permissions($ContainerName, $Directory,$Permissions){
-  Start-CommandInsideDocker $ContainerName "sh chmod -R ${Permissions} ${Directory}"
+  Start-CommandInsideDocker $ContainerName "chmod -R ${Permissions} ${Directory}"
 }
 function Copy-Artifacts($ContainerName,$ContainerTestDataDir, $ArtifactsDirectory, $TestDataDirOnAgent)
 {

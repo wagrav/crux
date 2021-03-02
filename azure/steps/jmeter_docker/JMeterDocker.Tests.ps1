@@ -129,9 +129,9 @@ Describe "Script Tests" {
 
 Describe "Module Tests" -Tag ModuleTests{
         It "should Copy-Artifacts execute Copy-Item 4 times exactly"  {
-            Mock Copy-Item
+            Mock docker
             Copy-Artifacts
-            Assert-MockCalled Copy-Item -Scope It -Times 4 -Exactly
+            Assert-MockCalled docker -Scope It -Times 4 -Exactly
         }
         It "should Start-JmeterTest execute correct jmeter command with proper args"  {
             Mock Start-CommandInsideDocker {
