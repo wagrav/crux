@@ -48,11 +48,11 @@ function Start-JmeterTest($ContainerName, $JMXPath,$UserArgs,$FixedArgs){
 function Set-Permissions($ContainerName, $Directory,$Permissions){
   Start-CommandInsideDocker $ContainerName "sh chmod -R ${Permissions} ${Directory}"
 }
-function Copy-Artifacts($ArtifactsDirectory, $TestDataDirOnAgent)
+function Copy-Artifacts($ContainerName,$ContainerTestDataDir, $ArtifactsDirectory, $TestDataDirOnAgent)
 {
-  Copy-Item $TestDataDirOnAgent/report $ArtifactsDirectory/report -Recurse -force
-  Copy-Item $TestDataDirOnAgent/jmeter.log $ArtifactsDirectory -force
-  Copy-Item $TestDataDirOnAgent/results.csv $ArtifactsDirectory -force
-  Copy-Item $TestDataDirOnAgent/errors.xml $ArtifactsDirectory -force
+  docker cp ${ContainerName}:${ContainerTestDataDir}/report $ArtifactsDirectory/report
+  docker cp ${ContainerName}:${ContainerTestDataDir}/jmeter.log $ArtifactsDirectory
+  docker cp ${ContainerName}:${ContainerTestDataDir}/results.csv $ArtifactsDirectory
+  docker cp ${ContainerName}:${ContainerTestDataDir}/errors.xml $ArtifactsDirectory
 }
 Export-ModuleMember -function *
