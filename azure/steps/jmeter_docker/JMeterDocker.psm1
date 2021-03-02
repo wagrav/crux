@@ -45,6 +45,9 @@ function Start-JmeterTest($ContainerName, $JMXPath,$UserArgs,$FixedArgs){
   Write-Host "##[command] sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t ${JMXPath} ${UserArgs} ${FixedArgs}"
   Start-CommandInsideDocker $ContainerName "sh /jmeter/apache-jmeter-*/bin/jmeter.sh -n -t ${JMXPath} ${UserArgs} ${FixedArgs}"
 }
+function Set-Permissions($Directory,$Permissions){
+  Start-CommandInsideDocker $ContainerName "sh chmod -R ${Permissions} ${Directory}"
+}
 function Copy-Artifacts($ArtifactsDirectory, $TestDataDirOnAgent)
 {
   Copy-Item $TestDataDirOnAgent/report $ArtifactsDirectory/report -Recurse -force

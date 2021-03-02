@@ -19,3 +19,13 @@ steps:
         -JVM_ARGS "$JVM_ARGS"
       filePath: $(_crux_steps_path)/jmeter_docker/JMeterDocker.ps1
       pwsh: true
+
+  - bash: |
+      #sometimes on private agents artifacts will be owned by root due to copy from docker issue. This is to make them readable by current user.
+      if hash sudo; then
+        sudo chown "$(id -un)" -R "$(System.DefaultWorkingDirectory)/"
+      else
+        echo "##[warning] Cannot change artifacts dir permissions. I am ($(id -un)) and have no access to sudo."
+      fi
+        echo "Current user: $(id -un)"
+      ls -alh "$(System.DefaultWorkingDirectory)/"
