@@ -1,4 +1,4 @@
-parameters:
+ parameters:
   timeoutInMinutes: 5
 steps:
   - bash: |

@@ -9,7 +9,7 @@ param(
       $BuildStatus = 'unknown',
       $PipelineId = 'local',
       $ByRows=10000,
-      $AzurePostLimitMB=20
+      $AzurePostLimitMB=30
 
 )
 
