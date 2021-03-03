@@ -15,6 +15,7 @@ Describe "Workbook Module tests without Mocks"  {
         }
         Write-Host "Running with powershell version" $PSVersionTable.PSVersion
         Copy-Item "$testDir\data*" -Destination "$TestDrive"
+        Copy-Item "$testDir\1*" -Destination "$TestDrive"
         Copy-Item "$testDir\*.properties" -Destination "$TestDrive"
         Write-Host "Test Data copied to TestDrive:\ at: $(GetFullPath -Path 'TestDrive:\')"
         Write-Host "TestDrive contents: $(Get-ChildItem -Path $TestDrive)"
@@ -166,12 +167,16 @@ Describe 'Workbooks script tests' {
         . $PSScriptRoot\Workbooks.ps1 -Force
     }
     Context 'When script is run and data is uploaded' {
-        BeforeAll {
-            Mock Send-JMeterDataToLogAnalytics { return "200" }
-        }
+
         It 'Should run Send-JMeterDataToLogAnalytics function once exactly' {
+            Mock Send-JMeterDataToLogAnalytics { return "200" }
             Start-Script
             Should -Invoke Send-JMeterDataToLogAnalytics -Times 1 -Exactly
+        }
+        It 'Should run Split-File function once exactly' {
+            Mock Split-File
+            Start-Script
+            Should -Invoke Split-File -Times 1 -Exactly
         }
     }
     Context 'When Send-JMeterDataToLogAnalytics is run and data is uploaded'{
@@ -209,6 +214,20 @@ Describe 'Workbooks script tests' {
 
         }
     }
+    Context 'When a too large results.csv file is produced by JMeter' {
+
+        BeforeAll {
+            Copy-Item "$testDir\*rows_data.csv" -Destination "$TestDrive"
+        }
+        It 'Should 1040 lines file be split by 500 into 3 parts' {
+            Split-File -FilePathCSV "$TestDrive\1k_rows_data.csv" 500
+            (Get-ChildItem -Path $TestDrive  -Filter 1k_rows_data.csv* | Measure-Object).Count | Should -Be 4 #+1 original
+        }
+        It 'Should 10 lines file be split by 5 into 2 parts' {
+            Split-File -FilePathCSV "$TestDrive\10rows_data.csv" 5
+            (Get-ChildItem -Path $TestDrive -Filter 10rows_data.csv* | Measure-Object).Count | Should -Be 3 #+1 original
+        }
+    }
     Context 'When CSV size is exceeded' {
 
         BeforeAll {
@@ -220,7 +239,7 @@ Describe 'Workbooks script tests' {
             Mock Add-MetaDataToCSV
         }
         It 'Should throw file size exceeded error' {
-            { Start-Script } | Should -Throw "File size exceeds limit of 30 Megs:*"
+            { Start-Script } | Should -Throw "*size exceeds limit of*"
         }
     }
     Context -Name 'When I add multiple columns to CSV file'{
