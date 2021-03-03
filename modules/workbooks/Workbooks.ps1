@@ -1,7 +1,7 @@
 param(
       $PropertiesPath="$PSScriptRoot\test_data\workbooks.e2e.properties",
       #$FilePathCSV="$PSScriptRoot\test_data\data.csv",
-      $FilePathCSV="$PSScriptRoot\test_data\10rows_data.csv",
+      $FilePathCSV="$PSScriptRoot\test_data\1k_rows_data.csv",
       $OutFilePathCSV="$PSScriptRoot\test_data\out_data.csv",
       $DryRun=$false,
       $JmeterArg = 'dummy args',

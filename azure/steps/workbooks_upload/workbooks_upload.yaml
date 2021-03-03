@@ -1,6 +1,6 @@
 parameters:
   timeoutInMinutes: 5
-  byRows: 10000
+  byRows: 5000
   azurePostLimitMB: 30
 steps:
   - task: PowerShell@2
