@@ -57,7 +57,7 @@ function Start-Script(){
     Set-Variable AZURE_POST_LIMIT -option Constant -value 30
     Add-MetaDataToCSV -filePathCSV $FilePathCSV -outFilePathCSV $OutFilePathCSV
     $sizeMB = ((Get-Item $OutFilePathCSV).length/1MB)
-
+aaa
     if ($sizeMB -gt $AZURE_POST_LIMIT){
         Write-Error "File size exceeds limit of 30 Megs: $sizeMB Megs" -ErrorAction Stop
     }
