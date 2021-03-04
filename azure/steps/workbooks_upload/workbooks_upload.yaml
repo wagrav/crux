@@ -1,5 +1,7 @@
 parameters:
   timeoutInMinutes: 5
+  byRows: 10000
+  azurePostLimitMB: 30
 steps:
   - task: PowerShell@2
     displayName: Workbooks upload
@@ -13,5 +15,8 @@ steps:
         -BuildId "$(Build.BuildId)"
         -BuildStatus "$(Agent.JobStatus)"
         -PipelineId "$(System.DefinitionId)"
+        -ByRows "${{ parameters.byRows }}"
+        -AzurePostLimitMB "${{ parameters.azurePostLimitMB }}"
+
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true

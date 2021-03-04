@@ -1,12 +1,16 @@
 param(
       $PropertiesPath="$PSScriptRoot\test_data\workbooks.e2e.properties",
-      $FilePathCSV="$PSScriptRoot\test_data\data.csv",
+      #$FilePathCSV="$PSScriptRoot\test_data\data.csv",
+      $FilePathCSV="$PSScriptRoot\test_data\1k_rows_data.csv",
       $OutFilePathCSV="$PSScriptRoot\test_data\out_data.csv",
       $DryRun=$false,
       $JmeterArg = 'dummy args',
       $BuildId = 'local',
       $BuildStatus = 'unknown',
-      $PipelineId = 'local'
+      $PipelineId = 'local',
+      $ByRows=10000,
+      $AzurePostLimitMB=30
+
 )
 
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
@@ -32,6 +36,37 @@ function Send-JMeterDataToLogAnalytics($PropertiesPath, $FilePathCSV)
     }
     return $status
 }
+function Split-File($FilePathCSV,[long]$ByRows=1000){
+    $files=@() #return list of files for upload to analytics
+    try
+    {
+        $startrow = 0;
+        $counter = 1;
+        Get-Content $FilePathCSV -read 1000 | % { $totalRows += $_.Length } #efficient count of lines for large file
+        $totalRows -= 1; #exclude header
+        Write-Host "$( $FilePathCSV | Split-Path -Leaf ) File has $totalRows lines"
+
+        while ($startrow -lt $totalRows)
+        {
+            try
+            {
+                $partialFile = "$FilePathCSV$( $counter )"
+                Write-Host "Splitting file $( $FilePathCSV | Split-Path -Leaf ) by $ByRows part $counter as $( $partialFile | Split-Path -Leaf )"
+                Import-CSV $FilePathCSV | select-object -skip $startrow -first $ByRows | Export-CSV "$partialFile" -NoTypeInformation
+                $startrow += $ByRows;
+                $counter++;
+                $files += $partialFile
+            }
+            catch
+            {
+                Write-Host $_
+            }
+        }
+    }catch{
+        Write-Host $_
+    }
+    return $files
+}
 function Add-MetaDataToCSV($FilePathCSV, $OutFilePathCSV ){
     $inputTempFile = New-TemporaryFile
     $outputTempFile = New-TemporaryFile
@@ -51,28 +86,37 @@ function Add-MetaDataToCSV($FilePathCSV, $OutFilePathCSV ){
 }
 function Start-Script(){
     Write-Host "Used properties: propertiesPath $PropertiesPath"
-    $props = Get-Content -Path $PropertiesPath
-    Write-Host "$props"
     Write-Host "Results to upload: filePathCSV $FilePathCSV"
-    Set-Variable AZURE_POST_LIMIT -option Constant -value 30
-    Add-MetaDataToCSV -filePathCSV $FilePathCSV -outFilePathCSV $OutFilePathCSV
-    $sizeMB = ((Get-Item $OutFilePathCSV).length/1MB)
-
-    if ($sizeMB -gt $AZURE_POST_LIMIT){
-        Write-Error "File size exceeds limit of 30 Megs: $sizeMB Megs" -ErrorAction Stop
-    }
-    if( -Not $DryRun)
+    Set-Variable AZURE_POST_LIMIT -option Constant -value $AzurePostLimitMB
+    $sourceSizeMB = ((Get-Item $FilePathCSV).length/1MB)
+    Write-Host "Source file $FilePathCSV size $sourceSizeMB Megs"
+    $files = Split-File -filePathCSV $FilePathCSV -ByRows $ByRows
+    foreach($file in $files)
     {
-        Write-Host "Uploading file with size $sizeMB MB"
-        $status = Send-JMeterDataToLogAnalytics `
+        $OutFilePathCSV = "${file}_out"
+        Add-MetaDataToCSV -filePathCSV $file -outFilePathCSV $OutFilePathCSV
+        $sizeMB = ((Get-Item $OutFilePathCSV).length/1MB)
+        Write-Host "Output file $OutFilePathCSV size $sizeMB Megs"
+        if ($sizeMB -gt $AZURE_POST_LIMIT)
+        {
+            Write-Error "File $( $OutFilePathCSV | Split-Path -Leaf ) size exceeds limit of $AZURE_POST_LIMIT Megs: $sizeMB Megs" -ErrorAction Stop
+        }
+        if (-Not$DryRun)
+        {
+            Write-Host "Uploading file with size $sizeMB MB"
+            $status = Send-JMeterDataToLogAnalytics `
                             -propertiesPath "$PropertiesPath" `
                             -filePathCSV "$OutFilePathCSV"
-    }else{
-        $status=200
-        Write-Host "Data Upload Mocked"
-    }
-    if ("$status" -ne "200"){
-        Write-Error "Data has not been uploaded $status" -ErrorAction Stop
+        }
+        else
+        {
+            $status = 200
+            Write-Host "Data Upload Mocked"
+        }
+        if ("$status" -ne "200")
+        {
+            Write-Error "Data has not been uploaded $status" -ErrorAction Stop
+        }
     }
 }
 Start-Script
