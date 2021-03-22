@@ -2,6 +2,12 @@ parameters:
   timeoutInMinutes: 5
   byRows: 1
   azurePostLimitMB: 1
+  propertiesPath: "$(System.DefaultWorkingDirectory)/$(_crux_repos_root)/$(_crux_workbooks_file)"
+  filePathCsv: "$(_crux_results)"
+  jmeterArg: "$(_crux_jmeter_args)"
+  buildId: "$(Build.BuildId)"
+  buildStatus: "$(Agent.JobStatus)"
+  pipelineId: "$(System.DefinitionId)"
 steps:
   - task: PowerShell@2
     displayName: Workbooks upload
@@ -9,14 +15,14 @@ steps:
     condition: and(not(eq(variables['module.workbooks.enabled'], false)),not(eq(variables.workbooks_enabled, false)))
     inputs:
       arguments: > # Use this to avoid newline characters in multiline string
-        -propertiesPath "$(System.DefaultWorkingDirectory)/$(_crux_repos_root)/$(_crux_workbooks_file)"
-        -filePathCSV "$(_crux_results)"
-        -dryRun $true
-        -jmeterArgs "$(_crux_jmeter_args)"
-        -buildId "$(Build.BuildId)"
-        -buildStatus "$(Agent.JobStatus)"
-        -pipelineId "$(System.DefinitionId)"
-        -ByRows "${{ parameters.byRows }}"
-        -AzurePostLimitMB "${{ parameters.azurePostLimitMB }}"
+         -dryRun $true
+         -PropertiesPath ${{ parameters.propertiesPath }}
+         -FilePathCSV ${{ parameters.filePathCsv }}
+         -JmeterArg ${{ parameters.jmeterArg }}
+         -BuildId ${{ parameters.buildId }}
+         -BuildStatus ${{ parameters.buildStatus }}
+         -PipelineId ${{ parameters.pipelineId }}
+         -ByRows "${{ parameters.byRows }}"
+         -AzurePostLimitMB "${{ parameters.azurePostLimitMB }}"
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true
