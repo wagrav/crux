@@ -11,7 +11,7 @@ parameters:
   workbooksId: "_"
   sharedKey: "_"
   logType: "_"
-  usePropertiesFile: $true
+  usePropertiesFile: true
 steps:
   - task: PowerShell@2
     displayName: Workbooks upload
