@@ -8,9 +8,9 @@ parameters:
   buildId: "$(Build.BuildId)"
   buildStatus: "$(Agent.JobStatus)"
   pipelineId: "$(System.DefinitionId)"
-  workbooksId: ""
-  sharedKey: ""
-  logType: ""
+  workbooksId: "_"
+  sharedKey: "_"
+  logType: "_"
   usePropertiesFile: $true
 steps:
   - task: PowerShell@2
