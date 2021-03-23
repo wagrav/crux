@@ -10,7 +10,7 @@ param(
       $PipelineId = 'local',
       $ByRows=10000,
       $AzurePostLimitMB=30,
-      $UsePropertiesFile=$true,
+      $UsePropertiesFile='true',
       $WorkbooksId='5cdf4a28-f1bf-4e59-ad01-2498e37059e9',
       $SharedKey='2tROkttxLKAPZA/7WkEx4P+0GOhZ7BkWzIp0OublY/h6I8x4/iL3R2aNWFx7YAT6bAHR4OKpt8ujAN7a1cL7lg==',
       $LogType='somelogtype'
