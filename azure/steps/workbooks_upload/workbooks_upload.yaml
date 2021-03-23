@@ -12,9 +12,10 @@ parameters:
   sharedKey: "_"
   logType: "_"
   usePropertiesFile: 'true'
+  displayName: Workbooks upload
 steps:
   - task: PowerShell@2
-    displayName: Workbooks upload
+    displayName: ${{ parameters.displayName }}
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: and(not(eq(variables['module.workbooks.enabled'], false)),not(eq(variables.workbooks_enabled, false)))
     inputs:
