@@ -91,7 +91,7 @@ function Add-MetaDataToCSV($FilePathCSV, $OutFilePathCSV ){
 }
 function Start-Script(){
     $sourceSizeMB = ((Get-Item $FilePathCSV).length/1MB)
-    "File {0} size {1:n3} Megs" -f $FilePathCSV,$sourceSizeMB | Write-Host
+    "File {0} size {1:n5} Megs" -f $FilePathCSV,$sourceSizeMB | Write-Host
     Set-Variable AZURE_POST_LIMIT -option Constant -value $AzurePostLimitMB
     $files = Split-File -filePathCSV $FilePathCSV -ByRows $ByRows
     foreach($file in $files)
@@ -99,14 +99,14 @@ function Start-Script(){
         $OutFilePathCSV = "${file}_out"
         Add-MetaDataToCSV -filePathCSV $file -outFilePathCSV $OutFilePathCSV
         $sizeMB = ((Get-Item $OutFilePathCSV).length/1MB)
-        "Output file {0} has {1:n3} Megs" -f $OutFilePathCSV, $sizeMB | Write-Host
+        "Output file {0} has {1:n5} Megs" -f $OutFilePathCSV, $sizeMB | Write-Host
         if ($sizeMB -gt $AZURE_POST_LIMIT)
         {
             Write-Error "File $( $OutFilePathCSV | Split-Path -Leaf ) size exceeds limit of $AZURE_POST_LIMIT Megs: $sizeMB Megs" -ErrorAction Stop
         }
         if (-Not $DryRun)
         {
-            "Uploading file with size {0:n3} MB" -f $sizeMB | Write-Host
+            "Uploading file with size {0:n5} MB" -f $sizeMB | Write-Host
             if($UsePropertiesFile -eq "true")
             {
                 $properties = Read-Properties -propertiesFilePath $PropertiesPath
