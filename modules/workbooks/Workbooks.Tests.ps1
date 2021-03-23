@@ -74,10 +74,14 @@ Describe "Workbook Module tests without Mocks"  {
             $properties."workbooks.logType" | Should -Be testType
         }
     }
-    Context 'When I send real data to Log Analytics' {
+    Context 'When I send real data to Log Analytics' -Tag E2E {
         It "should return HTTP OK" {
-            $statusCode = Send-RawDataToLogAnalytics -PropertiesFilePath "$TestDrive\workbooks.e2e.properties" `
-                                       -FilePathJSON "$TestDrive\data_expected_output.json"
+            $statusCode = Send-RawDataToLogAnalytics `
+                                       -FilePathJSON "$TestDrive\data_expected_output.json" `
+                                       -WorkbooksId 5cdf4a28-f1bf-4e59-ad01-2498e37059e9 `
+                                       -SharedKey 2tROkttxLKAPZA/7WkEx4P+0GOhZ7BkWzIp0OublY/h6I8x4/iL3R2aNWFx7YAT6bAHR4OKpt8ujAN7a1cL7lg== `
+                                       -LogType CRUX
+
             $statusCode | Should -Be 200
         }
     }
@@ -107,12 +111,12 @@ InModuleScope Workbooks{
                 Assert-VerifiableMock
                 Assert-MockCalled Send-LogAnalyticsData -Times 1
             }
-            It "should run Read-Properties once exactly" {
+            It "should not run Read-Properties" {
                 Assert-VerifiableMock
                 $assertparams = @{
                     CommandName = 'Read-Properties'
                     Exactly = $true
-                    Times = 1
+                    Times = 0
                 }
                 Assert-MockCalled @assertparams
             }
