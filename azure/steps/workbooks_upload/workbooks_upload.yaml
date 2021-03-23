@@ -25,7 +25,7 @@ steps:
         -SharedKey ${{ parameters.sharedKey }}
         -LogType ${{ parameters.logType }}
         -FilePathCSV ${{ parameters.filePathCsv }}
-        -JmeterArg ${{ parameters.jmeterArg }}
+        -JmeterArg "${{ parameters.jmeterArg }}"
         -BuildId ${{ parameters.buildId }}
         -BuildStatus ${{ parameters.buildStatus }}
         -PipelineId ${{ parameters.pipelineId }}
