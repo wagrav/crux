@@ -8,6 +8,10 @@ parameters:
   buildId: "$(Build.BuildId)"
   buildStatus: "$(Agent.JobStatus)"
   pipelineId: "$(System.DefinitionId)"
+  workbooksId: ""
+  sharedKey: ""
+  logType: ""
+  usePropertiesFile: $true
 steps:
   - task: PowerShell@2
     displayName: Workbooks upload
@@ -15,14 +19,18 @@ steps:
     condition: and(not(eq(variables['module.workbooks.enabled'], false)),not(eq(variables.workbooks_enabled, false)))
     inputs:
       arguments: > # Use this to avoid newline characters in multiline string
-         -dryRun $true
-         -PropertiesPath ${{ parameters.propertiesPath }}
-         -FilePathCSV ${{ parameters.filePathCsv }}
-         -JmeterArg ${{ parameters.jmeterArg }}
-         -BuildId ${{ parameters.buildId }}
-         -BuildStatus ${{ parameters.buildStatus }}
-         -PipelineId ${{ parameters.pipelineId }}
-         -ByRows "${{ parameters.byRows }}"
-         -AzurePostLimitMB "${{ parameters.azurePostLimitMB }}"
+        -dryRun $true
+        -PropertiesPath ${{ parameters.propertiesPath }}
+        -UsePropertiesFile ${{ parameters.usePropertiesFile }}
+        -WorkbooksId ${{ parameters.workbooksId }}
+        -SharedKey ${{ parameters.sharedKey }}
+        -LogType ${{ parameters.logType }}
+        -FilePathCSV ${{ parameters.filePathCsv }}
+        -JmeterArg ${{ parameters.jmeterArg }}
+        -BuildId ${{ parameters.buildId }}
+        -BuildStatus ${{ parameters.buildStatus }}
+        -PipelineId ${{ parameters.pipelineId }}
+        -ByRows "${{ parameters.byRows }}"
+        -AzurePostLimitMB "${{ parameters.azurePostLimitMB }}"
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true
