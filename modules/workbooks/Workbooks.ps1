@@ -9,29 +9,34 @@ param(
       $BuildStatus = 'unknown',
       $PipelineId = 'local',
       $ByRows=10000,
-      $AzurePostLimitMB=30
-
+      $AzurePostLimitMB=30,
+      $UsePropertiesFile=$true,
+      $WorkbooksId='5cdf4a28-f1bf-4e59-ad01-2498e37059e9',
+      $SharedKey='2tROkttxLKAPZA/7WkEx4P+0GOhZ7BkWzIp0OublY/h6I8x4/iL3R2aNWFx7YAT6bAHR4OKpt8ujAN7a1cL7lg==',
+      $LogType='somelogtype'
 )
 
 Import-Module $PSScriptRoot\Workbooks.psm1 -Force
 
-function Send-JMeterDataToLogAnalytics($PropertiesPath, $FilePathCSV)
+function Send-JMeterDataToLogAnalytics($FilePathCSV, $WorkbooksId, $SharedKey, $LogType)
 {
     $status = 999
     $filePathJSON = "$PSScriptRoot/test_data/results.json"
     try
     {
+
         $status = Send-DataToLogAnalytics `
-                        -PropertiesFilePath "$PropertiesPath" `
                         -FilePathCSV "$FilePathCSV" `
-                        -FilePathJSON "$filePathJSON"
+                        -FilePathJSON "$filePathJSON" `
+                        -WorkbooksId $WorkbooksId `
+                        -SharedKey $SharedKey `
+                        -LogType $LogType
 
     }catch {
         Write-Host $_
     } finally {
         Write-Host ""
         Write-Host " - Data sent with HTTP status $status"
-        Write-Host " - propertiesPath $PropertiesPath"
         Write-Host " - filePathJSON $filePathJSON"
     }
     return $status
@@ -101,12 +106,26 @@ function Start-Script(){
         {
             Write-Error "File $( $OutFilePathCSV | Split-Path -Leaf ) size exceeds limit of $AZURE_POST_LIMIT Megs: $sizeMB Megs" -ErrorAction Stop
         }
-        if (-Not$DryRun)
+        if (-Not $DryRun)
         {
             Write-Host "Uploading file with size $sizeMB MB"
-            $status = Send-JMeterDataToLogAnalytics `
-                            -propertiesPath "$PropertiesPath" `
-                            -filePathCSV "$OutFilePathCSV"
+            if($UsePropertiesFile)
+            {
+                $properties = Read-Properties -propertiesFilePath $PropertiesPath
+                Write-Host "Using properties file $PropertiesPath for the upload"
+                $status = Send-JMeterDataToLogAnalytics `
+                            -filePathCSV "$OutFilePathCSV" `
+                            -WorkbooksId $properties."workbooks.workbooksID" `
+                            -SharedKey $properties."workbooks.sharedKey" `
+                            -LogType $properties."workbooks.logType"
+            }else{
+                Write-Host "Reading WorkbooksId: $WorkbooksId, SharedKey: ***** and LogType: $LogType from parameters"
+                $status = Send-JMeterDataToLogAnalytics `
+                            -filePathCSV "$OutFilePathCSV" `
+                            -WorkbooksId $WorkbooksId `
+                            -SharedKey $SharedKey `
+                            -LogType $LogType
+            }
         }
         else
         {

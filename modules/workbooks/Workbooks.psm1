@@ -19,15 +19,14 @@ function Read-Properties($PropertiesFilePath)
     $properties = ConvertFrom-StringData (Get-Content -Path $PropertiesFilePath -raw -ErrorAction Stop)
     return $properties
 }
-function Send-RawDataToLogAnalytics($PropertiesFilePath, $FilePathJSON)
+function Send-RawDataToLogAnalytics($FilePathJSON, $WorkbooksId, $SharedKey, $LogType)
 {
 
-    $properties = Read-Properties -propertiesFilePath $PropertiesFilePath
     $body = Get-Content -Path $FilePathJSON
-    $statusCode = Send-LogAnalyticsData -CustomerId $properties."workbooks.workbooksID" `
-                            -SharedKey $properties."workbooks.sharedKey" `
+    $statusCode = Send-LogAnalyticsData -CustomerId $WorkbooksId `
+                            -SharedKey $SharedKey `
                             -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) `
-                            -logType $properties."workbooks.logType"
+                            -logType $LogType
     return $statusCode
 }
 
@@ -39,13 +38,17 @@ function Add-ColumnToCSV($FilePathCSV, $OutFilePathCSV, $ColumnHeader, $ColumnFi
             Export-Csv "$OutFilePathCSV" -NoTypeInformation
 }
 
-function Send-DataToLogAnalytics($PropertiesFilePath, $FilePathCSV, $FilePathJSON)
+function Send-DataToLogAnalytics($FilePathCSV, $FilePathJSON, $WorkbooksId, $SharedKey, $LogType)
 {
     $status = 999
     try
     {
         Convert-JmeterCSVResultsToJSON -FilePathCSV $FilePathCSV -FilePathJSON $FilePathJSON
-        $status = Send-RawDataToLogAnalytics -PropertiesFilePath $PropertiesFilePath -FilePathJSON $FilePathJSON
+        $status = Send-RawDataToLogAnalytics `
+                                            -FilePathJSON $FilePathJSON `
+                                            -WorkbooksId $WorkbooksId `
+                                            -SharedKey $SharedKey `
+                                            -LogType $LogType
     }
     catch
     {
