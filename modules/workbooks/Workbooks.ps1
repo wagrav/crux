@@ -109,7 +109,7 @@ function Start-Script(){
         if (-Not $DryRun)
         {
             Write-Host "Uploading file with size $sizeMB MB"
-            if($UsePropertiesFile=="true")
+            if($UsePropertiesFile -eq "true")
             {
                 $properties = Read-Properties -propertiesFilePath $PropertiesPath
                 Write-Host "Using properties file $PropertiesPath for the upload"
