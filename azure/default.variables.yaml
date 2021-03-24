@@ -7,7 +7,7 @@ parameters:
 variables:
   _crux_tests_repo_name: _tests
   _crux_crux_repo_name: _crux
-
+  _crux_mode: ${{ parameters.mode }}
   _crux_scale_up_replicas_master: 1
   _crux_jmeter_slaves_service: jmeter-slaves
   _crux_jmeter_master_service: jmeter-master

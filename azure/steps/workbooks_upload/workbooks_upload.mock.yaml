@@ -14,6 +14,7 @@ parameters:
   usePropertiesFile: $true
   displayName: Workbooks upload
   slaves: "$(_crux_cluster_jmeter_slaves_replicas)"
+  mode: "$(_crux_mode)"
 steps:
   - task: PowerShell@2
     displayName: Workbooks upload
@@ -35,5 +36,6 @@ steps:
         -ByRows "${{ parameters.byRows }}"
         -AzurePostLimitMB "${{ parameters.azurePostLimitMB }}"
         -Slaves "${{ parameters.slaves }}"
+        -Mode "${{ parameters.mode }}"
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true
