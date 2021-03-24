@@ -13,7 +13,7 @@ parameters:
   logType: "_"
   usePropertiesFile: 'true'
   displayName: Workbooks upload
-  slaves: 1
+  slaves: "$(_crux_cluster_jmeter_slaves_replicas)"
 steps:
   - task: PowerShell@2
     displayName: ${{ parameters.displayName }}
