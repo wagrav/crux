@@ -13,6 +13,7 @@ parameters:
   logType: "_"
   usePropertiesFile: 'true'
   displayName: Workbooks upload
+  slaves: 1
 steps:
   - task: PowerShell@2
     displayName: ${{ parameters.displayName }}
@@ -32,5 +33,6 @@ steps:
         -PipelineId ${{ parameters.pipelineId }}
         -ByRows "${{ parameters.byRows }}"
         -AzurePostLimitMB "${{ parameters.azurePostLimitMB }}"
+        -Slaves "${{ parameters.slaves }}"
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true
