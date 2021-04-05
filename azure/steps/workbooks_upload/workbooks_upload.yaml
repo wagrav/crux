@@ -2,21 +2,39 @@ parameters:
   timeoutInMinutes: 5
   byRows: 10000
   azurePostLimitMB: 30
+  propertiesPath: "$(System.DefaultWorkingDirectory)/$(_crux_repos_root)/$(_crux_workbooks_file)"
+  filePathCsv: "$(_crux_results)"
+  jmeterArg: "$(_crux_jmeter_args)"
+  buildId: "$(Build.BuildId)"
+  buildStatus: "$(Agent.JobStatus)"
+  pipelineId: "$(System.DefinitionId)"
+  workbooksId: "_"
+  sharedKey: "_"
+  logType: "_"
+  usePropertiesFile: 'true'
+  displayName: Workbooks upload
+  slaves: "$(_crux_cluster_jmeter_slaves_replicas)"
+  mode: "$(_crux_mode)"
 steps:
   - task: PowerShell@2
-    displayName: Workbooks upload
+    displayName: ${{ parameters.displayName }}
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     condition: and(not(eq(variables['module.workbooks.enabled'], false)),not(eq(variables.workbooks_enabled, false)))
     inputs:
       arguments: > # Use this to avoid newline characters in multiline string
-        -PropertiesPath "$(System.DefaultWorkingDirectory)/$(_crux_repos_root)/$(_crux_workbooks_file)"
-        -FilePathCSV "$(_crux_results)"
-        -JmeterArg "$(_crux_jmeter_args)"
-        -BuildId "$(Build.BuildId)"
-        -BuildStatus "$(Agent.JobStatus)"
-        -PipelineId "$(System.DefinitionId)"
+        -PropertiesPath ${{ parameters.propertiesPath }}
+        -UsePropertiesFile ${{ parameters.usePropertiesFile }}
+        -WorkbooksId ${{ parameters.workbooksId }}
+        -SharedKey ${{ parameters.sharedKey }}
+        -LogType ${{ parameters.logType }}
+        -FilePathCSV ${{ parameters.filePathCsv }}
+        -JmeterArg "${{ parameters.jmeterArg }}"
+        -BuildId ${{ parameters.buildId }}
+        -BuildStatus ${{ parameters.buildStatus }}
+        -PipelineId ${{ parameters.pipelineId }}
         -ByRows "${{ parameters.byRows }}"
         -AzurePostLimitMB "${{ parameters.azurePostLimitMB }}"
-
+        -Slaves "${{ parameters.slaves }}"
+        -Mode "${{ parameters.mode }}"
       filePath: 'modules/workbooks/Workbooks.ps1'
       pwsh: true
