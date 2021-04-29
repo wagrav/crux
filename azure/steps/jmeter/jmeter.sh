@@ -90,7 +90,7 @@ _run_jmeter_test() { #public: runs actual test from within master pod of a deplo
   local _test_name=$3
   local _report_args=$4
   local _user_args=$5
-  printf "\t\n Jmeter user args $_user_args \n"
+  echo "Jmeter user args $_user_args"
   kubectl exec -i -n "$_cluster_namespace" "$_master_pod" -- /bin/bash /load_test "$_test_name" " $_report_args $_user_args "
 }
 
