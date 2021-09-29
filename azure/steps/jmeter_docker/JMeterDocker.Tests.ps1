@@ -30,16 +30,16 @@ Describe "Script Tests" {
                   -SkipRun $FALSE `
                   -JVM_ARGS "$JVM_ARGS"
             }
-            It "should execute Write-Host with Running message"  {
+            It "should execute Write-Host with Running message"  -Tag debug {
                 Assert-MockCalled Write-Host -Scope Context -ParameterFilter { $Object -eq "Running" }
             }
-            It "should verifiable mocks be called"  {
+            It "should verifiable mocks be called"  -Tag debug {
                 Should -InvokeVerifiable
             }
-            It "should Stop-JMeterContainer be called twice exactly"  {
-                Should -Invoke Stop-JMeterContainer -Scope Context -ModuleName JMeterDocker -Times 2
+            It "should Stop-JMeterContainer be called twice exactly"  -Tag debug {
+                Should -Invoke Stop-JMeterContainer -Scope Context -Times 2
             }
-            It "should all script variables have default values"  {
+            It "should all script variables have default values"  -Tag debug {
                 $variables =@(
                                 $Image,
                                 $ContainerName,
@@ -60,7 +60,7 @@ Describe "Script Tests" {
     }
     Context "When Start-JMeterTests is run with SkipRun" {
         BeforeAll {
-            Mock Write-Host { }
+            Mock -CommandName Write-Host { }
             Start-JMeterTests  `
                   -Image $Image `
                   -ContainerName $ContainerName `
@@ -73,11 +73,11 @@ Describe "Script Tests" {
                   -ArtifactsDirectory $ArtifactsDirectory `
                   -SkipRun $TRUE
         }
-        It "should  execute Write-Host with Skipped message"  {
+        It "should  execute Write-Host with Skipped message"   -Tag debug{
            Assert-MockCalled Write-Host -Scope Context -ParameterFilter { $Object -eq "Skipped" }
         }
     }
-    Context "When Start-JMeterTests is run without mocks" -Tag E2E {
+    Context "When Start-JMeterTests is run without mocks" -Tag E2E   {
 
         BeforeAll {
             function GetFullPath {
@@ -125,10 +125,10 @@ Describe "Script Tests" {
         }
     }
 }
-
-Describe "Module Tests" -Tag ModuleTests {
+InModuleScope JMeterDocker {
+    Describe "Module Tests" -Tag ModuleTests {
         It "should Copy-Artifacts execute Copy-Item 4 times exactly"  {
-            Mock docker
+            Mock -CommandName docker { }
             Copy-Artifacts
             Assert-MockCalled docker -Scope It -Times 4 -Exactly
         }
@@ -145,4 +145,5 @@ Describe "Module Tests" -Tag ModuleTests {
 
         }
 
+    }
 }

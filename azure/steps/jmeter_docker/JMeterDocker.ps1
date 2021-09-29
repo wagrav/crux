@@ -8,7 +8,7 @@ param(
     $FixedArgs = "-o $ContainerTestDataDir/report/ -f -l $ContainerTestDataDir/results.csv -e -Jsts=localhost -Jchromedriver=/usr/bin/chromedriver",
     $SleepSeconds = 2,
     $ArtifactsDirectory = "$PSScriptRoot/../../../kubernetes/tmp",
-    $SkipRun = $FALSE,
+    [Boolean]$SkipRun = $FALSE,
     $JVM_ARGS = "-Xms512M -Xmx1G"
 )
 Import-Module $PSScriptRoot\JMeterDocker.psm1 -Force
