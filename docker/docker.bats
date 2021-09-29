@@ -17,6 +17,7 @@ setup_file(){
   until curl -X PUT "http://localhost:1080/status" -H  "accept: application/json"; do sleep 1;done #wait for service to be available
   #all requests return HTTP 200
   curl -X PUT "http://localhost:1080/expectation" -H  "Content-Type: application/json" -d "{\"httpRequest\":{\"method\":\"GET\",\"path\":\"/.*\"},\"httpResponse\":{\"statusCode\":200,\"reasonPhrase\":\"I am mocking all the stuff\"}}"
+  source build.sh && _build_all objectivityltd crux jmeter5.4-chrome87
 }
 
 teardown_file(){
@@ -131,8 +132,7 @@ teardown_file(){
 
 @test "IT: Docker Base Image Builds Successfully" {
   docker image rm "$TEST_IMAGE_NAME" ||:
-  run docker build --rm --no-cache -t "$TEST_IMAGE_NAME" -f Dockerfile .
-  assert_output --partial "Successfully built"
+  run docker build -t "$TEST_IMAGE_NAME" -f Dockerfile .
   assert_success
 }
 
