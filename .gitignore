@@ -4,3 +4,4 @@ out
 bats/tmp/*
 **/*pesterTEST.xml
 **/TestReport*.xml
+**/*pesterCoverageTEST*

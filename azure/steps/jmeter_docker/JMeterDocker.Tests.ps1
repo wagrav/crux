@@ -1,4 +1,4 @@
-BeforeAll{
+BeforeAll {
     Import-Module $PSScriptRoot/JMeterDocker.psm1 -Force
     . $PSScriptRoot/JMeterDocker.ps1 -Force -SkipRun $TRUE #import w/o execution
 }
@@ -125,6 +125,7 @@ Describe "Script Tests" {
         }
     }
 }
+Import-Module $PSScriptRoot/JMeterDocker.psm1 -Force
 InModuleScope JMeterDocker {
     Describe "Module Tests" -Tag ModuleTests {
         It "should Copy-Artifacts execute Copy-Item 4 times exactly"  {
