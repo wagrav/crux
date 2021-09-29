@@ -25,9 +25,9 @@ steps:
         -dryRun $true
         -PropertiesPath ${{ parameters.propertiesPath }}
         -UsePropertiesFile ${{ parameters.usePropertiesFile }}
-        -WorkbooksId ${{ parameters.workbooksId }}
-        -SharedKey ${{ parameters.sharedKey }}
-        -LogType ${{ parameters.logType }}
+        -WorkbooksId $[ coalesce(${{ parameters.workbooksId }},'undefined') ]
+        -SharedKey $[ coalesce(${{ parameters.sharedKey }},'undefined') ]
+        -LogType $[ coalesce(${{ parameters.logType }},'undefined') ]
         -FilePathCSV ${{ parameters.filePathCsv }}
         -JmeterArg ${{ parameters.jmeterArg }}
         -BuildId ${{ parameters.buildId }}
