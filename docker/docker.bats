@@ -3,9 +3,9 @@
 load $HOME/test/'test_helper/bats-assert/load.bash'
 load $HOME/test/'test_helper/bats-support/load.bash'
 
-TEST_IMAGE_NAME="${TEST_IMAGE_NAME:-objectivityltd/crux-base:jmeter5.4-chrome87}"
-TEST_IMAGE_NAME_MASTER="${TEST_IMAGE_NAME_MASTER:-objectivityltd/crux-master:jmeter5.4-chrome87}"
-TEST_IMAGE_NAME_SLAVE="${TEST_IMAGE_NAME_SLAVE:-objectivityltd/crux-slave:jmeter5.4-chrome87}"
+TEST_IMAGE_NAME="${TEST_IMAGE_NAME:-objectivityltd/crux-base:jmeter5.4.2-chrome87}"
+TEST_IMAGE_NAME_MASTER="${TEST_IMAGE_NAME_MASTER:-objectivityltd/crux-master:jmeter5.4.2-chrome87}"
+TEST_IMAGE_NAME_SLAVE="${TEST_IMAGE_NAME_SLAVE:-objectivityltd/crux-slave:jmeter5.4.2-chrome87}"
 RUN_OPTS="--shm-size=1g --rm"
 JMETER_TESTS_SUCCESSFULL_OUTPUT="Err:     0 (0.00%)"
 
@@ -17,7 +17,7 @@ setup_file(){
   until curl -X PUT "http://localhost:1080/status" -H  "accept: application/json"; do sleep 1;done #wait for service to be available
   #all requests return HTTP 200
   curl -X PUT "http://localhost:1080/expectation" -H  "Content-Type: application/json" -d "{\"httpRequest\":{\"method\":\"GET\",\"path\":\"/.*\"},\"httpResponse\":{\"statusCode\":200,\"reasonPhrase\":\"I am mocking all the stuff\"}}"
-  source build.sh && _build_all objectivityltd crux jmeter5.4-chrome87
+  source build.sh && _build_all objectivityltd crux jmeter5.4.2-chrome87
 }
 
 teardown_file(){
@@ -111,11 +111,11 @@ teardown_file(){
   assert_success
 }
 
-@test "IT: JMeter 5.4 is present" {
+@test "IT: JMeter 5.4.2 is present" {
   #WHEN I run test that use chrome headless
   run docker run $RUN_OPTS "$TEST_IMAGE_NAME" jmeter --version
   #Then they are successful
-  assert_output --partial "\ 5.4"
+  assert_output --partial "\ 5.4.2"
 }
 
 @test "IT: Plugins are present and in correct versions" {

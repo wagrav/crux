@@ -18,5 +18,5 @@ function push(){
 }
 #sh build.sh jmeter-chrome-selenium
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  _build_all objectivityltd crux jmeter5.4-chrome87 && push objectivityltd crux jmeter5.4-chrome87
+  _build_all objectivityltd crux jmeter5.4.2-chrome87 && push objectivityltd crux jmeter5.4.2-chrome87
 fi

@@ -8,7 +8,7 @@ storage:
   classNamePrefix: crux-sc-
 slave:
   replicas: 1
-  image: objectivityltd/crux-slave:jmeter5.4-chrome87
+  image: objectivityltd/crux-slave:jmeter5.4.2-chrome87
   ports:
     rmi: 1099
     rmiLocal: 50000
@@ -19,7 +19,7 @@ slave:
     initialDelaySeconds: 1
     periodSeconds: 1
 master:
-  image: objectivityltd/crux-master:jmeter5.4-chrome87
+  image: objectivityltd/crux-master:jmeter5.4.2-chrome87
   ports:
     rmiLocal: 60000
     stsServer: 9191
